@@ -10,22 +10,23 @@ jobs:
     runs-on: ubuntu-latest  # Use a Linux runner
 
     steps:
+      # https://github.com/actions/setup-node
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.9.0
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build app
         run: npm run build
 
-      - name: Deploy to FTP
         # https://github.com/SamKirkland/FTP-Deploy-Action
+      - name: Deploy to FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
