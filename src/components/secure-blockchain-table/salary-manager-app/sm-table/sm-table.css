@@ -1,0 +1,32 @@
+.sm-cell-dirty {
+    background: rgba(255, 165, 0, 0.33);
+    color: red;
+    font-weight: 800;
+}
+
+.sm-normal-readonly-text {
+    background-color: #cccccc44;
+}
+
+.sm-normal-readonly-number {
+    background-color: #cccccc44;
+    text-align: right;
+    font-size: 120%;
+}
+
+.sm-normal-editable-number {
+    text-align: right;
+    font-weight: 800;
+    font-size: 120%;
+}
+
+.lock-pinned {
+    background-color: #99999944;
+}
+
+
+.last-name {
+    font-size: 120%;
+    font-weight: 400;
+    background-color: #cccccc44;
+}
