@@ -37,4 +37,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: build/  # The directory containing your built React app
           server-dir: /www/1234.ch/web3-apps/  # Adjust to your desired remote directory
-          clean-remote: true  # Optionally clean the remote directory before deployment
+          dangerous-clean-slate: true  # Optionally clean the remote directory before deployment
