@@ -83,7 +83,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "dev": "dotenv -f .env.development run react-app-rewired start",
-    "build": "dotenv -f ./.env.production run react-app-rewired build",
+    "build": "react-app-rewired build",
     "eject": "react-scripts eject",
     "test": "mocha --config ./test/runners/mocha/.mocharc.jsonc ",
     "deploy-ContractRegistry": "ts-node --project tsconfig.scripts.json src/scripts/deploy-ContractRegistry.ts",
