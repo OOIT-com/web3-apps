@@ -4,7 +4,7 @@ import { StyledListItemText } from './common/StyledComponents';
 import { menuColumns } from './menu-defs';
 import { StyledHead } from './common/StyledHead';
 
-const showDescription = false;
+const showDescription = true;
 
 export function AppMenu() {
   const navigate = useNavigate();

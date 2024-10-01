@@ -1,7 +1,7 @@
-import { LDBox } from './StyledBoxes';
+import { LDAccordionSummary, LDBox } from './StyledBoxes';
 import * as React from 'react';
 import { FC, ReactNode, useState } from 'react';
-import { Accordion, AccordionSummary, IconButton, Stack } from '@mui/material';
+import { Accordion, IconButton, Stack } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { HelpBox } from './HelpBox';
@@ -78,12 +78,7 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
 
   return (
     <Accordion expanded={!collapsible || exp} onChange={() => setExp((b) => !b)}>
-      <AccordionSummary
-        expandIcon={expandIcon}
-        aria-controls="panel1bh-content"
-        id="panel1bh-header"
-        sx={{ backgroundColor: '#f2f2f2' }}
-      >
+      <LDAccordionSummary expandIcon={expandIcon} aria-controls="panel1bh-content" id="panel1bh-header">
         <Stack sx={{ width: '100%' }}>
           <Stack key={'title-row'} direction={'row'} justifyContent="space-between" alignItems="center" spacing={4}>
             <LDBox sx={styles[level].title} direction="row" justifyContent="flex-start" alignItems="center" spacing={1}>
@@ -108,7 +103,7 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
           </Stack>
           {helpOn && <HelpBox help={help} done={() => setHelpOn(false)} />}
         </Stack>
-      </AccordionSummary>
+      </LDAccordionSummary>
       <AccordionDetails>
         <Stack spacing={1}>{content}</Stack>
       </AccordionDetails>

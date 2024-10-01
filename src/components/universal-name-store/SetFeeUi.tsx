@@ -19,7 +19,7 @@ export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ unive
   const { wrap } = app;
   const { web3, publicAddress } = app.web3Session || {};
   const [feeUpdate, setFeeUpdate] = useState('0');
-  const [helperText, setHelperText] = useState('Add a deciaml number.');
+  const [helperText, setHelperText] = useState('Add a decimal number');
   const [hasError, setHasErrors] = useState(false);
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
 

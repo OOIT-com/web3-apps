@@ -60,17 +60,18 @@ export const WithdrawUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
         <TableComp
           key={'withdraw-ui'}
           content={[
-            <TableRowComp elements={['Current Contract Balance', `${balance}`]} />,
-            <TableRowComp elements={['My Balance', `${myBalance}`]} />,
+            <TableRowComp key={'contract-balance'} elements={['Current Contract Balance', `${balance}`]} />,
+            <TableRowComp key={'my-balance'} elements={['My Balance', `${myBalance}`]} />,
             <TableRowComp
               key={'buttons'}
               colspan={[2]}
               elements={[
                 <ButtonPanel
+                  key={'buttons'}
                   content={[
                     <Button
-                      variant={'contained'}
                       key={'withdraw'}
+                      variant={'contained'}
                       disabled={balance === '0.' || !balance}
                       onClick={() =>
                         wrap('Withdraw...', async () => {

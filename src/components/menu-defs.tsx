@@ -11,7 +11,7 @@ import { ContractManagementUi } from './contract-and-addresses/ContractManagemen
 import { PublicKeyStoreV2Ui } from './public-key-store-v2/PublicKeyStoreV2Ui';
 import keyBlock from './images/key-block.png';
 import secretMessages from './images/secret-messages.png';
-import artWork from './images/my-deport.png';
+import artworkPng from './images/artwork.png';
 import salaryManager from './images/salary-manager.png';
 import sharedKey from './images/shared-key.png';
 import publicKey from './images/public-key.png';
@@ -19,9 +19,9 @@ import publicKeyV2 from './images/public-key-v2.png';
 import addressBook from './images/address-book.png';
 import thisIsMe from './images/this-is-me.png';
 import uns from './images/uns.png';
-import globalNameAndValue from './images/global-name-and-value.png';
-import tools from './images/tools.png';
-import about from './images/about.png';
+import contractRegistryPng from './images/contractRegistry.png';
+import toolsPng from './images/tools.png';
+import aboutPng from './images/about.png';
 import { SecureBlockchainTableUi } from './secure-blockchain-table/SecureBlockchainTableUi';
 import { UniversalNameStoreUi } from './universal-name-store/UniversalNameStoreUi';
 import { UiGallery } from './ui-gallery/UiGallery';
@@ -59,7 +59,7 @@ export const menuColumns: MenuColumn[] = [
       {
         path: 'artwork',
         name: 'Artwork',
-        icon: <AppIcon src={artWork} alt={'Art Work'} />,
+        icon: <AppIcon src={artworkPng} alt={'Art Work'} />,
         description: 'Encrypt and Create an Artwork Time Proof',
         element: <ArtworkUi />
       },
@@ -129,8 +129,9 @@ export const menuColumns: MenuColumn[] = [
       {
         path: 'contract-registry',
         name: 'Contract Registry',
-        icon: <AppIcon src={globalNameAndValue} alt={'Contract Registry'} />,
-        description: 'Contract Registry including Registration, Deployment, Owner Management, Source Code Verification ...',
+        icon: <AppIcon src={contractRegistryPng} alt={'Contract Registry'} />,
+        description:
+          'Contract Registry including Registration, Deployment, Owner Management, Source Code Verification ...',
         element: <ContractManagementUi />
       }
     ]
@@ -142,14 +143,14 @@ export const menuColumns: MenuColumn[] = [
       {
         path: 'tools',
         name: 'Tools',
-        icon: <AppIcon src={tools} alt={'Tools'} />,
+        icon: <AppIcon src={toolsPng} alt={'Tools'} />,
         description: 'Wallet, Seed Phrase, Keys, Encryption, ...',
         element: <ToolsUi />
       },
       {
         path: 'about',
         name: 'About',
-        icon: <AppIcon src={about} alt={'About'} />,
+        icon: <AppIcon src={aboutPng} alt={'About'} />,
 
         description: '',
         element: <About />
@@ -157,7 +158,7 @@ export const menuColumns: MenuColumn[] = [
       {
         path: 'uigallery',
         name: 'Ui Gallery',
-        icon: <AppIcon src={about} alt={'About'} />,
+        icon: <AppIcon src={aboutPng} alt={'About'} />,
 
         description: '',
         element: <UiGallery />,

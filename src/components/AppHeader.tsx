@@ -1,6 +1,6 @@
-import { AppBar, Box, Button, IconButton, Stack, Toolbar, Tooltip, useTheme } from '@mui/material';
+import { Box, Button, IconButton, Stack, Toolbar, Tooltip, useTheme } from '@mui/material';
 import logo from '../images/keyblock200.png';
-import { green, grey } from '@mui/material/colors';
+import { green } from '@mui/material/colors';
 import LinkIcon from '@mui/icons-material/Link';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -15,6 +15,7 @@ import { Web3InfoPage } from './Web3InfoPage';
 import { useIsSmall } from './utils';
 import { displayAddress } from '../utils/misc-util';
 import { useAppContext } from './AppContextProvider';
+import { LDAppBar } from './common/StyledBoxes';
 
 const ConnectionAddressDisplay = ({ publicAddress, isXs }: { publicAddress?: string; isXs: boolean }) => {
   const { addressData = [], wrap } = useAppContext();
@@ -74,14 +75,7 @@ export function AppHeader() {
   }
 
   return (
-    <AppBar
-      position="static"
-      elevation={0}
-      sx={{
-        background: theme.palette.mode === 'dark' ? grey['900'] : 'black',
-        color: theme.palette.mode === 'dark' ? 'gray' : undefined
-      }}
-    >
+    <LDAppBar position="static" elevation={0}>
       <Toolbar variant="regular">
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%' }}>
           <Stack
@@ -109,7 +103,7 @@ export function AppHeader() {
         </Stack>
       </Toolbar>
       <Web3InfoPage open={openInfoPage} done={() => setOpenInfoPage(false)}></Web3InfoPage>
-    </AppBar>
+    </LDAppBar>
   );
 }
 

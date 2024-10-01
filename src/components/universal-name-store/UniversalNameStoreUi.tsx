@@ -77,7 +77,7 @@ export function UniversalNameStoreUi() {
   if (isOwner) {
     content.push(<OwnerAdminUi key={'owner-admin'} universalNameStore={universalNameStore} />);
   }
-  return <CollapsiblePanel title={<Header />} level={'top'} content={content} />;
+  return <CollapsiblePanel title={<Header />} level={'top'} content={content} collapsible={false} />;
 }
 
 const Header = () => (

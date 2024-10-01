@@ -15,7 +15,7 @@ import { ContractName } from '../../contracts/contract-utils';
 import { reloadAddressData } from '../init-dapps';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
-import uns from '../images/address-book.png';
+import addressBookImg from '../images/address-book.png';
 import Typography from '@mui/material/Typography';
 
 export function AddressBookUi() {
@@ -164,7 +164,7 @@ export function AddressBookUi() {
 
 const Header = () => (
   <Stack direction={'row'} spacing={2}>
-    <Avatar sx={{ fontSize: 'inherit' }} src={uns} />
+    <Avatar sx={{ fontSize: 'inherit' }} src={addressBookImg} variant={'square'} />
     <Typography sx={{ fontSize: 'inherit', whiteSpace: 'nowrap' }}>Address Book</Typography>
   </Stack>
 );
