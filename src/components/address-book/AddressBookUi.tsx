@@ -1,4 +1,4 @@
-import { Avatar, Button, Stack, Table, TableBody, TableHead } from '@mui/material';
+import { Button, Stack, Table, TableBody, TableHead } from '@mui/material';
 import * as React from 'react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
@@ -16,7 +16,7 @@ import { reloadAddressData } from '../init-dapps';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import addressBookImg from '../images/address-book.png';
-import Typography from '@mui/material/Typography';
+import { AppTopTitle } from '../common/AppTopTitle';
 
 export function AddressBookUi() {
   const app = useAppContext();
@@ -86,7 +86,7 @@ export function AddressBookUi() {
         level={'top'}
         collapsible={true}
         collapsed={false}
-        title={<Header />}
+        title={<AppTopTitle title={'Address Book'} avatar={addressBookImg} />}
         toolbar={toolbar}
         content={[
           <StatusMessageElement
@@ -161,10 +161,3 @@ export function AddressBookUi() {
     </Fragment>
   );
 }
-
-const Header = () => (
-  <Stack direction={'row'} spacing={2}>
-    <Avatar sx={{ fontSize: 'inherit' }} src={addressBookImg} variant={'square'} />
-    <Typography sx={{ fontSize: 'inherit', whiteSpace: 'nowrap' }}>Address Book</Typography>
-  </Stack>
-);

@@ -46,6 +46,7 @@ export function SecureBlockchainTablePanel({ refresh }: Readonly<{ refresh: Noti
 
   return (
     <CollapsiblePanel
+      level={'third'}
       title={'Deploy a new Salary Manager'}
       toolbar={[
         <Button

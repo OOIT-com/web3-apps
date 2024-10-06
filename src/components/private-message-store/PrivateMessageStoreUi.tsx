@@ -16,6 +16,8 @@ import { useAppContext } from '../AppContextProvider';
 import { NoContractFound } from '../common/NoContractFound';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { StatusMessageElement } from '../common/StatusMessageElement';
+import privateMessagePng from '../images/secret-message.png';
+import { AppTopTitle } from '../common/AppTopTitle';
 
 export function PrivateMessageStoreUi() {
   const [value, setValue] = React.useState(0);
@@ -46,7 +48,7 @@ export function PrivateMessageStoreUi() {
   return (
     <CollapsiblePanel
       collapsible={false}
-      title={'Private Message Store'}
+      title={<AppTopTitle title={'Private Message Store'} avatar={privateMessagePng} />}
       content={[
         <StatusMessageElement
           key={'status-message'}

@@ -23,6 +23,8 @@ import { useAppContext, WrapFun } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import TextField from '@mui/material/TextField';
 import { grey } from '@mui/material/colors';
+import secretVaultPng from '../images/secret-vault.png';
+import { AppTopTitle } from '../common/AppTopTitle';
 
 const KeyBlockUi: FC = () => {
   const { wrap, web3Session } = useAppContext();
@@ -131,7 +133,12 @@ const KeyBlockUi: FC = () => {
 
   return (
     <Fragment>
-      <CollapsiblePanel level={'top'} collapsible={false} title={'Welcome to the Secret Vault'} content={content} />
+      <CollapsiblePanel
+        level={'top'}
+        collapsible={false}
+        title={<AppTopTitle avatar={secretVaultPng} title={'Welcome to the Secret Vault'} />}
+        content={content}
+      />
       <KeyBlockEntry
         key={'key-block-entry'}
         item={editItem}

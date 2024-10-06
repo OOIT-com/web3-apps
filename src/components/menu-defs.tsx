@@ -5,7 +5,7 @@ import { JSX, ReactNode } from 'react';
 import { About } from './about/About';
 import { ToolsUi } from './tools/ToolsUi';
 import { UniqueNameStoreUi } from './unique-name-store/UniqueNameStoreUi';
-import { ArtworkUi } from './artwork-time-proof/ArtworkUi';
+import { ArtworkUi } from './artwork/ArtworkUi';
 import { SharedSecretStoreUi } from './shared-secret-store/SharedSecretStoreUi';
 import { ContractManagementUi } from './contract-and-addresses/ContractManagementUi';
 import { PublicKeyStoreV2Ui } from './public-key-store-v2/PublicKeyStoreV2Ui';
@@ -22,7 +22,7 @@ import uns from './images/universal-name-store.png';
 import contractRegistryPng from './images/contract-registry.png';
 import toolsPng from './images/tools.png';
 import aboutPng from './images/about.png';
-import { SecureBlockchainTableUi } from './secure-blockchain-table/SecureBlockchainTableUi';
+import { SalaryManagerUi } from './secure-blockchain-table/SalaryManagerUi';
 import { UniversalNameStoreUi } from './universal-name-store/UniversalNameStoreUi';
 import { UiGallery } from './ui-gallery/UiGallery';
 import { AddressBookUi } from './address-book/AddressBookUi';
@@ -68,7 +68,7 @@ export const menuColumns: MenuColumn[] = [
         name: 'Salary Manager',
         icon: <AppIcon src={salaryManager} alt={'Salary Manager'} />,
         description: 'Save and Secret Salary Management Tool',
-        element: <SecureBlockchainTableUi />
+        element: <SalaryManagerUi />
       }
     ]
   },

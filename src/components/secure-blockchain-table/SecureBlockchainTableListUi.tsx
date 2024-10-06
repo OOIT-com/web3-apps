@@ -11,7 +11,7 @@ import {
 import { SecureBlockchainTablePanel } from './SecureBlockchainTablePanel';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { OwnableWithBackupDialog } from '../ownable-with-backup/OwnableWithBackupDialog';
-import { SalaryManagerTabConfig, SBTOpenMode } from './SecureBlockchainTableUi';
+import { SalaryManagerTabConfig, SBTOpenMode } from './SalaryManagerUi';
 import { useAppContext } from '../AppContextProvider';
 
 export function SecureBlockchainTableListUi({
@@ -112,7 +112,8 @@ export function SecureBlockchainTableListUi({
   return (
     <Stack spacing={2}>
       <CollapsiblePanel
-        title={'List of SB Tables'}
+        level={'third'}
+        title={'List of Tables'}
         toolbar={[
           <Button key={'refresh'} onClick={() => refresh()}>
             Refresh

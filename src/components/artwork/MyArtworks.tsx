@@ -17,7 +17,7 @@ import { isStatusMessage, NotifyFun, StatusMessage } from '../../types';
 import moment from 'moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import { getMyArtworks } from './artwork-time-proof-api';
+import { getMyArtworks } from './artwork-api';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -25,7 +25,7 @@ import { ArtworkDetailUi } from './ArtworkDetailUi';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 
-export function MyArtworkProofs({ artworkTimeProof }: Readonly<{ artworkTimeProof?: ArtworkTimeProof }>) {
+export function MyArtworks({ artworkTimeProof }: Readonly<{ artworkTimeProof?: ArtworkTimeProof }>) {
   const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [rows, setRows] = useState<ArtworkType[]>([]);

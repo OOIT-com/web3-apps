@@ -22,7 +22,7 @@ import { contentType } from './irys-utils';
 import { uint8Array2Hex } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
 
-export function CreateArtworkTimeProofUi({
+export function CreateArtworkUi({
   irysAccess,
   artworkTimeProof
 }: Readonly<{

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
-import { decryptedFilename, decryptFile } from './CreateArtworkTimeProofUi';
+import { decryptedFilename, decryptFile } from './CreateArtworkUi';
 import { LDBox } from '../common/StyledBoxes';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { file2string } from '../../utils/misc-util';

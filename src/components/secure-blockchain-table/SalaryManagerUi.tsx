@@ -2,7 +2,6 @@ import * as React from 'react';
 import { FC, useCallback, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
 import { Paper } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { infoMessage, NotifyFun, warningMessage } from '../../types';
@@ -12,11 +11,14 @@ import { SecureBlockchainTableListUi } from './SecureBlockchainTableListUi';
 import { SecureBlockchainTableEditorUi } from './SecureBlockchainTableEditorUi';
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { SalaryManagerApp } from './salary-manager-app/SalaryManagerApp';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { AppTopTitle } from '../common/AppTopTitle';
+import salaryManagerPng from '../images/salary-manager.png';
 
 export type SBTOpenMode = 'edit' | 'app';
 export type SalaryManagerTabConfig = { sbtManager: SBTManager; mode: SBTOpenMode };
 
-export function SecureBlockchainTableUi() {
+export function SalaryManagerUi() {
   const [value, setValue] = React.useState(0);
   const [config, setConfig] = React.useState<SalaryManagerTabConfig>();
 
@@ -44,18 +46,21 @@ export function SecureBlockchainTableUi() {
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+    <CollapsiblePanel
+      collapsible={false}
+      level={'top'}
+      title={<AppTopTitle title={'Salary Manager'} avatar={salaryManagerPng} />}
+      content={[
+        <Tabs key={'tabs'} value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Salary Manager List" />
           {!!config && <Tab label={`Salary Manager ${config.sbtManager.name}`} disabled={!config} />}
-        </Tabs>
-      </Box>
-      <Paper sx={{ margin: '1em 0 1em 0' }}>
-        {value === 0 && <SecureBlockchainTableListUi setConfig={setConfig} />}
-        {value === 1 && <AppSwitch done={done} config={config} />}
-      </Paper>
-    </Box>
+        </Tabs>,
+        <Paper key={'paper'} sx={{ margin: '1em 0 1em 0' }}>
+          {value === 0 && <SecureBlockchainTableListUi setConfig={setConfig} />}
+          {value === 1 && <AppSwitch done={done} config={config} />}
+        </Paper>
+      ]}
+    ></CollapsiblePanel>
   );
 }
 

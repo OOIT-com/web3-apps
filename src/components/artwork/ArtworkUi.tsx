@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage, warningMessage } from '../../types';
+import { isStatusMessage, StatusMessage } from '../../types';
 import { Box, Paper } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -8,12 +8,15 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysManageUi } from '../irys-components/IrysManageUi';
 import { IrysFileUpload } from './IrysFileUpload';
 import { IrysAccess } from '../../utils/IrysAccess';
-import { CreateArtworkTimeProofUi } from './CreateArtworkTimeProofUi';
+import { CreateArtworkUi } from './CreateArtworkUi';
 import { DecryptFileUi } from './DecryptFileUi';
 import { getArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { MyArtworkProofs } from './MyArtworkProofs';
+import { MyArtworks } from './MyArtworks';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import { AppTopTitle } from '../common/AppTopTitle';
+import artworkPng from '../images/artwork.png';
 
 const help = `
 
@@ -64,7 +67,7 @@ export function ArtworkUi() {
   }, [wrap, web3Session]);
 
   if (!publicAddress || !web3) {
-    return <StatusMessageElement statusMessage={warningMessage('Web3 is not initialized!')} />;
+    return <Web3NotInitialized />;
   }
 
   const content: ReactNode[] = [<StatusMessageElement key={'statusMessage'} statusMessage={statusMessage} />];
@@ -82,8 +85,8 @@ export function ArtworkUi() {
           </Tabs>
         </Box>
         <Paper sx={{ margin: '1em 0 1em 0' }}>
-          {value === 0 && <MyArtworkProofs artworkTimeProof={getArtworkTimeProof()} />}
-          {value === 1 && <CreateArtworkTimeProofUi irysAccess={irysAccess} artworkTimeProof={getArtworkTimeProof()} />}
+          {value === 0 && <MyArtworks artworkTimeProof={getArtworkTimeProof()} />}
+          {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={getArtworkTimeProof()} />}
           {value === 2 && <IrysManageUi irysAccess={irysAccess} />}
           {value === 3 && <IrysFileUpload irysAccess={irysAccess} />}
           {value === 4 && <DecryptFileUi />}
@@ -92,5 +95,13 @@ export function ArtworkUi() {
     );
   }
 
-  return <CollapsiblePanel help={help} level={'top'} title={'Artwork'} content={content} collapsible={false} />;
+  return (
+    <CollapsiblePanel
+      help={help}
+      level={'top'}
+      title={<AppTopTitle title={'Artwork'} avatar={artworkPng} />}
+      content={content}
+      collapsible={false}
+    />
+  );
 }

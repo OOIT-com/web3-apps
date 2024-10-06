@@ -13,11 +13,10 @@ import { RegisterNameUi } from './RegisterNameUi';
 import { OwnerAdminUi } from './OwnerAdminUi';
 import { NameListUi } from './NameListUi';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import { Avatar, Stack } from '@mui/material';
-import Typography from '@mui/material/Typography';
 import uns from '../images/universal-name-store.png';
 import { EventListenerUi } from './EventListenerUi';
 import { NoContractFound } from '../common/NoContractFound';
+import { AppTopTitle } from '../common/AppTopTitle';
 
 export function UniversalNameStoreUi() {
   const app = useAppContext();
@@ -77,12 +76,12 @@ export function UniversalNameStoreUi() {
   if (isOwner) {
     content.push(<OwnerAdminUi key={'owner-admin'} universalNameStore={universalNameStore} />);
   }
-  return <CollapsiblePanel title={<Header />} level={'top'} content={content} collapsible={false} />;
+  return (
+    <CollapsiblePanel
+      title={<AppTopTitle title={'Universal Name Service'} avatar={uns} />}
+      level={'top'}
+      content={content}
+      collapsible={false}
+    />
+  );
 }
-
-const Header = () => (
-  <Stack direction={'row'} spacing={2}>
-    <Avatar sx={{ fontSize: 'inherit' }} src={uns} />
-    <Typography sx={{ fontSize: 'inherit', whiteSpace: 'nowrap' }}>Universal Name Store</Typography>
-  </Stack>
-);

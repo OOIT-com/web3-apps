@@ -10,7 +10,7 @@ import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { getNetworkInfo } from '../../network-info';
-import { getMetaData } from '../artwork-time-proof/irys-utils';
+import { getMetaData } from '../artwork/irys-utils';
 import { useAppContext } from '../AppContextProvider';
 
 export function ContracVerifierDialog({
