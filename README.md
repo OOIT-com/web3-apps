@@ -17,3 +17,10 @@ Web3 Apps is a collection of Decentralized Applications (DApps) showcasing the p
 ### Join the Web3 Revolution
 
 Explore the future of business applications with Web3 Apps. 
+
+
+### An OOIT.com Initiative
+
+In other works: Things I like to do :-)
+
+Regards, Toni Bünter
