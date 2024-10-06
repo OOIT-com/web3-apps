@@ -68,3 +68,21 @@ export const encryptContent = ({ data, secret }: CryptArgs) => {
   const encData = encrypt(secretKey, compressed, publicKey);
   return Buffer.from(encData).toString('base64');
 };
+
+export type CryptArgsForReceiver = { data: string; secret: string; receiverPublicKey: string };
+
+export const encryptContentForReceiver = ({ data, secret, receiverPublicKey }: CryptArgsForReceiver) => {
+  const compressed = deflate(data);
+  const encData = encrypt(Buffer.from(secret, 'hex'), compressed, Buffer.from(receiverPublicKey, 'hex'));
+  return Buffer.from(encData).toString('base64');
+};
+
+export type CryptArgsFromSender = { encData: string; secret: string; senderPublicKey: string };
+
+export const decryptContentFromSender = ({ encData, secret, senderPublicKey }: CryptArgsFromSender): string | null => {
+  const data = decrypt(Buffer.from(secret, 'hex'), Buffer.from(encData, 'base64'), Buffer.from(senderPublicKey, 'hex'));
+  if (data === null) {
+    return null;
+  }
+  return Buffer.from(inflate(data)).toString();
+};
