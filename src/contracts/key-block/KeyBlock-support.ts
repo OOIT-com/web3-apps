@@ -80,5 +80,5 @@ export class KeyBlock {
   }
 }
 
-export type Item = { index: number; name: string; secret: string; inserted: string };
-export const EmptyItem: Item = { index: -1, name: '', secret: '', inserted: '' };
+export type SecretVaultEntry = { index: number; name: string; secret: string; inserted: string };
+export const EmptyItem: SecretVaultEntry = { index: -1, name: '', secret: '', inserted: '' };

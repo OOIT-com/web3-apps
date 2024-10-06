@@ -15,7 +15,7 @@ import { NameListUi } from './NameListUi';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { Avatar, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import uns from '../images/uns.png';
+import uns from '../images/universal-name-store.png';
 import { EventListenerUi } from './EventListenerUi';
 import { NoContractFound } from '../common/NoContractFound';
 

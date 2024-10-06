@@ -22,11 +22,11 @@ import {
 import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';
-import { getNetworkInfo } from '../../network-info';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { decryptKeyBlockValue } from '../key-block/key-block-utils';
 import { DecryptFun } from '../connect-with-localstore';
-import { AppContextData, useAppContext } from '../AppContextProvider';
+import { useAppContext, WrapFun } from '../AppContextProvider';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 type OutMessage = GetOutBoxResult & { subject?: string; text?: string; displayText?: boolean };
 type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => void;
@@ -34,8 +34,8 @@ type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => 
 export function PrivateMessageOutBoxUi({
   privateMessageStore
 }: Readonly<{ privateMessageStore: PrivateMessageStore }>) {
-  const app = useAppContext();
-  const { publicAddress, networkId = 0 } = app.web3Session || {};
+  const { wrap, web3Session } = useAppContext();
+  const { publicAddress } = web3Session || {};
   const theme = useTheme();
 
   const [outMessages, setOutMessages] = useState<OutMessage[]>([]);
@@ -43,18 +43,19 @@ export function PrivateMessageOutBoxUi({
   const [numberOfEntries, setNumberOfEntries] = useState(-1);
 
   useEffect(() => {
-    const load = async () => {
-      await refreshOutMessages(app, setNumberOfEntries, setOutMessages, privateMessageStore);
-    };
-    load().catch(console.error);
-  }, [app, privateMessageStore]);
+    if (publicAddress) {
+      const load = async () => {
+        await refreshOutMessages(wrap, publicAddress, setNumberOfEntries, setOutMessages, privateMessageStore);
+      };
+      load().catch(console.error);
+    }
+  }, [wrap, privateMessageStore, publicAddress]);
 
-  if (!app.web3Session) {
-    return <StatusMessageElement statusMessage={infoMessage('Web3 not initialized')}></StatusMessageElement>;
+  if (!web3Session || !publicAddress) {
+    return <Web3NotInitialized />;
   }
-  const { decryptFun } = app.web3Session;
+  const { decryptFun } = web3Session;
   let statusMessage: StatusMessage | undefined = undefined;
-  const { name } = getNetworkInfo(networkId);
   const noMessages = numberOfEntries === 0;
   return (
     <Stack>
@@ -77,7 +78,7 @@ export function PrivateMessageOutBoxUi({
           />
         </Stack>
         {noMessages ? (
-          <StatusMessageElement statusMessage={infoMessage(`No sent messages found on: ${name}`)} />
+          <StatusMessageElement statusMessage={infoMessage(`No sent messages found!`)} />
         ) : (
           <Table sx={{ minWidth: 800 }}>
             <TableHead>
@@ -92,10 +93,7 @@ export function PrivateMessageOutBoxUi({
             </TableHead>
             <TableBody>
               {outMessages
-                .filter(
-                  (row) =>
-                    !filterValue || (row.subject && row.subject.toLowerCase().includes(filterValue.toLowerCase()))
-                )
+                .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
                 .map((row, index) => (
                   <Fragment key={'frag-' + index}>
                     <TableRow key={'row-detail' + row.index}>
@@ -136,7 +134,9 @@ export function PrivateMessageOutBoxUi({
           <StatusMessageElement statusMessage={statusMessage} />
           <Button
             onClick={() => {
-              refreshOutMessages(app, setNumberOfEntries, setOutMessages, privateMessageStore).catch(console.error);
+              refreshOutMessages(wrap, publicAddress, setNumberOfEntries, setOutMessages, privateMessageStore).catch(
+                console.error
+              );
             }}
           >
             Refresh
@@ -148,17 +148,12 @@ export function PrivateMessageOutBoxUi({
 }
 
 async function refreshOutMessages(
-  app: AppContextData,
+  wrap: WrapFun,
+  publicAddress: string,
   setNumberOfEntries: (n: number) => void,
   setOutMessages: SetOutMessages,
   privateMessageStore: PrivateMessageStore
 ): Promise<StatusMessage | void> {
-  const { wrap, web3Session } = app;
-  const { publicAddress, web3, networkId } = web3Session || {};
-
-  if (!publicAddress || !web3 || !networkId) {
-    return;
-  }
   setOutMessages(() => []);
 
   return await wrap('Reading Sent Messages...', async () => {

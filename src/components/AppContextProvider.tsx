@@ -1,6 +1,6 @@
-import React, {createContext, ReactNode, useCallback, useContext, useMemo, useState} from 'react';
-import {errorMessage, infoMessage, PublicKeyHolderV2, SnackbarMessage, StatusMessage, Web3Session} from '../types';
-import {AddressData} from '../contracts/address-book/AddressBook-support';
+import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import { errorMessage, infoMessage, PublicKeyHolderV2, SnackbarMessage, StatusMessage, Web3Session } from '../types';
+import { AddressData } from '../contracts/address-book/AddressBook-support';
 
 let SnackbarMessageCounter = 0;
 const noop = () => {};
@@ -16,7 +16,7 @@ export type AppContextData = {
 
   snackbarMessage?: SnackbarMessage;
   setSnackbarMessage: (value: SnackbarMessage) => void;
-  dispatchSnackbarMessage: (statusMessage: StatusMessage | string, duration?: number) => void;
+  dispatchSnackbarMessage: (statusMessage: StatusMessage | string | undefined, duration?: number) => void;
   web3Session?: Web3Session;
   setWeb3Session: SetWeb3Session;
   //
@@ -67,7 +67,10 @@ export function AppContextProvider({ children }: Readonly<{ children: ReactNode 
   );
 
   const dispatchSnackbarMessage = useCallback(
-    (statusMessage: StatusMessage | string, duration: number = 3000) => {
+    (statusMessage: StatusMessage | string | undefined, duration: number = 3000) => {
+      if (!statusMessage) {
+        return;
+      }
       if (typeof statusMessage === 'string') {
         statusMessage = infoMessage(statusMessage);
       }

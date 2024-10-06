@@ -3,7 +3,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { getContractRegistry, initContractRegistry } from '../contracts/contract-registry/ContractRegistry-support';
 import { getAddressBook, initAddressBook } from '../contracts/address-book/AddressBook-support';
 import { initUniqueNameStoreContract } from '../contracts/unique-name-store/UniqueNameStore-support';
-import { initPrivateMessageStore } from '../contracts/private-message-store/PrivateMessageStore-support';
+import { loadPrivateMessageStore } from '../contracts/private-message-store/PrivateMessageStore-support';
 import {
   getPublicKeyStore,
   initPublicKeyStore,
@@ -104,8 +104,10 @@ export async function initDapps(
     dispatchSnackbarMessage(r1);
   }
 
-  const r2 = await initPrivateMessageStore(contractRegistry, web3);
-  dispatchSnackbarMessage(r2);
+  const r2 = await loadPrivateMessageStore(web3);
+  if (isStatusMessage(r2)) {
+    dispatchSnackbarMessage(r2);
+  }
 
   const r3 = await initPublicKeyStore(contractRegistry, web3);
   dispatchSnackbarMessage(r3);

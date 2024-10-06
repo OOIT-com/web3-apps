@@ -6,15 +6,16 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { isStatusMessage, NotifyFun, StatusMessage } from '../../types';
 import { Box, Paper, Stack } from '@mui/material';
 import { PrivateMessageStore } from '../../contracts/private-message-store/PrivateMessageStore-support';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import { Message } from './private-message-store-types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { getPublicKeyStore, PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
-import { createInAndOutBox } from './private-message-store-utils';
-import { useAppContext, WrapFun } from '../AppContextProvider';
+import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
+import { useAppContext } from '../AppContextProvider';
+
+import { sendPrivateMessage } from './private-message-store-utils';
 
 export function PrivateMessageReplyUi({
   messageToReply,
@@ -92,16 +93,16 @@ export function PrivateMessageReplyUi({
               onClick={async () => {
                 setStatusMessage(undefined);
                 const res = await wrap('Reply to Message...', async () =>
-                  replyPrivateMessage({
+                  sendPrivateMessage({
                     wrap,
                     publicAddress,
                     publicKey,
                     receiver: messageToReply.sender,
                     subject,
                     text,
-                    replyIndex: messageToReply.index,
                     privateMessageStore,
-                    publicKeyStore
+                    publicKeyStore,
+                    replyIndex: messageToReply.index
                   })
                 );
                 if (isStatusMessage(res)) {
@@ -120,65 +121,4 @@ export function PrivateMessageReplyUi({
       </DialogActions>
     </Dialog>
   );
-}
-
-export type ReplyPrivateMessageArgs = {
-  wrap: WrapFun;
-  publicAddress: string;
-  publicKey: string;
-  receiver: string;
-  subject: string;
-  text: string;
-  replyIndex: number;
-  privateMessageStore: PrivateMessageStore;
-  publicKeyStore: PublicKeyStore;
-};
-
-export async function replyPrivateMessage({
-  wrap,
-  publicAddress,
-  publicKey,
-  receiver,
-  subject,
-  text,
-  replyIndex,
-  privateMessageStore,
-  publicKeyStore
-}: ReplyPrivateMessageArgs): Promise<StatusMessage> {
-  if (publicAddress && publicKey) {
-    const res = await createInAndOutBox({
-      wrap,
-      subject,
-      text,
-      publicKey,
-      publicKeyStore,
-      privateMessageStore,
-      receiver
-    });
-    if (isStatusMessage(res)) {
-      return res;
-    }
-    const { inBox, outBox, contentHash } = res;
-    try {
-      const res = await privateMessageStore.reply(publicAddress, {
-        address: receiver,
-        replySubjectInBox: inBox.subjectEnc,
-        replyTextInBox: inBox.textEnc,
-        replySubjectOutBox: outBox.subjectEnc,
-        replyTextOutBox: outBox.textEnc,
-        contentHash,
-        replyIndex
-      });
-      if (isStatusMessage(res)) {
-        return res;
-      }
-      return infoMessage(`Message ${subject} successfully sent!`);
-    } catch (e) {
-      return errorMessage('Save not successful!', e);
-    } finally {
-      // TODO setLoading('');
-    }
-  } else {
-    return errorMessage('No read yet...!');
-  }
 }

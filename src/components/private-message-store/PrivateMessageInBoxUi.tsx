@@ -15,7 +15,11 @@ import {
 import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
-import { GetInBoxResult, PrivateMessageStore } from '../../contracts/private-message-store/PrivateMessageStore-support';
+import {
+  GetInBoxResult,
+  getPrivateMessageStore,
+  PrivateMessageStore
+} from '../../contracts/private-message-store/PrivateMessageStore-support';
 import { PrivateMessageNewUi } from './PrivateMessageNewUi';
 import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
@@ -26,13 +30,13 @@ import { getNetworkInfo } from '../../network-info';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { decryptKeyBlockValue } from '../key-block/key-block-utils';
 import { DecryptFun } from '../connect-with-localstore';
-import { AppContextData, useAppContext } from '../AppContextProvider';
+import { useAppContext, WrapFun } from '../AppContextProvider';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 type SetMessages = (setMessage: (messages: Message[]) => Message[]) => void;
 
 function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessageStore: PrivateMessageStore }>) {
-  const app = useAppContext();
-  const { web3Session, dispatchSnackbarMessage } = app;
+  const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
   const { publicAddress, networkId = 0, decryptFun } = web3Session || {};
   const theme = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,10 +45,12 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   const [filterValue, setFilterValue] = useState('');
   const [numberOfEntries, setNumberOfEntries] = useState(-1);
 
-  const refreshMessages = useCallback(
-    async () => refreshFromBlockchain(app, setNumberOfEntries, setMessages, privateMessageStore),
-    [app, privateMessageStore]
-  );
+  const refreshMessages = useCallback(async () => {
+    if (publicAddress && web3Session && privateMessageStore) {
+      return refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages);
+    }
+  }, [publicAddress, web3Session, privateMessageStore, wrap]);
+
   useEffect(() => {
     refreshMessages().catch(console.error);
   }, [refreshMessages]);
@@ -54,6 +60,10 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   }
   const noMessages = numberOfEntries === 0;
   const { name } = getNetworkInfo(networkId);
+
+  if (!publicAddress) {
+    return <Web3NotInitialized />;
+  }
 
   return (
     <Stack>
@@ -99,10 +109,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
             </TableHead>
             <TableBody>
               {messages
-                .filter(
-                  (row) =>
-                    !filterValue || (row.subject && row.subject.toLowerCase().includes(filterValue.toLowerCase()))
-                )
+                .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
                 .map((message) => {
                   const { subject, text, displayText, sender, inserted, confirmed, index, replyIndex } = message;
                   const active = displayText && publicAddress && subject && !confirmed;
@@ -115,7 +122,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
                         <TableCell key={'sender'}>
                           <AddressDisplayWithAddressBook address={sender}></AddressDisplayWithAddressBook>
                         </TableCell>
-                        <TableCell key={'subject'}>{subject ? subject : '***'}</TableCell>
+                        <TableCell key={'subject'}>{subject ?? '***'}</TableCell>
                         <TableCell key={'inserted'}>{moment(inserted * 1000).format('YYYY-MM-DD HH:mm')}</TableCell>
                         <TableCell key={'confirmed'}>{confirmed ? <CheckIcon /> : ''}</TableCell>
                         <TableCell key={'actions'}>
@@ -137,7 +144,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
                                     if (isStatusMessage(res)) {
                                       dispatchSnackbarMessage(res);
                                     }
-                                    refreshMessages();
+                                    await refreshMessages();
                                   } catch (e) {
                                     console.error(e);
                                   }
@@ -171,7 +178,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
         <Stack key={'footer'} direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
           <Button
             onClick={() => {
-              refreshFromBlockchain(app, setNumberOfEntries, setMessages, privateMessageStore).catch(console.error);
+              refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages).catch(console.error);
             }}
           >
             Refresh
@@ -195,15 +202,14 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
 export default PrivateMessageInBoxUi;
 
 async function refreshFromBlockchain(
-  app: AppContextData,
+  wrap: WrapFun,
+  publicAddress: string,
   setNumberOfEntries: (n: number) => void,
-  setMessages: SetMessages,
-  privateMessageStore: PrivateMessageStore
+  setMessages: SetMessages
 ): Promise<void | StatusMessage> {
-  const { wrap, web3Session } = app;
-  const { publicAddress, networkId } = web3Session || {};
+  const privateMessageStore = getPrivateMessageStore();
 
-  if (!publicAddress || !networkId) {
+  if (!publicAddress || !privateMessageStore) {
     return;
   }
   setMessages(() => []);
@@ -211,8 +217,7 @@ async function refreshFromBlockchain(
     const len = await privateMessageStore.lenInBox(publicAddress);
     if (isStatusMessage(len)) {
       setNumberOfEntries(0);
-      app.dispatchSnackbarMessage(len);
-      return;
+      return len;
     } else {
       setNumberOfEntries(len);
     }
@@ -220,8 +225,7 @@ async function refreshFromBlockchain(
     for (let index = 0; index < len; index++) {
       const message = await privateMessageStore.getInBox(publicAddress, index);
       if (isStatusMessage(message)) {
-        app.dispatchSnackbarMessage(message);
-        return;
+        return message;
       } else {
         messages.push(message);
       }
@@ -237,7 +241,7 @@ type DecryptButtonProps = {
   decryptFun: DecryptFun;
 };
 
-function DecryptButton({ address, message, setMessages, decryptFun }: DecryptButtonProps) {
+function DecryptButton({ address, message, setMessages, decryptFun }: Readonly<DecryptButtonProps>) {
   const { dispatchSnackbarMessage } = useAppContext();
   const active = !!address && !message.subject;
   return (
@@ -270,7 +274,7 @@ function DecryptButton({ address, message, setMessages, decryptFun }: DecryptBut
 
 type ToggleButtonProps = { message: Message; setMessages: SetMessages };
 
-function ToggleButton({ message, setMessages }: ToggleButtonProps) {
+function ToggleButton({ message, setMessages }: Readonly<ToggleButtonProps>) {
   return (
     <Button
       disabled={!message.subject}

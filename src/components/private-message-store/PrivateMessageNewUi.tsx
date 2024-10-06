@@ -6,17 +6,16 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun, StatusMessage } from '../../types';
 import { Autocomplete, Box, Stack } from '@mui/material';
 import { PrivateMessageStore } from '../../contracts/private-message-store/PrivateMessageStore-support';
 import { displayAddress } from '../../utils/misc-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { getPublicKeyStore, PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
+import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 
-import { createInAndOutBox } from './private-message-store-utils';
+import { sendPrivateMessage } from './private-message-store-utils';
 import { AddressData } from '../../contracts/address-book/AddressBook-support';
-import { useAppContext, WrapFun } from '../AppContextProvider';
+import { useAppContext } from '../AppContextProvider';
 
 const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
@@ -132,62 +131,4 @@ export function PrivateMessageNewUi({
       </DialogActions>
     </Dialog>
   );
-}
-
-export type SendPrivateMessageArgs = {
-  wrap: WrapFun;
-  publicAddress: string;
-  publicKey: string;
-  receiver: string;
-  subject: string;
-  text: string;
-  privateMessageStore: PrivateMessageStore;
-  publicKeyStore: PublicKeyStore;
-};
-
-export async function sendPrivateMessage({
-  wrap,
-  publicAddress,
-  publicKey,
-  receiver,
-  subject,
-  text,
-  privateMessageStore,
-  publicKeyStore
-}: SendPrivateMessageArgs) {
-  if (publicAddress && publicKey) {
-    const res = await createInAndOutBox({
-      wrap,
-      subject,
-      text,
-      publicKey,
-      publicKeyStore,
-      privateMessageStore,
-      receiver
-    });
-    if (isStatusMessage(res)) {
-      return res;
-    }
-    const { inBox, outBox, contentHash } = res;
-    return wrap('Store Message...', async () => {
-      try {
-        const res = await privateMessageStore.send(publicAddress, {
-          address: receiver,
-          subjectInBox: inBox.subjectEnc,
-          textInBox: inBox.textEnc,
-          subjectOutBox: outBox.subjectEnc,
-          textOutBox: outBox.textEnc,
-          contentHash
-        });
-        if (isStatusMessage(res)) {
-          return res;
-        }
-        return infoMessage(`Message ${subject} successfully sent!`);
-      } catch (e) {
-        return resolveAsStatusMessage('Could not send message not successful!', e);
-      }
-    });
-  } else {
-    return errorMessage('Could not send message. Keys are missing!');
-  }
 }

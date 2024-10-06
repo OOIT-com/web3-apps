@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
+import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { encryptContent } from '../../utils/metamask-util';
 
 import { privateMessageStoreAbi } from './PrivateMessageStore-abi';
-import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
+import { getContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 
@@ -18,16 +18,7 @@ type SendArgs = {
   subjectOutBox: string;
   textOutBox: string;
   contentHash: string;
-};
-
-type ReplyArgs = {
-  address: string;
-  replySubjectInBox: string;
-  replyTextInBox: string;
-  replySubjectOutBox: string;
-  replyTextOutBox: string;
-  contentHash: string;
-  replyIndex: number;
+  replyIndex?: number;
 };
 
 export type GetInBoxResult = {
@@ -66,7 +57,16 @@ export type GetOutBoxResult = {
 
 export type EncryptMessageResult = { subjectEnc: string; textEnc: string };
 
-export async function initPrivateMessageStore(contractRegistry: ContractRegistry, web3: Web3): Promise<StatusMessage> {
+export const loadPrivateMessageStore = async (web3: Web3): Promise<StatusMessage | PrivateMessageStore> => {
+  if (instance) {
+    return instance;
+  }
+
+  const contractRegistry = getContractRegistry();
+  if (!contractRegistry) {
+    return errorMessage('No Contract Registry available!');
+  }
+
   const res = await contractRegistry.getByName(ContractName.PRIVATE_MESSAGE_STORE);
   if (isStatusMessage(res)) {
     return res;
@@ -79,8 +79,9 @@ export async function initPrivateMessageStore(contractRegistry: ContractRegistry
   const contract = new web3.eth.Contract(privateMessageStoreAbi, contractAddress, web3);
 
   instance = new PrivateMessageStore(contract);
-  return successMessage(`Successfully initialized ${ContractName.PRIVATE_MESSAGE_STORE}`);
-}
+  console.log(`Successfully initialized ${ContractName.PRIVATE_MESSAGE_STORE}`);
+  return instance;
+};
 
 let instance: PrivateMessageStore | undefined;
 export const getPrivateMessageStore = () => instance;
@@ -103,12 +104,19 @@ export class PrivateMessageStore {
 
   public async send(
     from: string,
-    { address, subjectInBox, textInBox, subjectOutBox, textOutBox, contentHash }: SendArgs
+    { replyIndex, address, subjectInBox, textInBox, subjectOutBox, textOutBox, contentHash }: SendArgs
   ): Promise<void | StatusMessage> {
     try {
-      const tx = await this.contract.methods
-        .send(address, subjectInBox, textInBox, subjectOutBox, textOutBox, contentHash)
-        .send({ from });
+      let tx;
+      if (typeof replyIndex === 'number') {
+        tx = await this.contract.methods
+          .reply(address, subjectInBox, textInBox, subjectOutBox, textOutBox, contentHash, replyIndex)
+          .send({ from });
+      } else {
+        tx = await this.contract.methods
+          .send(address, subjectInBox, textInBox, subjectOutBox, textOutBox, contentHash)
+          .send({ from });
+      }
       console.log('tx', tx);
       return;
     } catch (e) {
@@ -131,30 +139,6 @@ export class PrivateMessageStore {
       console.log(tx);
     } catch (e) {
       return resolveAsStatusMessage(`Could not confirm message (${index + 1})`, e);
-    }
-  }
-
-  public async reply(
-    from: string,
-    {
-      address,
-      replySubjectInBox,
-      replyTextInBox,
-      replySubjectOutBox,
-      replyTextOutBox,
-      contentHash,
-      replyIndex
-    }: ReplyArgs
-  ): Promise<void | StatusMessage> {
-    try {
-      const tx = await this.contract.methods
-        .reply(address, replySubjectInBox, replyTextInBox, replySubjectOutBox, replyTextOutBox, contentHash, replyIndex)
-        .send({ from });
-      console.log('tx', tx);
-      return;
-    } catch (e) {
-      console.error('PrivateMessageStore_reply failed', e);
-      return errorMessage('Could not call PrivateMessageStore_reply', e);
     }
   }
 
