@@ -83,13 +83,6 @@ export const menuColumns: MenuColumn[] = [
         description: 'Provide your public key for others to send you encrypted data.',
         element: <PublicKeyStoreUi />
       },
-      {
-        path: 'shared-secret-store',
-        name: 'Shared Secret Store',
-        icon: <AppIcon src={sharedKey} alt={'Shared Key'} />,
-        description: 'Creating a secret key and share it with other users.',
-        element: <SharedSecretStoreUi />
-      },
 
       {
         path: 'public-key-store-v2',
@@ -97,6 +90,13 @@ export const menuColumns: MenuColumn[] = [
         icon: <AppIcon src={publicKeyV2} alt={'Public Key V2'} />,
         description: 'Provide a public encryption key for others to send you encrypted data.',
         element: <PublicKeyStoreV2Ui />
+      },
+      {
+        path: 'shared-secret-store',
+        name: 'Shared Secret Store',
+        icon: <AppIcon src={sharedKey} alt={'Shared Key'} />,
+        description: 'Creating a secret key and share it with other users.',
+        element: <SharedSecretStoreUi />
       }
     ]
   },

@@ -9,14 +9,22 @@ import Loader from './components/Loader';
 export const ColorModeContext = createContext({
   toggleColorMode: () => {}
 });
+type ColorModeTypes = 'light' | 'dark';
+const __dapp_color_mode = '__dapp_color_mode';
+
+const initialMode = (localStorage.getItem(__dapp_color_mode) ?? 'light') as ColorModeTypes;
 
 export function DApp() {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>(initialMode);
 
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+        setMode((prevMode) => {
+          const newMode = prevMode === 'light' ? 'dark' : 'light';
+          localStorage.setItem(__dapp_color_mode, newMode);
+          return newMode;
+        });
       }
     }),
     []

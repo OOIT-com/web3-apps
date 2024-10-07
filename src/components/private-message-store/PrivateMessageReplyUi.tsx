@@ -16,6 +16,7 @@ import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeySto
 import { useAppContext } from '../AppContextProvider';
 
 import { sendPrivateMessage } from './private-message-store-utils';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export function PrivateMessageReplyUi({
   messageToReply,
@@ -35,8 +36,7 @@ export function PrivateMessageReplyUi({
 
   const publicKeyStore = getPublicKeyStore();
   if (!web3 || !publicAddress || !publicKey || !publicKeyStore) {
-    console.error(`Web3, publicAddress or publicKey is missing. Can not open Private Message Reply!`);
-    return <></>;
+    return <Web3NotInitialized />;
   }
 
   return (

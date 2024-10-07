@@ -25,6 +25,7 @@ import { initDapps } from './init-dapps';
 import { useAppContext } from './AppContextProvider';
 import { ButtonPanel } from './common/ButtonPanel';
 import { Wallet } from 'alchemy-sdk';
+import { PasswordTextField } from './common/PasswordTextField';
 
 const warningMessage: StatusMessage = {
   status: 'warning',
@@ -143,11 +144,12 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <TextField
-              type={'password'}
+            <PasswordTextField
+              key={'version'}
               value={secret}
               label={'Secret (passphrase or private key)'}
               onChange={(e) => setSecret(e.target.value)}
+              size={'small'}
             />
             <ButtonPanel
               key={'buttons'}

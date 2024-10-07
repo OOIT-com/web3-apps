@@ -16,6 +16,7 @@ import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeySto
 import { sendPrivateMessage } from './private-message-store-utils';
 import { AddressData } from '../../contracts/address-book/AddressBook-support';
 import { useAppContext } from '../AppContextProvider';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
@@ -42,8 +43,7 @@ export function PrivateMessageNewUi({
   const publicKeyStore = getPublicKeyStore();
 
   if (!web3 || !publicAddress || !publicKey || !publicKeyStore) {
-    console.error(`Web3, publicAddress or publicKey is missing. Can not open New Private Message!`);
-    return <></>;
+    return <Web3NotInitialized />;
   }
 
   return (

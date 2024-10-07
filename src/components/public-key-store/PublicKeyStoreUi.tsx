@@ -139,12 +139,12 @@ export function PublicKeyStoreUi() {
                 <InfoTableRow
                   key={'pub'}
                   label={'Your Public Key from the store'}
-                  value={<AddressBoxWithCopy value={publicKeyFromStore} reduced={false} />}
+                  value={<AddressBoxWithCopy key={'from-store'} value={publicKeyFromStore} reduced={false} />}
                 />,
                 <InfoTableRow
                   key={'web3'}
                   label={'Your Public Key from the Web3 session'}
-                  value={<AddressBoxWithCopy value={publicKeyHolder.publicKey} reduced={false} />}
+                  value={<AddressBoxWithCopy key={'from-session'} value={publicKeyHolder.publicKey} reduced={false} />}
                 />
               ]}
             />,

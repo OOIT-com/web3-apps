@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
-import { Box, IconButton, InputAdornment, Stack, Tooltip } from '@mui/material';
+import { Box, Stack, Tooltip } from '@mui/material';
 import moment from 'moment';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
 import { orange } from '@mui/material/colors';
@@ -16,7 +16,7 @@ import { encryptContent } from '../../utils/metamask-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { decryptKeyBlockValue } from './key-block-utils';
 import { useAppContext } from '../AppContextProvider';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { PasswordTextField } from '../common/PasswordTextField';
 
 type EditEntry = { value: string; enc: boolean; name: string };
 
@@ -40,9 +40,7 @@ export function KeyBlockEntry({
     enc: false,
     name: ''
   });
-  const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
   const clearStatusMessageIn = useCallback((ms: number) => setTimeout(() => setStatusMessage(undefined), ms), []);
 
   useEffect(() => setItem0(item), [item]);
@@ -96,11 +94,10 @@ export function KeyBlockEntry({
             }}
             size={'small'}
           />
-          <TextField
+
+          <PasswordTextField
             key={'secret-open'}
             disabled={entry.enc}
-            type={showPassword ? 'text' : 'password'}
-            autoFocus
             margin="dense"
             label={entry.enc ? `Value (encrypted size:${entry.value.length})` : 'Value (plain text)'}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -115,17 +112,7 @@ export function KeyBlockEntry({
             }}
             value={entry.value}
             fullWidth
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }
-            }}
+            autoFocus
             size={'small'}
           />
         </Stack>

@@ -12,6 +12,7 @@ import {
   TextField,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
@@ -23,13 +24,12 @@ import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { decryptKeyBlockValue } from '../key-block/key-block-utils';
-import { DecryptFun } from '../connect-with-localstore';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import { DecryptButton } from './DecryptButton';
 
-type OutMessage = GetOutBoxResult & { subject?: string; text?: string; displayText?: boolean };
-type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => void;
+export type OutMessage = GetOutBoxResult & { subject?: string; text?: string; displayText?: boolean };
+export type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => void;
 
 export function PrivateMessageOutBoxUi({
   privateMessageStore
@@ -41,13 +41,13 @@ export function PrivateMessageOutBoxUi({
   const [outMessages, setOutMessages] = useState<OutMessage[]>([]);
   const [filterValue, setFilterValue] = useState('');
   const [numberOfEntries, setNumberOfEntries] = useState(-1);
+  const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();
 
   useEffect(() => {
     if (publicAddress) {
-      const load = async () => {
-        await refreshOutMessages(wrap, publicAddress, setNumberOfEntries, setOutMessages, privateMessageStore);
-      };
-      load().catch(console.error);
+      refreshOutMessages(wrap, publicAddress, setNumberOfEntries, setOutMessages, privateMessageStore).then((res) =>
+        isStatusMessage(res) ? setStatusMessage(res) : ''
+      );
     }
   }, [wrap, privateMessageStore, publicAddress]);
 
@@ -55,10 +55,14 @@ export function PrivateMessageOutBoxUi({
     return <Web3NotInitialized />;
   }
   const { decryptFun } = web3Session;
-  let statusMessage: StatusMessage | undefined = undefined;
   const noMessages = numberOfEntries === 0;
   return (
     <Stack>
+      <StatusMessageElement
+        key={'status-message'}
+        statusMessage={statusMessage}
+        onClose={() => setStatusMessage(undefined)}
+      />
       <TableContainer key="table" component={Paper}>
         <Stack
           key={'header'}
@@ -133,10 +137,17 @@ export function PrivateMessageOutBoxUi({
         <Stack key={'footer'} direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
           <StatusMessageElement statusMessage={statusMessage} />
           <Button
-            onClick={() => {
-              refreshOutMessages(wrap, publicAddress, setNumberOfEntries, setOutMessages, privateMessageStore).catch(
-                console.error
+            onClick={async () => {
+              const res = await refreshOutMessages(
+                wrap,
+                publicAddress,
+                setNumberOfEntries,
+                setOutMessages,
+                privateMessageStore
               );
+              if (isStatusMessage(res)) {
+                setStatusMessage(res);
+              }
             }}
           >
             Refresh
@@ -147,21 +158,18 @@ export function PrivateMessageOutBoxUi({
   );
 }
 
-async function refreshOutMessages(
+const refreshOutMessages = (
   wrap: WrapFun,
   publicAddress: string,
   setNumberOfEntries: (n: number) => void,
   setOutMessages: SetOutMessages,
   privateMessageStore: PrivateMessageStore
-): Promise<StatusMessage | void> {
-  setOutMessages(() => []);
-
-  return await wrap('Reading Sent Messages...', async () => {
+): Promise<StatusMessage | void> =>
+  wrap('Reading Sent Messages...', async () => {
+    setOutMessages(() => []);
     const len = await privateMessageStore.lenOutBox(publicAddress);
     if (isStatusMessage(len)) {
-      setNumberOfEntries(0);
-      console.error(len);
-      return;
+      return len;
     } else {
       setNumberOfEntries(len);
     }
@@ -169,52 +177,13 @@ async function refreshOutMessages(
     for (let index = 0; index < len; index++) {
       const message = await privateMessageStore.getOutBox(publicAddress, index);
       if (isStatusMessage(message)) {
-        console.error(message);
-        return;
+        return message;
       } else {
         messages.push(message);
       }
     }
     setOutMessages(() => messages);
   });
-}
-
-type DecryptButtonProps = {
-  address?: string;
-  message: OutMessage;
-  setMessages: SetOutMessages;
-  decryptFun: DecryptFun | undefined;
-};
-
-function DecryptButton({ address, message, setMessages, decryptFun }: Readonly<DecryptButtonProps>) {
-  const active = !!address && !message.subject;
-  return (
-    <Button
-      disabled={!active}
-      key={'decrypt'}
-      onClick={async () => {
-        if (active) {
-          try {
-            const inBoxOpened = await decryptKeyBlockValue(message.subjectOutBox + message.textOutBox, decryptFun);
-            if (isStatusMessage(inBoxOpened)) {
-              console.error(inBoxOpened);
-            } else {
-              setMessages((messages: OutMessage[]) => {
-                const m: OutMessage[] = [...messages];
-                m[message.index] = { ...message, ...inBoxOpened, displayText: true };
-                return m;
-              });
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      }}
-    >
-      Decrypt
-    </Button>
-  );
-}
 
 type ToggleButtonProps = { message: OutMessage; setMessages: SetOutMessages };
 

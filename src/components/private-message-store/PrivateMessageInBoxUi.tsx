@@ -12,8 +12,9 @@ import {
   TextField,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
 import {
   GetInBoxResult,
@@ -36,7 +37,7 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 type SetMessages = (setMessage: (messages: Message[]) => Message[]) => void;
 
 function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessageStore: PrivateMessageStore }>) {
-  const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
+  const { wrap, web3Session } = useAppContext();
   const { publicAddress, networkId = 0, decryptFun } = web3Session || {};
   const theme = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,6 +45,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   const [messageToReply, setMessageToReply] = useState<GetInBoxResult | undefined>(undefined);
   const [filterValue, setFilterValue] = useState('');
   const [numberOfEntries, setNumberOfEntries] = useState(-1);
+  const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();
 
   const refreshMessages = useCallback(async () => {
     if (publicAddress && web3Session && privateMessageStore) {
@@ -52,21 +54,22 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   }, [publicAddress, web3Session, privateMessageStore, wrap]);
 
   useEffect(() => {
-    refreshMessages().catch(console.error);
+    refreshMessages().then((res) => (isStatusMessage(res) ? setStatusMessage(res) : ''));
   }, [refreshMessages]);
 
-  if (!web3Session || !decryptFun) {
-    return <StatusMessageElement statusMessage={infoMessage('Web3 not initialized')}></StatusMessageElement>;
+  if (!publicAddress || !decryptFun || !web3Session) {
+    return <Web3NotInitialized />;
   }
   const noMessages = numberOfEntries === 0;
   const { name } = getNetworkInfo(networkId);
 
-  if (!publicAddress) {
-    return <Web3NotInitialized />;
-  }
-
   return (
     <Stack>
+      <StatusMessageElement
+        key={'status-message'}
+        statusMessage={statusMessage}
+        onClose={() => setStatusMessage(undefined)}
+      />
       <TableContainer key="table" component={Paper}>
         <Stack
           key={'header'}
@@ -139,14 +142,14 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
                               key={'confirm'}
                               onClick={async () => {
                                 if (active) {
-                                  try {
-                                    const res = await privateMessageStore.confirm(publicAddress, message.index);
-                                    if (isStatusMessage(res)) {
-                                      dispatchSnackbarMessage(res);
-                                    }
-                                    await refreshMessages();
-                                  } catch (e) {
-                                    console.error(e);
+                                  const res = await privateMessageStore.confirm(publicAddress, message.index);
+                                  if (isStatusMessage(res)) {
+                                    setStatusMessage(res);
+                                    return;
+                                  }
+                                  const res2 = await refreshMessages();
+                                  if (isStatusMessage(res2)) {
+                                    setStatusMessage(res2);
                                   }
                                 }
                               }}
@@ -177,8 +180,11 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
         )}
         <Stack key={'footer'} direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
           <Button
-            onClick={() => {
-              refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages).catch(console.error);
+            onClick={async () => {
+              const res = await refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages);
+              if (isStatusMessage(res)) {
+                setStatusMessage(res);
+              }
             }}
           >
             Refresh
@@ -242,33 +248,37 @@ type DecryptButtonProps = {
 };
 
 function DecryptButton({ address, message, setMessages, decryptFun }: Readonly<DecryptButtonProps>) {
-  const { dispatchSnackbarMessage } = useAppContext();
   const active = !!address && !message.subject;
+  const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   return (
-    <Button
-      disabled={!active}
-      key={'decrypt'}
-      onClick={async () => {
-        if (active) {
-          try {
-            const inBoxOpened = await decryptKeyBlockValue(message.subjectInBox + message.textInBox, decryptFun);
-            if (isStatusMessage(inBoxOpened)) {
-              dispatchSnackbarMessage(inBoxOpened);
-            } else {
-              setMessages((messages: Message[]) => {
-                const m: Message[] = [...messages];
-                m[message.index] = { ...message, ...inBoxOpened, displayText: true };
-                return m;
-              });
+    <Stack>
+      <Button
+        disabled={!active}
+        key={'decrypt'}
+        onClick={async () => {
+          if (active) {
+            try {
+              const inBoxOpened = await decryptKeyBlockValue(message.subjectInBox + message.textInBox, decryptFun);
+              if (isStatusMessage(inBoxOpened)) {
+                setStatusMessage(inBoxOpened);
+                return;
+              } else {
+                setMessages((messages: Message[]) => {
+                  const m: Message[] = [...messages];
+                  m[message.index] = { ...message, ...inBoxOpened, displayText: true };
+                  return m;
+                });
+              }
+            } catch (e) {
+              setStatusMessage(errorMessage('Decryption failed', e));
             }
-          } catch (e) {
-            console.error(e);
           }
-        }
-      }}
-    >
-      Decrypt
-    </Button>
+        }}
+      >
+        Decrypt
+      </Button>
+      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
+    </Stack>
   );
 }
 

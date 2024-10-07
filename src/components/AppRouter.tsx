@@ -1,13 +1,13 @@
-import Login from './Login';
+import { Login } from './login/Login';
 import { Box, Container, Stack } from '@mui/material';
 import Loader from './Loader';
 import { AppHeader } from './AppHeader';
-import { createHashRouter, Outlet, RouterProvider, useNavigate, useRouteError } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import { createHashRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom';
 import { AppMenu } from './AppMenu';
 import { useEffect } from 'react';
 import { menuColumns, MenuEntry } from './menu-defs';
 import { useAppContext } from './AppContextProvider';
+import { ErrorPage } from './login/ErrorPage';
 
 const menuEntries: MenuEntry[] = menuColumns.reduce<MenuEntry[]>((acc, col) => [...acc, ...col.entries], []);
 
@@ -30,6 +30,12 @@ const router = () =>
       {
         path: '/login',
         element: <Login />,
+        errorElement: <ErrorPage />
+      },
+
+      {
+        path: '/error-page',
+        element: <ErrorPage />,
         errorElement: <ErrorPage />
       }
     ],
@@ -74,42 +80,5 @@ function AppNavigation() {
         <Loader />
       </Container>
     </Box>
-  );
-}
-
-export function ErrorPage() {
-  const error = useRouteError();
-  const navigate = useNavigate();
-  let errorString = '???';
-
-  if (typeof error === 'object') {
-    errorString = JSON.stringify(error);
-  } else if (error === 'string' || error === 'number') {
-    errorString = '' + error;
-  }
-
-  return (
-    <Stack
-      sx={{
-        border: 'red dashed 1px',
-        top: '2em',
-        right: '2em',
-        bottom: '2em',
-        left: '2em',
-        position: 'absolute'
-      }}
-      padding={2}
-      direction="column"
-      justifyContent="center"
-      alignItems="center"
-      spacing={2}
-    >
-      <Box sx={{ color: 'red' }}>
-        <h2>Welcome to the error page!</h2>
-        <h3>Error:</h3>
-        <Box>{errorString}</Box>
-      </Box>
-      <Button onClick={() => navigate('/')}>Back</Button>
-    </Stack>
   );
 }
