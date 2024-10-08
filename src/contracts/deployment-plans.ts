@@ -4,18 +4,19 @@ import { addressBookAbi, addressBookBytecode } from './contracts-flattened-compi
 import { privateMessageStoreAbi, privateMessageStoreBytecode } from './private-message-store/PrivateMessageStore-abi';
 import { keyBlockAbi, keyBlockBytecode } from './key-block/KeyBlock-abi';
 import { publicKeyStoreAbi, publicKeyStoreBytecode } from './public-key-store/PublicKeyStore-abi';
-import { publicKeyStoreV2Abi, publicKeyStoreV2bytecode } from './public-key-store-v2/PublicKeyStoreV2-abi';
+import { publicKeyStoreV2Abi, publicKeyStoreV2bytecode } from './public-key-store/PublicKeyStoreV2-abi';
 import { artworkTimeProofAbi, artworkTimeProofBytecode } from './artwork-time-proof/ArtworkTimeProof';
 import {
   secureBlockchainTableAbi,
   secureBlockchainTableBytecode
 } from './secure-blockchain-table/SecureBlockchainTable';
 import {
+  universalNameStore_SourceCode,
   universalNameStoreAbi,
-  universalNameStoreBytecode,
-  universalNameStore_SourceCode
+  universalNameStoreBytecode
 } from './universal-name-store/UniversalNameStore';
 import { ContractName } from './contract-utils';
+import { deployPrivateMessageV2Contract } from './private-message-store/PrivateMessageStoreV2-support';
 
 export const deploymentPlans: DeploymentPlan[] = [
   {
@@ -44,6 +45,13 @@ export const deploymentPlans: DeploymentPlan[] = [
     contractABI: JSON.stringify(privateMessageStoreAbi),
     contractBytecode: privateMessageStoreBytecode,
     constructorArgDefs: []
+  },
+  {
+    label: 'Private Message Store V2',
+    contractName: 'PrivateMessageStoreV2',
+    defaultRegistryName: ContractName.PRIVATE_MESSAGE_STORE_V2,
+    contractType: 'PrivateMessageStoreV2',
+    deploymentFunction: deployPrivateMessageV2Contract
   },
   {
     label: 'Secret Vault (Key Block)',

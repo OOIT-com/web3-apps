@@ -3,9 +3,9 @@ import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Paper } from '@mui/material';
-import { ContractRegistryUi } from '../contract-registry/ContractRegistryUi';
+import { ContractRegistryUi } from './ContractRegistryUi';
 import { PlanDeployerUi } from '../tools/PlanDeployerUi';
-import { ContractVerifierUi } from '../contract-registry/ContractVerfierUi';
+import { ContractVerifierUi } from './ContractVerfierUi';
 
 export function ContractManagementUi() {
   const [value, setValue] = React.useState(0);

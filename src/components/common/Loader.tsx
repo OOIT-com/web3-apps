@@ -1,6 +1,6 @@
 import { Box, CircularProgress, Stack } from '@mui/material';
 import React from 'react';
-import { useAppContext } from './AppContextProvider';
+import { useAppContext } from '../AppContextProvider';
 
 export default function Loader() {
   const { loading } = useAppContext();

@@ -4,9 +4,6 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { DApp } from './DApp';
 
-console.debug('REACT_APP_TEST', process.env.REACT_APP_TEST);
-console.debug('REACT_APP_TEST_DEFAULT', process.env.REACT_APP_TEST_DEFAULT);
-
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>

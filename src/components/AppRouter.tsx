@@ -1,6 +1,6 @@
 import { Login } from './login/Login';
 import { Box, Container, Stack } from '@mui/material';
-import Loader from './Loader';
+import Loader from './common/Loader';
 import { AppHeader } from './AppHeader';
 import { createHashRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom';
 import { AppMenu } from './AppMenu';

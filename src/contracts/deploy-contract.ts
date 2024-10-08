@@ -1,6 +1,6 @@
 import Web3 from 'web3/lib/types';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage } from '../types';
+import { errorMessage, StatusMessage } from '../types';
 import { resolveAsStatusMessage } from '../utils/status-message-utils';
 
 export async function deployContract({
@@ -15,11 +15,21 @@ export async function deployContract({
   contractBytecode: string;
   from: string;
   constructorArgs?: any;
-}) {
+}): Promise<StatusMessage | string> {
   try {
     const contract = new Contract(JSON.parse(contractABI), web3);
 
+    // const gasPrice = await contract.getGasPrice();
     // Deploy the contract
+
+    const estimatedGas = await contract
+      .deploy({
+        data: contractBytecode,
+        arguments: constructorArgs
+      })
+      .estimateGas();
+
+    console.log('estimated gas', estimatedGas);
     const deployedContract = await contract
       .deploy({
         data: contractBytecode,
@@ -40,6 +50,6 @@ export async function deployContract({
       return errorMessage('No Contract Address');
     }
   } catch (e) {
-    return resolveAsStatusMessage('Deploy contract failed!', e);
+    return resolveAsStatusMessage('Deployment of contract failed!', e);
   }
 }

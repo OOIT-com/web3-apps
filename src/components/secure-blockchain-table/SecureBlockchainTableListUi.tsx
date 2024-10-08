@@ -63,7 +63,7 @@ export function SecureBlockchainTableListUi({
 
   const content =
     salaryManagerDataList.length === 0 ? (
-      <StatusMessageElement statusMessage={infoMessage(`No SBT Contracts found!`)} />
+      <StatusMessageElement statusMessage={infoMessage(`No Salary Manager contracts found!`)} />
     ) : (
       <Table sx={{ minWidth: 800 }}>
         <TableHead>

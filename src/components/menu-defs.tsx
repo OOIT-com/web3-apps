@@ -7,10 +7,12 @@ import { ToolsUi } from './tools/ToolsUi';
 import { UniqueNameStoreUi } from './unique-name-store/UniqueNameStoreUi';
 import { ArtworkUi } from './artwork/ArtworkUi';
 import { SharedSecretStoreUi } from './shared-secret-store/SharedSecretStoreUi';
-import { ContractManagementUi } from './contract-and-addresses/ContractManagementUi';
+import { ContractManagementUi } from './contract-registry/ContractManagementUi';
 import { PublicKeyStoreV2Ui } from './public-key-store-v2/PublicKeyStoreV2Ui';
 import keyBlock from './images/secret-vault.png';
 import secretMessages from './images/secret-message.png';
+import privateMessageStoreV2Png from './images/private-message-store-v2.png';
+
 import artworkPng from './images/artwork.png';
 import salaryManager from './images/salary-manager.png';
 import sharedKey from './images/shared-key.png';
@@ -26,6 +28,7 @@ import { SalaryManagerUi } from './secure-blockchain-table/SalaryManagerUi';
 import { UniversalNameStoreUi } from './universal-name-store/UniversalNameStoreUi';
 import { UiGallery } from './ui-gallery/UiGallery';
 import { AddressBookUi } from './address-book/AddressBookUi';
+import { PrivateMessageStoreV2Ui } from './private-message-store-v2/PrivateMessageStoreV2Ui';
 
 export type MenuEntry = {
   path: string;
@@ -55,6 +58,13 @@ export const menuColumns: MenuColumn[] = [
         icon: <AppIcon src={secretMessages} alt={'secret messages'} />,
         description: 'Send and receive encrypted messages.',
         element: <PrivateMessageStoreUi />
+      },
+      {
+        path: 'private-message-store-v2',
+        name: 'Private & Safe Messages V2',
+        icon: <AppIcon src={privateMessageStoreV2Png} alt={'secret messages'} />,
+        description: '',
+        element: <PrivateMessageStoreV2Ui />
       },
       {
         path: 'artwork',

@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { DecryptFun } from '../components/connect-with-localstore';
+import { DecryptFun } from '../components/login/connect-with-localstore';
 import { errorMessage, StatusMessage, Web3Session } from '../types';
 import { encryptBuffer } from './metamask-util';
 import { getPublicEncryptionKey } from '../components/public-key-store-v2/PublicKeyStoreV2Ui';

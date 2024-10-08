@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { DecryptFun } from './components/connect-with-localstore';
+import { DecryptFun } from './components/login/connect-with-localstore';
 import { AddressData } from './contracts/address-book/AddressBook-support';
 
 export function isError(e: any): e is Error {

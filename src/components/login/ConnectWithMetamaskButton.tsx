@@ -1,16 +1,16 @@
 import { useCallback } from 'react';
 import Web3 from 'web3';
 import { Button, Tooltip } from '@mui/material';
-import { errorMessage, infoMessage, PublicKeyHolder, Web3Session } from '../types';
+import { errorMessage, infoMessage, PublicKeyHolder, Web3Session } from '../../types';
 import { useNavigate } from 'react-router-dom';
 
-import { displayAddress } from '../utils/misc-util';
+import { displayAddress } from '../../utils/misc-util';
 import { DecryptFun } from './connect-with-localstore';
-import { initDapps } from './init-dapps';
-import { getCurrentAddress, getCurrentNetworkId } from '../utils/web3-utils';
+import { initDapps } from '../init-dapps';
+import { getCurrentAddress, getCurrentNetworkId } from '../../utils/web3-utils';
 import { decryptFunMetamask } from './connect-with-metamask';
-import { useAppContext } from './AppContextProvider';
-import { StatusMessageElement } from './common/StatusMessageElement';
+import { useAppContext } from '../AppContextProvider';
+import { StatusMessageElement } from '../common/StatusMessageElement';
 
 export const ConnectWithMetamaskButton: React.FC = () => {
   const navigate = useNavigate();

@@ -21,7 +21,7 @@ export const InfoTableRow: FC<InfoRowProps> = ({ label, value, type = 'text', va
     if (type === 'text') {
       controls = values.map((v) => (typeof v === 'string' ? <Box key={v}>{v}</Box> : v));
     } else if (type === 'link') {
-      controls = values.map((e) => (typeof e === 'string' ? <ExternalLink url={e} /> : e));
+      controls = values.map((e) => (typeof e === 'string' ? <ExternalLink key={e} url={e} /> : e));
     }
   }
   if (controls === null) {

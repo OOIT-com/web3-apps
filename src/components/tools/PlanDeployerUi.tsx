@@ -38,8 +38,10 @@ export function PlanDeployerUi() {
             <TableRowComp
               key={contractName}
               elements={[
-                <LDBox sx={{ fontWeight: 'bold' }}>{label}</LDBox>,
-                <Button onClick={() => setStartDeployment(index)}>{`Deploy ${label}...`}</Button>
+                <LDBox key={'label'} sx={{ fontWeight: 'bold' }}>
+                  {label}
+                </LDBox>,
+                <Button key={'deploy-button'} onClick={() => setStartDeployment(index)}>{`Deploy ${label}...`}</Button>
               ]}
             />
           ))}
@@ -53,12 +55,13 @@ export function PlanDeployerUi() {
 }
 
 function ConstructorArgsDialog({
-  plan: { contractName, defaultRegistryName, label, contractABI, contractBytecode, constructorArgDefs, contractType },
+  plan,
   done
-}: {
+}: Readonly<{
   plan: DeploymentPlan;
   done: NotifyFun;
-}) {
+}>) {
+  const { contractName, defaultRegistryName, label, contractType } = plan;
   const { wrap, web3Session } = useAppContext();
   const { web3, publicAddress } = web3Session || {};
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
@@ -157,17 +160,19 @@ function ConstructorArgsDialog({
         </DialogContent>
       ) : (
         <DialogContent key={'before-deployment'}>
-          {constructorArgDefs.length > 0 && <LDBox>Constructor Arguments</LDBox>}
+          {'constructorArgDefs' in plan && plan.constructorArgDefs.length > 0 && <LDBox>Constructor Arguments</LDBox>}
           <Stack spacing={2} sx={{ padding: '1em 0' }}>
-            {constructorArgDefs.map(({ name }, index) => (
-              <TextField
-                label={name}
-                key={name}
-                size={'small'}
-                value={args[index] || ''}
-                onChange={(e) => setArgs([...args.slice(0, index), e.target.value, ...args.slice(index + 1)])}
-              />
-            ))}
+            {'constructorArgDefs' in plan && plan.constructorArgDefs.length > 0
+              ? plan.constructorArgDefs.map(({ name }, index) => (
+                  <TextField
+                    label={name}
+                    key={name}
+                    size={'small'}
+                    value={args[index] || ''}
+                    onChange={(e) => setArgs([...args.slice(0, index), e.target.value, ...args.slice(index + 1)])}
+                  />
+                ))
+              : ''}
             <Stack direction={'row'} justifyContent={'space-between'}>
               <Button
                 key={'deploy now'}
@@ -175,17 +180,27 @@ function ConstructorArgsDialog({
                   wrap(`Deployment of ${label} processing...`, async () => {
                     if (web3 && publicAddress) {
                       setStatusMessage(undefined);
-                      const res = await deployContract({
-                        web3,
-                        contractABI,
-                        contractBytecode,
-                        from: publicAddress,
-                        constructorArgs: args
-                      });
-                      if (isStatusMessage(res)) {
-                        setStatusMessage(res);
-                      } else {
-                        setDeployedContract(res);
+                      if ('contractABI' in plan && 'contractBytecode' in plan) {
+                        const { contractABI, contractBytecode } = plan;
+                        const res = await deployContract({
+                          web3,
+                          contractABI,
+                          contractBytecode,
+                          from: publicAddress,
+                          constructorArgs: args
+                        });
+                        if (isStatusMessage(res)) {
+                          setStatusMessage(res);
+                        } else {
+                          setDeployedContract(res);
+                        }
+                      } else if (web3Session && 'deploymentFunction' in plan) {
+                        const res = await plan.deploymentFunction(web3Session);
+                        if (isStatusMessage(res)) {
+                          setStatusMessage(res);
+                        } else {
+                          setDeployedContract(res);
+                        }
                       }
                     }
                   })

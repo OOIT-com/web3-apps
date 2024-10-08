@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Stack, Tooltip } from '@mui/material';
-import { ConnectWithLocalstore } from '../ConnectWithLocalstore';
-import { ConnectWithMetamaskButton } from '../ConnectWithMetamaskButton';
+import { ConnectWithLocalstore } from './ConnectWithLocalstore';
+import { ConnectWithMetamaskButton } from './ConnectWithMetamaskButton';
 import { LoginFragment } from './LoginFragment';
 
 export const Login: React.FC = () => {

@@ -187,7 +187,7 @@ export function CreateArtworkUi({
             {!keyPair ? (
               <TextField
                 fullWidth={true}
-                placeholder={'-hex-'}
+                placeholder={'-Hexadecimal-'}
                 label={'Secret Key (Hexadecimal)'}
                 onChange={(e) => setSecretKeyHex(e.target.value)}
                 value={secretKeyHex}

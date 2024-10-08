@@ -66,31 +66,31 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
           <TableContainer key="table" component={Paper}>
             <Table sx={{ minWidth: 800 }}>
               <TableBody>
-                <InfoTableRow key={'Your Address'} label={'Your Address'} value={publicAddress} />
+                <InfoTableRow key={'public-address'} label={'Your Address'} value={publicAddress} />
                 <InfoTableRow
                   key={'balance-ether'}
                   label={`Your Balance ${currencySymbol}`}
                   value={loading || !web3 ? 'loading' : web3.utils.fromWei(balanceWei, 'ether').toString()}
                 />
                 <InfoTableRow
-                  key={'Your Public Key (from Store)'}
+                  key={'publicKeyFromStore'}
                   label={'Your Public Key (from Store)'}
                   value={publicKeyFromStore}
                 />
                 <InfoTableRow
-                  key={'Your Public Key'}
+                  key={'web3Session?.publicKeyHolder?.publicKey'}
                   label={'Your Public Key (Session)'}
                   value={web3Session?.publicKeyHolder?.publicKey}
                 />
                 <InfoTableRow
-                  key={'Contract Registry'}
+                  key={'contract-registry'}
                   label={'Contract Registry'}
                   value={getContractAddress(networkId, ContractName.CONTRACT_REGISTRY)}
                 />
                 <InfoTableRow key={'name'} label={'Network Name'} value={loading || !web3 ? 'loading' : name} />
-                <InfoTableRow key={'id'} label={'Chain Id'} value={loading || !web3 ? 'loading' : '' + chainId} />
+                <InfoTableRow key={'chain-id'} label={'Chain Id'} value={loading || !web3 ? 'loading' : '' + chainId} />
                 <InfoTableRow
-                  key={'gas'}
+                  key={'gas-price-wei'}
                   label={'Gas Price Wei'}
                   value={loading || !web3 ? 'loading' : gasPriceWei + ''}
                 />

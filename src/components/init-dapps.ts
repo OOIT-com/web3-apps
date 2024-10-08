@@ -10,9 +10,9 @@ import {
   PublicKeyStore
 } from '../contracts/public-key-store/PublicKeyStore-support';
 import { initKeyBlock } from '../contracts/key-block/KeyBlock-support';
-import { initPublicKeyStoreV2 } from '../contracts/public-key-store-v2/PublicKeyStoreV2-support';
+import { loadDefaultPublicKeyStoreV2 } from '../contracts/public-key-store/PublicKeyStoreV2-support';
 import { initArtworkTimeProof } from '../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { getPublicKeyFromMetamask } from './connect-with-metamask';
+import { getPublicKeyFromMetamask } from './login/connect-with-metamask';
 import { AppContextData, SetAddressData } from './AppContextProvider';
 
 export const reloadAddressData = async (setAddressData: SetAddressData): Promise<StatusMessage | undefined> => {
@@ -93,7 +93,6 @@ export async function initDapps(
   // ADDRESS BOOK
   const r0 = await initAddressBook(contractRegistry, web3);
   dispatchSnackbarMessage(r0);
-  console.debug(r0.userMessage);
   const addressBookStatus = await reloadAddressData(app.setAddressData);
   if (addressBookStatus) {
     dispatchSnackbarMessage(addressBookStatus);
@@ -112,15 +111,14 @@ export async function initDapps(
   const r3 = await initPublicKeyStore(contractRegistry, web3);
   dispatchSnackbarMessage(r3);
 
-  let publicKeyHolder = web3Session.publicKeyHolder;
-  if (!publicKeyHolder?.publicKey) {
+  if (!web3Session.publicKeyHolder?.publicKey) {
     const publicKeyStore = getPublicKeyStore();
     const pkh = await retrievePublicKey(publicAddress, publicKeyStore);
     if (pkh) {
       if (isStatusMessage(pkh)) {
         dispatchSnackbarMessage(pkh);
       } else {
-        publicKeyHolder = pkh;
+        web3Session.publicKeyHolder = pkh;
       }
     }
   }
@@ -128,12 +126,14 @@ export async function initDapps(
   const r4 = await initKeyBlock(contractRegistry, web3);
   dispatchSnackbarMessage(r4);
 
-  const r5 = await initPublicKeyStoreV2(contractRegistry, web3);
-  dispatchSnackbarMessage(r5);
+  const r5 = await loadDefaultPublicKeyStoreV2(web3Session);
+  if (isStatusMessage(r5)) {
+    dispatchSnackbarMessage(r5);
+  }
 
   const r6 = await initArtworkTimeProof(contractRegistry, web3, publicAddress);
   dispatchSnackbarMessage(r6);
 
-  app.setWeb3Session({ ...web3Session, publicKeyHolder });
+  app.setWeb3Session({ ...web3Session });
   navigate('/menu');
 }

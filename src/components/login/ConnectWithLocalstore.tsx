@@ -1,9 +1,9 @@
 import Dialog from '@mui/material/Dialog';
-import { errorMessage, isStatusMessage, NotifyFun, StatusMessage } from '../types';
+import { errorMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useCallback, useState } from 'react';
-import { LDBox } from './common/StyledBoxes';
-import { StatusMessageElement } from './common/StatusMessageElement';
+import { LDBox } from '../common/StyledBoxes';
+import { StatusMessageElement } from '../common/StatusMessageElement';
 import DialogContent from '@mui/material/DialogContent';
 import {
   Button,
@@ -17,15 +17,15 @@ import {
   TableContainer
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import TableRowComp from './common/TableRowComp';
-import { networks } from '../network-info';
+import TableRowComp from '../common/TableRowComp';
+import { networks } from '../../network-info';
 import { connectWithLocalstore } from './connect-with-localstore';
 import { useNavigate } from 'react-router-dom';
-import { initDapps } from './init-dapps';
-import { useAppContext } from './AppContextProvider';
-import { ButtonPanel } from './common/ButtonPanel';
+import { initDapps } from '../init-dapps';
+import { useAppContext } from '../AppContextProvider';
+import { ButtonPanel } from '../common/ButtonPanel';
 import { Wallet } from 'alchemy-sdk';
-import { PasswordTextField } from './common/PasswordTextField';
+import { PasswordTextField } from '../common/PasswordTextField';
 
 const warningMessage: StatusMessage = {
   status: 'warning',
@@ -45,7 +45,7 @@ const networkSelection = networks.filter((e) => e.PostFix && e.rpcUrl);
 export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
   const app = useAppContext();
   const navigate = useNavigate();
-  const [networkId, setNetworkId] = useState('4002');
+  const [networkId, setNetworkId] = useState('64165');
   const [name, setName] = useState('');
   const [secret, setSecret] = useState('');
   const [secretList, setSecretList] = useState(getSecretList());

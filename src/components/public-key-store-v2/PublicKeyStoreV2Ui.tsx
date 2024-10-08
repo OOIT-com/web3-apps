@@ -2,11 +2,13 @@ import * as React from 'react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import { Box, Button, Stack, TextField } from '@mui/material';
-import { getPublicKeyStoreV2, PublicKeyStoreV2 } from '../../contracts/public-key-store-v2/PublicKeyStoreV2-support';
+import {
+  loadDefaultPublicKeyStoreV2,
+  PublicKeyStoreV2
+} from '../../contracts/public-key-store/PublicKeyStoreV2-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
-import { newBoxKeyPair } from '../../utils/nacl-util';
 import nacl from 'tweetnacl';
-import { decryptBuffer, encryptBuffer } from '../../utils/metamask-util';
+import { decryptBuffer } from '../../utils/metamask-util';
 import { Buffer } from 'buffer';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { LDBox } from '../common/StyledBoxes';
@@ -21,9 +23,17 @@ export function PublicKeyStoreV2Ui() {
   const [myEncSecretKey0, setMyEncSecretKey0] = useState('');
   const [publicKey0, setPublicKey0] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
+  const [publicKeyStoreV2, setPublicKeyStoreV2] = useState<PublicKeyStoreV2>();
+
+  useEffect(() => {
+    if (web3Session) {
+      wrap('Loading Public Key Store...', async () => loadDefaultPublicKeyStoreV2(web3Session)).then((store) =>
+        isStatusMessage(store) ? setStatusMessage(store) : setPublicKeyStoreV2(store)
+      );
+    }
+  }, [wrap, web3Session]);
 
   const getMine = useCallback(async () => {
-    const publicKeyStoreV2 = getPublicKeyStoreV2();
     if (publicAddress && publicKeyStoreV2) {
       const myPublicKey0 = await wrap('Reading my Public Key...', () => publicKeyStoreV2.getPublicKey(publicAddress));
       const myEncSecretKey0 = await wrap('Reading my Encrypted Secret Key...', () =>
@@ -44,10 +54,9 @@ export function PublicKeyStoreV2Ui() {
       setMyPublicKey(myPublicKey0);
       setMyEncSecretKey0(myEncSecretKey0);
     }
-  }, [dispatchSnackbarMessage, wrap, publicAddress]);
+  }, [publicAddress, publicKeyStoreV2, wrap, dispatchSnackbarMessage]);
 
   const createAndSaveNewPublicKey = useCallback(async () => {
-    const publicKeyStoreV2 = getPublicKeyStoreV2();
     if (publicAddress && publicKeyStoreV2) {
       const res = await saveNewKeyPair(wrap, publicAddress, publicKeyStoreV2);
       if (isStatusMessage(res)) {
@@ -57,10 +66,9 @@ export function PublicKeyStoreV2Ui() {
         setPublicKeyHolderV2({ publicKey, secretKey });
       }
     }
-  }, [setPublicKeyHolderV2, wrap, publicAddress]);
+  }, [publicAddress, publicKeyStoreV2, wrap, setPublicKeyHolderV2]);
 
   const loadAndDispatchKeys = useCallback(async () => {
-    const publicKeyStoreV2 = getPublicKeyStoreV2();
     if (publicAddress && publicKeyStoreV2) {
       const res = await loadKeyPair(wrap, publicAddress, publicKeyStoreV2);
       if (isStatusMessage(res)) {
@@ -70,7 +78,7 @@ export function PublicKeyStoreV2Ui() {
       const { publicKey, secretKey } = res;
       setPublicKeyHolderV2({ publicKey, secretKey });
     }
-  }, [setPublicKeyHolderV2, wrap, publicAddress]);
+  }, [publicAddress, publicKeyStoreV2, wrap, setPublicKeyHolderV2]);
 
   useEffect(() => {
     getMine().catch(console.error);
@@ -79,7 +87,6 @@ export function PublicKeyStoreV2Ui() {
   if (!web3Session) {
     return <StatusMessageElement statusMessage={errorMessage(`Web3 not initialized!`)} />;
   }
-  const publicKeyStoreV2 = getPublicKeyStoreV2();
   if (!publicKeyStoreV2) {
     return <StatusMessageElement statusMessage={errorMessage(`Public Key Store V2 is not available!`)} />;
   }
@@ -158,22 +165,7 @@ export function PublicKeyStoreV2Ui() {
 }
 
 async function saveNewKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: PublicKeyStoreV2) {
-  const publicEncryptionKey = await getPublicEncryptionKey(from);
-
-  // create new key pair
-  const { publicKey, secretKey } = newBoxKeyPair();
-  const encryptedSecret0 = encryptBuffer(publicEncryptionKey, Buffer.from(secretKey));
-  const encSecretKey = encryptedSecret0.toString('base64');
-
-  const publicKeyStr = Buffer.from(publicKey).toString('base64');
-
-  const res = await wrap('Save Public Key and Encrypted Secret Key.', () =>
-    publicKeyStoreV2.setKeys({ publicKey: publicKeyStr, encSecretKey, from })
-  );
-  if (isStatusMessage(res)) {
-    return res;
-  }
-  return { publicKey, secretKey };
+  return await wrap('Save Public Key and Encrypted Secret Key.', () => publicKeyStoreV2.initMyKeys());
 }
 
 async function loadKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: PublicKeyStoreV2) {

@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { decryptBuffer } from '../utils/metamask-util';
+import { decryptBuffer } from '../../utils/metamask-util';
 
 export const decryptFunMetamask = async (address: string, message: Uint8Array) => {
   const buff = Buffer.from(message);

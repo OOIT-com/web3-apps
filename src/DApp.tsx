@@ -1,10 +1,10 @@
 import { createContext, useMemo, useState } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { blue, orange } from '@mui/material/colors';
 import { AppRouter } from './components/AppRouter';
 import { Snackbar } from './components/common/Snackbar';
 import { AppContextProvider } from './components/AppContextProvider';
-import Loader from './components/Loader';
+import Loader from './components/common/Loader';
 
 export const ColorModeContext = createContext({
   toggleColorMode: () => {}
@@ -68,11 +68,13 @@ export function DApp() {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <AppContextProvider>
-          <AppRouter />
-          <Loader />
-          <Snackbar />
-        </AppContextProvider>
+        <CssBaseline>
+          <AppContextProvider>
+            <AppRouter />
+            <Loader />
+            <Snackbar />
+          </AppContextProvider>
+        </CssBaseline>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

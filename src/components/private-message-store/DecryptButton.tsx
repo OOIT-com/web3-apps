@@ -1,4 +1,4 @@
-import { DecryptFun } from '../connect-with-localstore';
+import { DecryptFun } from '../login/connect-with-localstore';
 import * as React from 'react';
 import { useState } from 'react';
 import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
@@ -41,7 +41,7 @@ export function DecryptButton({ address, message, setMessages, decryptFun }: Rea
           }
         }}
       >
-        Decrypt
+        decrypt
       </Button>
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
     </Stack>

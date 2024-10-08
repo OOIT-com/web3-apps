@@ -27,7 +27,6 @@ export const SMColumnSelection: FC<{
               checked={toggleState[sel]}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const newState = { ...toggleState, [sel]: e.target.checked };
-                console.debug(newState);
                 saveToggleState(newState, '');
                 setToggleState(newState);
               }}

@@ -68,19 +68,22 @@ export const encryptContent = ({ data, secret }: CryptArgs) => {
   const encData = encrypt(secretKey, compressed, publicKey);
   return Buffer.from(encData).toString('base64');
 };
+export type CryptArgsForReceiver = { data: string; senderSecretKey: Uint8Array; receiverPublicKey: Uint8Array };
 
-export type CryptArgsForReceiver = { data: string; secret: string; receiverPublicKey: string };
-
-export const encryptContentForReceiver = ({ data, secret, receiverPublicKey }: CryptArgsForReceiver) => {
+export const encryptContentForReceiver = ({ data, senderSecretKey, receiverPublicKey }: CryptArgsForReceiver) => {
   const compressed = deflate(data);
-  const encData = encrypt(Buffer.from(secret, 'hex'), compressed, Buffer.from(receiverPublicKey, 'hex'));
+  const encData = encrypt(senderSecretKey, compressed, receiverPublicKey);
   return Buffer.from(encData).toString('base64');
 };
 
-export type CryptArgsFromSender = { encData: string; secret: string; senderPublicKey: string };
+export type CryptArgsFromSender = { encData: string; receiverSecretKey: Uint8Array; senderPublicKey: Uint8Array };
 
-export const decryptContentFromSender = ({ encData, secret, senderPublicKey }: CryptArgsFromSender): string | null => {
-  const data = decrypt(Buffer.from(secret, 'hex'), Buffer.from(encData, 'base64'), Buffer.from(senderPublicKey, 'hex'));
+export const decryptContentFromSender = ({
+  encData,
+  receiverSecretKey,
+  senderPublicKey
+}: CryptArgsFromSender): string | null => {
+  const data = decrypt(receiverSecretKey, Buffer.from(encData, 'base64'), senderPublicKey);
   if (data === null) {
     return null;
   }

@@ -1,11 +1,11 @@
-import { errorMessage, infoMessage, Web3Session } from '../types';
-import { getNetworkInfo } from '../network-info';
+import { errorMessage, infoMessage, Web3Session } from '../../types';
+import { getNetworkInfo } from '../../network-info';
 import { HDNodeWallet, Mnemonic } from 'ethers';
 import Web3 from 'web3';
-import { mmPublicEncryptionKey } from '../utils/nacl-util';
+import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { Buffer } from 'buffer';
-import { decryptStandalone } from '../utils/metamask-util';
-import { AppContextData } from './AppContextProvider';
+import { decryptStandalone } from '../../utils/metamask-util';
+import { AppContextData } from '../AppContextProvider';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | null>;
 

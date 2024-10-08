@@ -14,31 +14,31 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../types';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
-import {
-  GetInBoxResult,
-  getPrivateMessageStore,
-  PrivateMessageStore
-} from '../../contracts/private-message-store/PrivateMessageStore-support';
-import { PrivateMessageNewUi } from './PrivateMessageNewUi';
+
+import { PrivateMessageNew2Ui } from './PrivateMessageNew2Ui';
 import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';
-import { PrivateMessageReplyUi } from './PrivateMessageReplyUi';
-import { Message } from './private-message-store-types';
+import { PrivateMessageReply2Ui } from './PrivateMessageReply2Ui';
+import { Message } from './private-message-store2-types';
 import { getNetworkInfo } from '../../network-info';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { decryptKeyBlockValue } from '../key-block/key-block-utils';
-import { DecryptFun } from '../login/connect-with-localstore';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {
+  GetInBoxResult,
+  PrivateMessageStoreV2
+} from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 
 type SetMessages = (setMessage: (messages: Message[]) => Message[]) => void;
 
-function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessageStore: PrivateMessageStore }>) {
+export function PrivateMessageInBoxV2Ui({
+  privateMessageStoreV2
+}: Readonly<{ privateMessageStoreV2: PrivateMessageStoreV2 }>) {
   const { wrap, web3Session } = useAppContext();
-  const { publicAddress, networkId = 0, decryptFun } = web3Session || {};
+  const { publicAddress, networkId = 0 } = web3Session || {};
   const theme = useTheme();
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedMessage, setSelectedMessage] = useState<GetInBoxResult | 'new'>();
@@ -48,16 +48,16 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();
 
   const refreshMessages = useCallback(async () => {
-    if (publicAddress && web3Session && privateMessageStore) {
-      return refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages);
+    if (publicAddress && web3Session && privateMessageStoreV2) {
+      return refreshFromBlockchain(wrap, privateMessageStoreV2, setNumberOfEntries, setMessages);
     }
-  }, [publicAddress, web3Session, privateMessageStore, wrap]);
+  }, [publicAddress, web3Session, privateMessageStoreV2, wrap]);
 
   useEffect(() => {
     refreshMessages().then((res) => (isStatusMessage(res) ? setStatusMessage(res) : ''));
   }, [refreshMessages]);
 
-  if (!publicAddress || !decryptFun || !web3Session) {
+  if (!publicAddress || !web3Session) {
     return <Web3NotInitialized />;
   }
   const noMessages = numberOfEntries === 0;
@@ -96,7 +96,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
           </Button>
         </Stack>
         {noMessages ? (
-          <StatusMessageElement statusMessage={infoMessage(`No messages found on: ${name}`)} />
+          <StatusMessageElement statusMessage={infoMessage(`No messages yet for you on: ${name}`)} />
         ) : (
           <Table sx={{ minWidth: 800 }}>
             <TableHead>
@@ -134,7 +134,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
                               address={publicAddress}
                               message={message}
                               setMessages={setMessages}
-                              decryptFun={decryptFun}
+                              privateMessageStoreV2={privateMessageStoreV2}
                             />
                             <ToggleButton message={message} setMessages={setMessages} />
                             <Button
@@ -142,7 +142,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
                               key={'confirm'}
                               onClick={async () => {
                                 if (active) {
-                                  const res = await privateMessageStore.confirm(publicAddress, message.index);
+                                  const res = await privateMessageStoreV2.confirm(message.index);
                                   if (isStatusMessage(res)) {
                                     setStatusMessage(res);
                                     return;
@@ -181,7 +181,7 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
         <Stack key={'footer'} direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
           <Button
             onClick={async () => {
-              const res = await refreshFromBlockchain(wrap, publicAddress, setNumberOfEntries, setMessages);
+              const res = await refreshFromBlockchain(wrap, privateMessageStoreV2, setNumberOfEntries, setMessages);
               if (isStatusMessage(res)) {
                 setStatusMessage(res);
               }
@@ -192,11 +192,14 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
         </Stack>
       </TableContainer>
       {selectedMessage === 'new' && (
-        <PrivateMessageNewUi privateMessageStore={privateMessageStore} done={() => setSelectedMessage(undefined)} />
+        <PrivateMessageNew2Ui
+          privateMessageStoreV2={privateMessageStoreV2}
+          done={() => setSelectedMessage(undefined)}
+        />
       )}
       {messageToReply && (
-        <PrivateMessageReplyUi
-          privateMessageStore={privateMessageStore}
+        <PrivateMessageReply2Ui
+          privateMessageStoreV2={privateMessageStoreV2}
           messageToReply={messageToReply}
           done={() => setMessageToReply(undefined)}
         />
@@ -205,22 +208,15 @@ function PrivateMessageInBoxUi({ privateMessageStore }: Readonly<{ privateMessag
   );
 }
 
-export default PrivateMessageInBoxUi;
-
 async function refreshFromBlockchain(
   wrap: WrapFun,
-  publicAddress: string,
+  privateMessageStoreV2: PrivateMessageStoreV2,
   setNumberOfEntries: (n: number) => void,
   setMessages: SetMessages
 ): Promise<void | StatusMessage> {
-  const privateMessageStore = getPrivateMessageStore();
-
-  if (!publicAddress || !privateMessageStore) {
-    return;
-  }
   setMessages(() => []);
   return await wrap('Reading entries...', async () => {
-    const len = await privateMessageStore.lenInBox(publicAddress);
+    const len = await privateMessageStoreV2.getInBoxCount();
     if (isStatusMessage(len)) {
       setNumberOfEntries(0);
       return len;
@@ -229,7 +225,7 @@ async function refreshFromBlockchain(
     }
     const messages: GetInBoxResult[] = [];
     for (let index = 0; index < len; index++) {
-      const message = await privateMessageStore.getInBox(publicAddress, index);
+      const message = await privateMessageStoreV2.getInBox(index);
       if (isStatusMessage(message)) {
         return message;
       } else {
@@ -244,10 +240,10 @@ type DecryptButtonProps = {
   address?: string;
   message: Message;
   setMessages: SetMessages;
-  decryptFun: DecryptFun;
+  privateMessageStoreV2: PrivateMessageStoreV2;
 };
 
-function DecryptButton({ address, message, setMessages, decryptFun }: Readonly<DecryptButtonProps>) {
+function DecryptButton({ address, message, setMessages, privateMessageStoreV2 }: Readonly<DecryptButtonProps>) {
   const active = !!address && !message.subject;
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   return (
@@ -257,21 +253,16 @@ function DecryptButton({ address, message, setMessages, decryptFun }: Readonly<D
         key={'decrypt'}
         onClick={async () => {
           if (active) {
-            try {
-              const inBoxOpened = await decryptKeyBlockValue(message.subjectInBox + message.textInBox, decryptFun);
-              if (isStatusMessage(inBoxOpened)) {
-                setStatusMessage(inBoxOpened);
-                return;
-              } else {
-                setMessages((messages: Message[]) => {
-                  const m: Message[] = [...messages];
-                  m[message.index] = { ...message, ...inBoxOpened, displayText: true };
-                  return m;
-                });
-              }
-            } catch (e) {
-              setStatusMessage(errorMessage('Decryption failed', e));
+            const text = await privateMessageStoreV2.decryptEncMessage(message.textInBox);
+            if (isStatusMessage(text)) {
+              setStatusMessage(text);
+              return;
             }
+            setMessages((messages: Message[]) => {
+              const m: Message[] = [...messages];
+              m[message.index] = { ...message, text, displayText: true };
+              return m;
+            });
           }
         }}
       >

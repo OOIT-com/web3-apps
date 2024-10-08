@@ -1,4 +1,4 @@
-import { DecryptFun } from '../connect-with-localstore';
+import { DecryptFun } from '../login/connect-with-localstore';
 import { Buffer } from 'buffer';
 
 import { base64ToJson } from '../../utils/enc-dec-utils';
