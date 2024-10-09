@@ -16,7 +16,7 @@ import * as React from 'react';
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
-import { GetOutBoxResult } from '../../contracts/private-message-store/PrivateMessageStore-support';
+import { GetOutBoxResult } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';

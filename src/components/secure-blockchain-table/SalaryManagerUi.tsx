@@ -5,7 +5,6 @@ import Tab from '@mui/material/Tab';
 import { Paper } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { infoMessage, NotifyFun, warningMessage } from '../../types';
-import { getPrivateMessageStore } from '../../contracts/private-message-store/PrivateMessageStore-support';
 import { ContractName } from '../../contracts/contract-utils';
 import { SecureBlockchainTableListUi } from './SecureBlockchainTableListUi';
 import { SecureBlockchainTableEditorUi } from './SecureBlockchainTableEditorUi';
@@ -36,7 +35,7 @@ export function SalaryManagerUi() {
     setValue(newValue);
   };
 
-  const privateMessageStore = getPrivateMessageStore();
+  const privateMessageStore = null;
   if (!privateMessageStore) {
     return (
       <StatusMessageElement

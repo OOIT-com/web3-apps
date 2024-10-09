@@ -1,7 +1,6 @@
 import { DeploymentPlan } from './types';
 import { contractRegistryAbi, contractRegistryBytecode } from './contract-registry/ContractRegistry-abi';
 import { addressBookAbi, addressBookBytecode } from './contracts-flattened-compiled/AddressBook';
-import { privateMessageStoreAbi, privateMessageStoreBytecode } from './private-message-store/PrivateMessageStore-abi';
 import { keyBlockAbi, keyBlockBytecode } from './key-block/KeyBlock-abi';
 import { publicKeyStoreAbi, publicKeyStoreBytecode } from './public-key-store/PublicKeyStore-abi';
 import { publicKeyStoreV2Abi, publicKeyStoreV2bytecode } from './public-key-store/PublicKeyStoreV2-abi';
@@ -35,15 +34,6 @@ export const deploymentPlans: DeploymentPlan[] = [
     contractType: 'AddressBook,OwnableWithBackup',
     contractABI: JSON.stringify(addressBookAbi),
     contractBytecode: addressBookBytecode,
-    constructorArgDefs: []
-  },
-  {
-    label: 'Private Message Store',
-    contractName: 'PrivateMessageStore',
-    defaultRegistryName: 'PRIVATE_MESSAGE_STORE',
-    contractType: 'PrivateMessageStore',
-    contractABI: JSON.stringify(privateMessageStoreAbi),
-    contractBytecode: privateMessageStoreBytecode,
     constructorArgDefs: []
   },
   {

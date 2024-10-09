@@ -1,6 +1,5 @@
 import KeyBlockUi from './key-block/KeyBlockUi';
 import { PublicKeyStoreUi } from './public-key-store/PublicKeyStoreUi';
-import { PrivateMessageStoreUi } from './private-message-store/PrivateMessageStoreUi';
 import { JSX, ReactNode } from 'react';
 import { About } from './about/About';
 import { ToolsUi } from './tools/ToolsUi';
@@ -10,7 +9,6 @@ import { SharedSecretStoreUi } from './shared-secret-store/SharedSecretStoreUi';
 import { ContractManagementUi } from './contract-registry/ContractManagementUi';
 import { PublicKeyStoreV2Ui } from './public-key-store-v2/PublicKeyStoreV2Ui';
 import keyBlock from './images/secret-vault.png';
-import secretMessages from './images/secret-message.png';
 import privateMessageStoreV2Png from './images/private-message-store-v2.png';
 
 import artworkPng from './images/artwork.png';
@@ -51,13 +49,6 @@ export const menuColumns: MenuColumn[] = [
         icon: <AppIcon src={keyBlock} alt={'key-block'} />,
         description: 'Save your secrets, password etc. in the most possible safe and secure way.',
         element: <KeyBlockUi />
-      },
-      {
-        path: 'private-message-store',
-        name: 'Private & Safe Messages',
-        icon: <AppIcon src={secretMessages} alt={'secret messages'} />,
-        description: 'Send and receive encrypted messages.',
-        element: <PrivateMessageStoreUi />
       },
       {
         path: 'private-message-store-v2',
