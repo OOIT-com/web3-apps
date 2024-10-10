@@ -180,10 +180,12 @@ export class PrivateMessageStoreV2 {
     }
   }
 
-  public async getInBox(index: number): Promise<GetInBoxResult | StatusMessage> {
-    const tag = '<getInBox>';
+  public async getInBoxEntry(index: number): Promise<GetInBoxResult | StatusMessage> {
+    const tag = '<getInBoxEntry>';
     try {
-      const entry: any = await this.contract.methods.getInBox(index).call({ from: this.web3Session.publicAddress });
+      const entry: any = await this.contract.methods
+        .getInBoxEntry(index)
+        .call({ from: this.web3Session.publicAddress });
       return {
         sender: entry.sender,
         indexOutBox: Number(entry.indexOutBox),
@@ -250,7 +252,6 @@ export class PrivateMessageStoreV2 {
     }
 
     this.publicKeyCache[addr] = Buffer.from(publicKey, 'base64');
-    debugger;
     return this.publicKeyCache[addr];
   }
 
@@ -287,7 +288,6 @@ export class PrivateMessageStoreV2 {
     receiver = this.web3Session.publicAddress
   ): Promise<StatusMessage | string> {
     const receiverPublicKey = await this.getPublicKey(receiver);
-    debugger;
     if (isStatusMessage(receiverPublicKey)) {
       return receiverPublicKey;
     }

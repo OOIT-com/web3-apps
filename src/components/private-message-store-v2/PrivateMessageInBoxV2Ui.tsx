@@ -44,12 +44,17 @@ export function PrivateMessageInBoxV2Ui({
   const [selectedMessage, setSelectedMessage] = useState<GetInBoxResult | 'new'>();
   const [messageToReply, setMessageToReply] = useState<GetInBoxResult | undefined>(undefined);
   const [filterValue, setFilterValue] = useState('');
-  const [numberOfEntries, setNumberOfEntries] = useState(-1);
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();
 
   const refreshMessages = useCallback(async () => {
     if (publicAddress && web3Session && privateMessageStoreV2) {
-      return refreshFromBlockchain(wrap, privateMessageStoreV2, setNumberOfEntries, setMessages);
+      const res = await refreshInboxMessages(wrap, privateMessageStoreV2);
+      if (isStatusMessage(res)) {
+        setStatusMessage(res);
+        setMessages([]);
+      } else {
+        setMessages(res);
+      }
     }
   }, [publicAddress, web3Session, privateMessageStoreV2, wrap]);
 
@@ -60,7 +65,7 @@ export function PrivateMessageInBoxV2Ui({
   if (!publicAddress || !web3Session) {
     return <Web3NotInitialized />;
   }
-  const noMessages = numberOfEntries === 0;
+  const noMessages = messages.length === 0;
   const { name } = getNetworkInfo(networkId);
 
   return (
@@ -113,8 +118,10 @@ export function PrivateMessageInBoxV2Ui({
             <TableBody>
               {messages
                 .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
+                .reverse()
                 .map((message) => {
-                  const { subject, text, displayText, sender, inserted, confirmed, index, replyIndex } = message;
+                  const { subject, text, displayText, sender, inserted, confirmed, index, replyIndex, subjectInBox } =
+                    message;
                   const active = displayText && publicAddress && subject && !confirmed;
 
                   return (
@@ -125,13 +132,13 @@ export function PrivateMessageInBoxV2Ui({
                         <TableCell key={'sender'}>
                           <AddressDisplayWithAddressBook address={sender}></AddressDisplayWithAddressBook>
                         </TableCell>
-                        <TableCell key={'subject'}>{subject ?? '***'}</TableCell>
+                        <TableCell key={'subject'}>{subjectInBox}</TableCell>
                         <TableCell key={'inserted'}>{moment(inserted * 1000).format('YYYY-MM-DD HH:mm')}</TableCell>
                         <TableCell key={'confirmed'}>{confirmed ? <CheckIcon /> : ''}</TableCell>
                         <TableCell key={'actions'}>
                           <Stack direction={'row'}>
                             <DecryptButton
-                              address={publicAddress}
+                              sender={sender}
                               message={message}
                               setMessages={setMessages}
                               privateMessageStoreV2={privateMessageStoreV2}
@@ -163,7 +170,7 @@ export function PrivateMessageInBoxV2Ui({
                           </Stack>
                         </TableCell>
                       </TableRow>
-                      {subject && displayText ? (
+                      {text && displayText ? (
                         <TableRow key={'row-text-' + index}>
                           <TableCell colSpan={6}>
                             <Box>{text}</Box>
@@ -179,16 +186,7 @@ export function PrivateMessageInBoxV2Ui({
           </Table>
         )}
         <Stack key={'footer'} direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-          <Button
-            onClick={async () => {
-              const res = await refreshFromBlockchain(wrap, privateMessageStoreV2, setNumberOfEntries, setMessages);
-              if (isStatusMessage(res)) {
-                setStatusMessage(res);
-              }
-            }}
-          >
-            Refresh
-          </Button>
+          <Button onClick={() => refreshMessages()}>Refresh</Button>
         </Stack>
       </TableContainer>
       {selectedMessage === 'new' && (
@@ -208,62 +206,52 @@ export function PrivateMessageInBoxV2Ui({
   );
 }
 
-async function refreshFromBlockchain(
+async function refreshInboxMessages(
   wrap: WrapFun,
-  privateMessageStoreV2: PrivateMessageStoreV2,
-  setNumberOfEntries: (n: number) => void,
-  setMessages: SetMessages
-): Promise<void | StatusMessage> {
-  setMessages(() => []);
-  return await wrap('Reading entries...', async () => {
+  privateMessageStoreV2: PrivateMessageStoreV2
+): Promise<Message[] | StatusMessage> {
+  return await wrap('Reading in box entries...', async () => {
     const len = await privateMessageStoreV2.getInBoxCount();
     if (isStatusMessage(len)) {
-      setNumberOfEntries(0);
       return len;
-    } else {
-      setNumberOfEntries(len);
     }
     const messages: GetInBoxResult[] = [];
     for (let index = 0; index < len; index++) {
-      const message = await privateMessageStoreV2.getInBox(index);
+      const message = await privateMessageStoreV2.getInBoxEntry(index);
       if (isStatusMessage(message)) {
         return message;
       } else {
         messages.push(message);
       }
     }
-    setMessages(() => messages);
+    return messages;
   });
 }
 
 type DecryptButtonProps = {
-  address?: string;
+  sender: string;
   message: Message;
   setMessages: SetMessages;
   privateMessageStoreV2: PrivateMessageStoreV2;
 };
 
-function DecryptButton({ address, message, setMessages, privateMessageStoreV2 }: Readonly<DecryptButtonProps>) {
-  const active = !!address && !message.subject;
+function DecryptButton({ sender, message, setMessages, privateMessageStoreV2 }: Readonly<DecryptButtonProps>) {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   return (
     <Stack>
       <Button
-        disabled={!active}
         key={'decrypt'}
         onClick={async () => {
-          if (active) {
-            const text = await privateMessageStoreV2.decryptEncMessage(message.textInBox);
-            if (isStatusMessage(text)) {
-              setStatusMessage(text);
-              return;
-            }
-            setMessages((messages: Message[]) => {
-              const m: Message[] = [...messages];
-              m[message.index] = { ...message, text, displayText: true };
-              return m;
-            });
+          const text = await privateMessageStoreV2.decryptEncMessage(message.textInBox, sender);
+          if (isStatusMessage(text)) {
+            setStatusMessage(text);
+            return;
           }
+          setMessages((messages: Message[]) => {
+            const m: Message[] = [...messages];
+            m[message.index] = { ...message, text, displayText: true };
+            return m;
+          });
         }}
       >
         decrypt

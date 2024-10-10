@@ -112,7 +112,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
         <Button key={'close'} onClick={done}>
           Close
         </Button>
-        <Button key={'logout'} onClick={() => app?.setWeb3Session()}>
+        <Button key={'logout'} onClick={() => window.location.reload()}>
           Logout
         </Button>
       </DialogActions>

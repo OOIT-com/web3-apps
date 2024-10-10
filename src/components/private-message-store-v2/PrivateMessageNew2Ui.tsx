@@ -108,7 +108,7 @@ export function PrivateMessageNew2Ui({
               disabled={!subject || !text}
               onClick={async () => {
                 setStatusMessage(undefined);
-                const res = await wrap('Reply to Message...', async () =>
+                const res = await wrap(`Send message: ${subject} ...`, async () =>
                   privateMessageStoreV2.sendMessage(subject, text, receiver)
                 );
                 if (isStatusMessage(res)) {

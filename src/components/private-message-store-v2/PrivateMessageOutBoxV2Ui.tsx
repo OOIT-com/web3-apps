@@ -16,7 +16,10 @@ import * as React from 'react';
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
-import { GetOutBoxResult } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
+import {
+  GetOutBoxResult,
+  PrivateMessageStoreV2
+} from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';
@@ -24,7 +27,6 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { DecryptButton2 } from './DecryptButton2';
-import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 
 export type OutMessage = GetOutBoxResult & { subject?: string; text?: string; displayText?: boolean };
 export type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => void;
@@ -95,6 +97,7 @@ export function PrivateMessageOutBoxV2Ui({
             <TableBody>
               {outMessages
                 .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
+                .reverse()
                 .map((row, index) => (
                   <Fragment key={'frag-' + index}>
                     <TableRow key={'row-detail' + row.index}>
@@ -102,7 +105,7 @@ export function PrivateMessageOutBoxV2Ui({
                       <TableCell key={'receiver'}>
                         <AddressDisplayWithAddressBook address={row.receiver}></AddressDisplayWithAddressBook>
                       </TableCell>
-                      <TableCell key={'subject'}>{row.subject ? row.subject : '***'}</TableCell>
+                      <TableCell key={'subject'}>{row.subjectOutBox}</TableCell>
                       <TableCell key={'inserted'}>{moment(row.inserted * 1000).format('YYYY-MM-DD HH:mm')}</TableCell>
                       <TableCell key={'confirmed'}>{row.confirmed ? <CheckIcon /> : ''}</TableCell>
                       <TableCell key={'actions'}>
@@ -117,7 +120,7 @@ export function PrivateMessageOutBoxV2Ui({
                         </Stack>
                       </TableCell>
                     </TableRow>
-                    {row.subject && row.displayText ? (
+                    {row.text && row.displayText ? (
                       <TableRow key={'row-text' + row.index}>
                         <TableCell colSpan={6}>
                           <Box>{row.text}</Box>
