@@ -1,7 +1,7 @@
 import { isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
 import { Button, Stack, Table, TableBody, TextField } from '@mui/material';
 import { LDBox } from '../common/StyledBoxes';
-import { useEffect, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import TableRowComp from '../common/TableRowComp';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -17,6 +17,9 @@ import { DeploymentPlan } from '../../contracts/types';
 import { deploymentPlans } from '../../contracts/deployment-plans';
 import { deployContract } from '../../contracts/deploy-contract';
 import { useAppContext } from '../AppContextProvider';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+
+export const planDeployerTitle = 'Contract Deployments';
 
 export function PlanDeployerUi() {
   const { web3Session } = useAppContext();
@@ -28,29 +31,35 @@ export function PlanDeployerUi() {
     return <StatusMessageElement statusMessage={warningMessage('DeployerUi loading...')} />;
   }
 
+  const content: ReactNode[] = [
+    <StatusMessageElement
+      key={'status-element'}
+      statusMessage={statusMessage}
+      onClose={() => setStatusMessage(undefined)}
+    />,
+    <Table key={'table'}>
+      <TableBody>
+        {deploymentPlans.map(({ label, contractName }, index) => (
+          <TableRowComp
+            key={contractName}
+            elements={[
+              <LDBox key={'label'} sx={{ fontWeight: 'bold' }}>
+                {label}
+              </LDBox>,
+              <Button key={'deploy-button'} onClick={() => setStartDeployment(index)}>{`Deploy ${label}...`}</Button>
+            ]}
+          />
+        ))}
+      </TableBody>
+    </Table>
+  ];
   return (
-    <Stack justifyContent="flex-start" spacing={2}>
-      <LDBox sx={{ fontSize: '1.4em' }}>Deyploments</LDBox>
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-      <Table>
-        <TableBody>
-          {deploymentPlans.map(({ label, contractName }, index) => (
-            <TableRowComp
-              key={contractName}
-              elements={[
-                <LDBox key={'label'} sx={{ fontWeight: 'bold' }}>
-                  {label}
-                </LDBox>,
-                <Button key={'deploy-button'} onClick={() => setStartDeployment(index)}>{`Deploy ${label}...`}</Button>
-              ]}
-            />
-          ))}
-        </TableBody>
-      </Table>
+    <Fragment>
+      <CollapsiblePanel level={'second'} collapsible={false} title={planDeployerTitle} content={content} />
       {startDeployment > -1 && (
         <ConstructorArgsDialog plan={deploymentPlans[startDeployment]} done={() => setStartDeployment(-1)} />
       )}
-    </Stack>
+    </Fragment>
   );
 }
 

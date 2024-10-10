@@ -91,9 +91,9 @@ export async function decryptBase64(base64: string, decryptFun: DecryptFun): Pro
 export async function newEncSecret(web3Session: Web3Session): Promise<string | StatusMessage> {
   const { publicAddress, mode, publicKeyHolder } = web3Session;
 
-  let publicKey = '';
+  let publicKey: string | undefined = '';
   if (mode === 'localstore') {
-    publicKey = publicKeyHolder?.publicKey || '';
+    publicKey = publicKeyHolder?.publicKey;
   } else {
     publicKey = await getPublicEncryptionKey(publicAddress);
   }

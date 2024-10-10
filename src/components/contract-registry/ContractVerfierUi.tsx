@@ -1,7 +1,6 @@
-import { Button, Stack, Table, TableBody, TableHead } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Table, TableBody, TableHead } from '@mui/material';
+import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
-import { LDBox } from '../common/StyledBoxes';
 import TableRowComp from '../common/TableRowComp';
 import {
   ContractData,
@@ -12,6 +11,9 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContracVerifierDialog } from './ContracVerifierDialog';
 import { useAppContext } from '../AppContextProvider';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+
+export const contractVerifierTitle = 'Contract Verification';
 
 export function ContractVerifierUi() {
   const { wrap, web3Session } = useAppContext();
@@ -56,50 +58,47 @@ export function ContractVerifierUi() {
 
   const tableHeader = [`Nr`, 'Name', 'Contract', 'Address'];
 
-  return (
-    <Stack spacing={1}>
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-      <Stack spacing={1} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={2}
-          sx={{ borderBottom: 'solid 2px gray' }}
-        >
-          <LDBox sx={{ fontSize: '2em' }}>{'Contract Registry'}</LDBox>
-          <Stack direction={'row'} alignItems="center">
-            <Button key={'refresh'} onClick={() => wrap('Refresh Data...', () => refreshData())}>
-              Refresh
+  const toolbar: ReactNode[] = [
+    <Button key={'refresh'} onClick={() => wrap('Refresh Data...', () => refreshData())}>
+      Refresh
+    </Button>
+  ];
+  const content: ReactNode[] = [
+    <StatusMessageElement
+      key={'status-message'}
+      statusMessage={statusMessage}
+      onClose={() => setStatusMessage(undefined)}
+    />,
+    <Table key={'table'}>
+      <TableHead>
+        <TableRowComp elements={tableHeader} />
+      </TableHead>
+      <TableBody>
+        {data.map((cd) => {
+          const elements = [
+            `Nr ${cd.index + 1}`,
+            cd.name,
+            <AddressBoxWithCopy key={'contract-address'} value={cd.contractAddress} useNames={false} />,
+            <Button
+              key={'start-verification'}
+              onClick={() => {
+                setOpenVerifierDialog(cd);
+              }}
+            >
+              Start Verification
             </Button>
-          </Stack>
-        </Stack>
+          ];
 
-        <Table>
-          <TableHead>
-            <TableRowComp elements={tableHeader} />
-          </TableHead>
-          <TableBody>
-            {data.map((cd) => {
-              const elements = [
-                `Nr ${cd.index + 1}`,
-                cd.name,
-                <AddressBoxWithCopy key={'contract-address'} value={cd.contractAddress} useNames={false} />,
-                <Button
-                  key={'start-verification'}
-                  onClick={() => {
-                    setOpenVerifierDialog(cd);
-                  }}
-                >
-                  Start Verification
-                </Button>
-              ];
+          return <TableRowComp key={cd.contractAddress} elements={elements} />;
+        })}
+      </TableBody>
+    </Table>
+  ];
 
-              return <TableRowComp key={cd.contractAddress} elements={elements} />;
-            })}
-          </TableBody>
-        </Table>
-      </Stack>
+  return (
+    <Fragment>
+      <CollapsiblePanel collapsible={false} title={contractVerifierTitle} toolbar={toolbar} content={content} />
+
       {!!openVerifierDialog && (
         <ContracVerifierDialog
           contractData={openVerifierDialog}
@@ -108,6 +107,6 @@ export function ContractVerifierUi() {
           }}
         />
       )}
-    </Stack>
+    </Fragment>
   );
 }

@@ -8,7 +8,7 @@ import { Button, Stack } from '@mui/material';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TextFieldView } from '../common/TextFieldView';
-import { OwnableWithBackup } from './ContractRegistryUi';
+import { OwnableWithBackup } from './ContractRegistryListUi';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { useAppContext } from '../AppContextProvider';
 

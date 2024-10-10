@@ -6,7 +6,7 @@ import { ToolsUi } from './tools/ToolsUi';
 import { UniqueNameStoreUi } from './unique-name-store/UniqueNameStoreUi';
 import { ArtworkUi } from './artwork/ArtworkUi';
 import { SharedSecretStoreUi } from './shared-secret-store/SharedSecretStoreUi';
-import { ContractManagementUi } from './contract-registry/ContractManagementUi';
+import { ContractRegistryUi } from './contract-registry/ContractRegistryUi';
 import { PublicKeyStoreV2Ui } from './public-key-store-v2/PublicKeyStoreV2Ui';
 import keyBlock from './images/secret-vault.png';
 import privateMessageStoreV2Png from './images/private-message-store-v2.png';
@@ -133,7 +133,7 @@ export const menuColumns: MenuColumn[] = [
         icon: <AppIcon src={contractRegistryPng} alt={'Contract Registry'} />,
         description:
           'Contract Registry including Registration, Deployment, Owner Management, Source Code Verification ...',
-        element: <ContractManagementUi />
+        element: <ContractRegistryUi />
       }
     ]
   },

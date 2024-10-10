@@ -1,203 +1,34 @@
-import { Box, Button, Stack, Table, TableBody, TableHead } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
-import { LDBox } from '../common/StyledBoxes';
-import TableRowComp from '../common/TableRowComp';
-import {
-  ContractData,
-  ContractDataWithIndex,
-  getContractRegistry,
-  getContractRegistryContractAddress
-} from '../../contracts/contract-registry/ContractRegistry-support';
-import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
-import { ContractDataEditDialog } from './ContractDataEditDialog';
-import { ContractDataRetrieveDialog } from './ContractDataRetrieveDialog';
-import { getOwner } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
-import { StatusMessageElement } from '../common/StatusMessageElement';
-import { ContractEntryView } from './ContractEntryView';
-import { OwnableWithBackupDialog } from '../ownable-with-backup/OwnableWithBackupDialog';
-import { TransferOwnershipDialog } from './TransferOwnershipDialog';
-import { useAppContext } from '../AppContextProvider';
-
-export const OwnableWithBackup = 'OwnableWithBackup';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { Paper } from '@mui/material';
+import { ContractRegistryListUi } from './ContractRegistryListUi';
+import { planDeployerTitle, PlanDeployerUi } from './PlanDeployerUi';
+import { ContractVerifierUi } from './ContractVerfierUi';
+import { getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 
 export function ContractRegistryUi() {
-  const { wrap, web3Session } = useAppContext();
-  const { web3, publicAddress } = web3Session || {};
+  const [value, setValue] = React.useState(0);
 
-  const [owner, setOwner] = useState('');
-  const [data, setData] = useState<ContractDataWithIndex[]>([]);
-  const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  const [contractData4Edit, setContractData4Edit] = useState<'new' | ContractData>();
-  const [contractData4View, setContractData4View] = useState<false | ContractData>();
-  const [ownableWithBackupIndex, setOwnableWithBackupIndex] = useState(-1);
-  const [startRetrieval, setStartRetrieval] = useState(false);
-  const [startOwnershipTransfer, setStartOwnershipTransfer] = useState(false);
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
 
-  const refreshData = useCallback(async () => {
-    const contractRegistry = getContractRegistry();
-    if (publicAddress && web3 && contractRegistry) {
-      await wrap('Loading Contract Registry Data...', async () => {
-        const owner0 = await getOwner(web3, getContractRegistryContractAddress());
-        if (isStatusMessage(owner0)) {
-          setStatusMessage(owner0);
-          return;
-        }
-        setOwner(owner0);
-        const list: ContractDataWithIndex[] = [];
-        const count = await contractRegistry.getContractDataCount();
-        if (isStatusMessage(count)) {
-          setStatusMessage(count);
-          return;
-        }
-        for (let index = 0; index < count; index++) {
-          const data = await contractRegistry.getContractData(index);
-          if (isStatusMessage(data)) {
-            setStatusMessage(data);
-            return;
-          }
-          list.push(data);
-        }
-        setData(list);
-      });
-    }
-  }, [wrap, publicAddress, web3]);
-
-  useEffect(() => {
-    refreshData().catch(console.error);
-  }, [refreshData]);
-
-  const contractRegistry = getContractRegistry();
-
-  if (!web3 || !publicAddress || !contractRegistry) {
-    return <StatusMessageElement statusMessage={infoMessage('Loading ...')} />;
-  }
-
-  const isOwner = publicAddress === owner;
-  const tableHeader = [`Nr`, 'Name', 'Contract', 'Address'];
-  if (isOwner) {
-    tableHeader.push('Actions');
-  }
   return (
-    <Stack spacing={1}>
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-      <Stack spacing={1} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={2}
-          sx={{ borderBottom: 'solid 2px gray' }}
-        >
-          <LDBox sx={{ fontSize: '2em' }}>{'Contract Registry'}</LDBox>
-          <Stack direction={'row'} alignItems="center">
-            {isOwner ? (
-              <Button key={'transfer-ownership'} onClick={() => setStartOwnershipTransfer(true)}>
-                Ownership Transfer
-              </Button>
-            ) : (
-              <Box sx={{ fontSize: '80%' }}>(Not Owner)</Box>
-            )}
-            <Button key={'retrieve'} onClick={() => setStartRetrieval(true)}>
-              Retrieval
-            </Button>
-            {isOwner && (
-              <Button key={'register'} onClick={() => setContractData4Edit('new')}>
-                Register
-              </Button>
-            )}
-            <Button key={'refresh'} onClick={() => wrap('Refresh Data...', () => refreshData())}>
-              Refresh
-            </Button>
-          </Stack>
-        </Stack>
-
-        <Table>
-          <TableHead>
-            <TableRowComp elements={tableHeader} />
-          </TableHead>
-          <TableBody>
-            {data.map((cd) => {
-              const elements = [
-                `Nr ${cd.index + 1}`,
-                <Button variant={'text'} onClick={() => setContractData4View(cd)}>
-                  {cd.name}
-                </Button>,
-                <Box onClick={() => setContractData4View(cd)}>{cd.contractName}</Box>,
-                <AddressBoxWithCopy key={'contract-address'} value={cd.contractAddress} useNames={false} />
-              ];
-              if (isOwner) {
-                elements.push(
-                  <Stack key={'actions'} direction={'row'} spacing={1}>
-                    <Button key={'edit'} onClick={() => setContractData4Edit(cd)}>
-                      edit
-                    </Button>
-                    <Button
-                      key={'unregister'}
-                      onClick={async () => {
-                        wrap(`Unregister ${cd.name}`, async () => {
-                          await contractRegistry.unregister(cd.contractAddress, publicAddress);
-                          await refreshData();
-                        });
-                      }}
-                    >
-                      unregister
-                    </Button>
-                  </Stack>
-                );
-              }
-              return <TableRowComp key={cd.contractAddress} elements={elements} />;
-            })}
-          </TableBody>
-        </Table>
-      </Stack>
-      {contractData4Edit && (
-        <ContractDataEditDialog
-          contractDataIn={contractData4Edit}
-          done={(refreshNeeded: boolean) => {
-            setContractData4Edit(undefined);
-            if (refreshNeeded) {
-              refreshData();
-            }
-          }}
-        />
-      )}
-      {startRetrieval && (
-        <ContractDataRetrieveDialog
-          done={() => setStartRetrieval(false)}
-          openForEdit={
-            isOwner
-              ? (contractData: ContractData) => {
-                  setStartRetrieval(false);
-                  setContractData4Edit(contractData);
-                }
-              : undefined
-          }
-        />
-      )}
-      {startOwnershipTransfer && (
-        <TransferOwnershipDialog
-          done={() => setStartOwnershipTransfer(false)}
-          title={'Transfer Contract Registry'}
-          transfer={(newOwner: string) => contractRegistry.transferOwnership(newOwner, publicAddress)}
-        />
-      )}
-      {contractData4View && (
-        <ContractEntryView
-          contractData={contractData4View}
-          done={() => setContractData4View(false)}
-          action={(_, index) => {
-            setContractData4View(false);
-            setOwnableWithBackupIndex(index);
-          }}
-        />
-      )}
-      {ownableWithBackupIndex > -1 && (
-        <OwnableWithBackupDialog
-          contractAddress={data[ownableWithBackupIndex].contractAddress}
-          done={() => setOwnableWithBackupIndex(-1)}
-        />
-      )}
-    </Stack>
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab label="List of Registered Contracts" />
+          <Tab label={planDeployerTitle} />
+          <Tab label="Contract Verifiers" />
+        </Tabs>
+      </Box>
+      <Paper sx={{ margin: '1em 0 1em 0' }}>
+        {value === 0 && <ContractRegistryListUi />}
+        {value === 1 && <PlanDeployerUi />}
+        {value === 2 && <ContractVerifierUi />}
+      </Paper>
+    </Box>
   );
 }
