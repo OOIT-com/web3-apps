@@ -1,6 +1,5 @@
 import { Login } from './login/Login';
 import { Box, Container, Stack } from '@mui/material';
-import Loader from './common/Loader';
 import { AppHeader } from './AppHeader';
 import { createHashRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom';
 import { AppMenu } from './AppMenu';
@@ -8,6 +7,7 @@ import { useEffect } from 'react';
 import { menuColumns, MenuEntry } from './menu-defs';
 import { useAppContext } from './AppContextProvider';
 import { ErrorPage } from './login/ErrorPage';
+import Loader2 from './common/Loader2';
 
 const menuEntries: MenuEntry[] = menuColumns.reduce<MenuEntry[]>((acc, col) => [...acc, ...col.entries], []);
 
@@ -77,7 +77,7 @@ function AppNavigation() {
         <Stack spacing={2} mt={'1em'} mb={'1em'}>
           <Outlet />
         </Stack>
-        <Loader />
+        <Loader2 />
       </Container>
     </Box>
   );

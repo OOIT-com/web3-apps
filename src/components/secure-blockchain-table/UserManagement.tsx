@@ -19,6 +19,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
+import { ButtonPanel } from '../common/ButtonPanel';
 
 export function UserManagement({
   sbtManager,
@@ -66,7 +67,69 @@ export function UserManagement({
   );
 
   const content = (
-    <Stack>
+    <Stack spacing={1}>
+      <ButtonPanel
+        mode={'space-between'}
+        content={[
+          <AddressEntryField
+            key={'address'}
+            disabled={!editable}
+            label={'New User'}
+            address={newUser}
+            setAddress={setNewUser}
+          />,
+          <Button
+            key={'add-user'}
+            disabled={!newUser || !isAddress(newUser)}
+            sx={{ whiteSpace: 'nowrap' }}
+            onClick={() =>
+              wrap(`Add user ${displayAddress(newUser)}...`, async () => {
+                const publicKeyStore = getPublicKeyStore();
+                if (!publicKeyStore) {
+                  setStatusMessage(errorMessage('No public key store is available!'));
+                  return;
+                }
+
+                const myEncSecret = await sbtManager.getMyEncSecret();
+                if (isStatusMessage(myEncSecret)) {
+                  setStatusMessage(myEncSecret);
+                  return;
+                }
+                const secret64 = await decryptBase64(myEncSecret, sbtManager.web3Session.decryptFun);
+                if (isStatusMessage(secret64)) {
+                  setStatusMessage(secret64);
+                  return;
+                }
+                const encryptedSecret4User = await encryptForUser(
+                  wrap,
+                  newUser,
+                  Buffer.from(secret64, 'base64'),
+                  publicKeyStore
+                );
+                if (isStatusMessage(encryptedSecret4User)) {
+                  setStatusMessage(encryptedSecret4User);
+                  return;
+                }
+                const encBase64 = encryptedSecret4User.toString('base64');
+                const res = await sbtManager.setEncSecret(newUser, encBase64);
+                if (isStatusMessage(res)) {
+                  setStatusMessage(res);
+                } else {
+                  refreshData();
+                }
+              }).catch(console.error)
+            }
+          >
+            Add User
+          </Button>
+        ]}
+        // key={'edit-row-entry'}
+        // direction={'row'}
+        // justifyContent="space-between"
+        // alignItems="baseline"
+        // spacing={1}
+        // sx={{ margin: '1em 0' }}
+      />
       <Table>
         <TableBody>
           {users.map((user) => (
@@ -80,62 +143,6 @@ export function UserManagement({
           ))}
         </TableBody>
       </Table>
-
-      <Stack
-        key={'edit-row-entry'}
-        direction={'row'}
-        justifyContent="space-between"
-        alignItems="baseline"
-        spacing={1}
-        sx={{ margin: '1em 0' }}
-      >
-        <AddressEntryField disabled={!editable} label={'New User'} address={newUser} setAddress={setNewUser} />
-
-        <Button
-          key={'add-user'}
-          disabled={!newUser || !isAddress(newUser)}
-          sx={{ whiteSpace: 'nowrap' }}
-          onClick={() =>
-            wrap(`Add user ${displayAddress(newUser)}...`, async () => {
-              const publicKeyStore = getPublicKeyStore();
-              if (!publicKeyStore) {
-                setStatusMessage(errorMessage('No public key store is available!'));
-                return;
-              }
-
-              const myEncSecret = await sbtManager.getMyEncSecret();
-              if (isStatusMessage(myEncSecret)) {
-                setStatusMessage(myEncSecret);
-                return;
-              }
-              const secret64 = await decryptBase64(myEncSecret, sbtManager.web3Session.decryptFun);
-              if (isStatusMessage(secret64)) {
-                setStatusMessage(secret64);
-                return;
-              }
-              const encryptedSecret4User = await encryptForUser(
-                wrap,
-                newUser,
-                Buffer.from(secret64, 'base64'),
-                publicKeyStore
-              );
-              if (isStatusMessage(encryptedSecret4User)) {
-                setStatusMessage(encryptedSecret4User);
-                return;
-              }
-              const encBase64 = encryptedSecret4User.toString('base64');
-              const res = await sbtManager.setEncSecret(newUser, encBase64);
-              if (isStatusMessage(res)) {
-                setStatusMessage(res);
-              } else {
-                refreshData();
-              }
-            }).catch(console.error)
-          }
-        >
-          Add User
-        </Button>
-      </Stack>
 
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
       <RemoveDialog
@@ -157,7 +164,9 @@ export function UserManagement({
     </Stack>
   );
 
-  return <CollapsiblePanel title={`Users / Accounts with Access`} toolbar={toolbar} content={content} />;
+  return (
+    <CollapsiblePanel collapsed={true} title={`Users / Accounts with Access`} toolbar={toolbar} content={content} />
+  );
 }
 
 function RemoveDialog({ address, done }: Readonly<{ address: string; done: NotifyInfoFun }>) {

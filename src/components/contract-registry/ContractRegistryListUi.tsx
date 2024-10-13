@@ -11,17 +11,21 @@ import {
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { ContractDataEditDialog } from './ContractDataEditDialog';
 import { ContractDataRetrieveDialog } from './ContractDataRetrieveDialog';
-import { getOwner } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
+import { getOwnableWithBackup, getOwner } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { ContractEntryView } from './ContractEntryView';
+import { ContractEntryDetailView } from './ContractEntryDetailView';
 import { OwnableWithBackupDialog } from '../ownable-with-backup/OwnableWithBackupDialog';
 import { TransferOwnershipDialog } from './TransferOwnershipDialog';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
+import { displayAddress } from '../../utils/misc-util';
 
 export const OwnableWithBackup = 'OwnableWithBackup';
+export const Owner = 'Owner';
+
+export type CommandName = 'OwnableWithBackup' | 'DataView' | 'TransferContractRegistry' | 'Transfer';
 
 export function ContractRegistryListUi() {
   const { wrap, web3Session } = useAppContext();
@@ -31,10 +35,10 @@ export function ContractRegistryListUi() {
   const [data, setData] = useState<ContractDataWithIndex[]>([]);
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [contractData4Edit, setContractData4Edit] = useState<'new' | ContractData>();
-  const [contractData4View, setContractData4View] = useState<false | ContractData>();
+  const [openDialog, setOpenDialog] = useState<CommandName>();
+  const [selected, setSelected] = useState<ContractData>();
   const [ownableWithBackupIndex, setOwnableWithBackupIndex] = useState(-1);
   const [startRetrieval, setStartRetrieval] = useState(false);
-  const [startOwnershipTransfer, setStartOwnershipTransfer] = useState(false);
 
   const contractRegistry = getContractRegistry();
 
@@ -86,7 +90,7 @@ export function ContractRegistryListUi() {
   const title = 'List of Registered Contracts';
   const toolbar: ReactNode[] = [
     isOwner ? (
-      <Button key={'transfer-ownership'} onClick={() => setStartOwnershipTransfer(true)}>
+      <Button key={'transfer-ownership'} onClick={() => setOpenDialog('TransferContractRegistry')}>
         Ownership Transfer
       </Button>
     ) : (
@@ -120,10 +124,23 @@ export function ContractRegistryListUi() {
         {data.map((cd) => {
           const elements = [
             `Nr ${cd.index + 1}`,
-            <Button key={'name'} variant={'text'} onClick={() => setContractData4View(cd)}>
+            <Button
+              key={'name'}
+              variant={'text'}
+              onClick={() => {
+                setSelected(cd);
+                setOpenDialog('DataView');
+              }}
+            >
               {cd.name}
             </Button>,
-            <Box key={'contract-name'} onClick={() => setContractData4View(cd)}>
+            <Box
+              key={'contract-name'}
+              onClick={() => {
+                setSelected(cd);
+                setOpenDialog('DataView');
+              }}
+            >
               {cd.contractName}
             </Box>,
             <AddressBoxWithCopy key={'contract-address'} value={cd.contractAddress} useNames={false} />
@@ -188,27 +205,51 @@ export function ContractRegistryListUi() {
     <Fragment>
       <CollapsiblePanel level={'second'} title={title} collapsible={false} toolbar={toolbar} content={content} />
 
-      {startOwnershipTransfer && (
+      {openDialog === 'TransferContractRegistry' && (
         <TransferOwnershipDialog
-          done={() => setStartOwnershipTransfer(false)}
-          title={'Transfer Contract Registry'}
+          key={'transfer-contract-registry'}
+          done={() => setOpenDialog(undefined)}
+          title={`Transfer Contract Registry ${displayAddress(contractRegistry.contractAddress)}`}
           transfer={(newOwner: string) => contractRegistry.transferOwnership(newOwner, publicAddress)}
         />
       )}
-      {contractData4View && (
-        <ContractEntryView
-          contractData={contractData4View}
-          done={() => setContractData4View(false)}
-          action={(_, index) => {
-            setContractData4View(false);
+      {openDialog === 'Transfer' && selected && (
+        <TransferOwnershipDialog
+          key={'transfer'}
+          done={() => setOpenDialog(undefined)}
+          title={`Transfer ${`${selected.name} (${displayAddress(selected.contractAddress)})`}`}
+          transfer={(newOwner: string) =>
+            wrap('Transfer ownership...', async () => {
+              if (selected) {
+                const owb = getOwnableWithBackup(web3, selected.contractAddress);
+                return owb.transferOwnership(newOwner, publicAddress);
+              }
+            })
+          }
+        />
+      )}
+      {openDialog === 'DataView' && selected && (
+        <ContractEntryDetailView
+          contractData={selected}
+          done={() => setOpenDialog(undefined)}
+          action={(command, index) => {
+            setOpenDialog(command);
             setOwnableWithBackupIndex(index);
           }}
         />
       )}
-      {ownableWithBackupIndex > -1 && (
+      {openDialog === 'OwnableWithBackup' && ownableWithBackupIndex > -1 && (
         <OwnableWithBackupDialog
+          key={'OwnableWithBackup'}
           contractAddress={data[ownableWithBackupIndex].contractAddress}
-          done={() => setOwnableWithBackupIndex(-1)}
+          done={() => setOpenDialog(undefined)}
+        />
+      )}
+      {openDialog === 'OwnableWithBackup' && ownableWithBackupIndex > -1 && (
+        <OwnableWithBackupDialog
+          key={'OwnableWithBackup-2'}
+          contractAddress={data[ownableWithBackupIndex].contractAddress}
+          done={() => setOpenDialog(undefined)}
         />
       )}
     </Fragment>

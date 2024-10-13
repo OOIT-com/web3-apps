@@ -65,5 +65,5 @@ export function SetEditablePart({
     </Stack>
   );
 
-  return <CollapsiblePanel title={`Editable`} toolbar={[]} content={content} />;
+  return <CollapsiblePanel collapsed={true} title={`Editable`} toolbar={[]} content={content} />;
 }

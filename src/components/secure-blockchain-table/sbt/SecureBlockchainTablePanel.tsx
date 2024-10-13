@@ -1,24 +1,25 @@
-import { Button, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
-import { StatusMessageElement } from '../common/StatusMessageElement';
+import { FC, useEffect, useState } from 'react';
+import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../../types';
+import { StatusMessageElement } from '../../common/StatusMessageElement';
 import {
   ContractData,
   getContractRegistry,
   newContractDataTemplate
-} from '../../contracts/contract-registry/ContractRegistry-support';
+} from '../../../contracts/contract-registry/ContractRegistry-support';
 import {
   secureBlockchainTableAbi,
   secureBlockchainTableBytecode
-} from '../../contracts/secure-blockchain-table/SecureBlockchainTable';
-import { CollapsiblePanel } from '../common/CollapsiblePanel';
+} from '../../../contracts/secure-blockchain-table/SecureBlockchainTable';
+import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { ContractConstructorArgs } from 'web3-types';
-import { deployContract } from '../../contracts/deploy-contract';
-import { newEncSecret } from '../../utils/enc-dec-utils';
-import { useAppContext } from '../AppContextProvider';
+import { deployContract } from '../../../contracts/deploy-contract';
+import { newEncSecret } from '../../../utils/enc-dec-utils';
+import { useAppContext } from '../../AppContextProvider';
+import { PrefixTextField } from '../../common/PrefixTextField';
 
-export function SecureBlockchainTablePanel({ refresh }: Readonly<{ refresh: NotifyFun }>) {
+export const SecureBlockchainTablePanel: FC<{ refresh: NotifyFun; prefix: string }> = ({ refresh, prefix }) => {
   const { wrap, web3Session } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
 
@@ -80,7 +81,7 @@ export function SecureBlockchainTablePanel({ refresh }: Readonly<{ refresh: Noti
               if (publicAddress && contractRegistry) {
                 setStatusMessage(undefined);
                 const contractData: ContractData = {
-                  ...newContractDataTemplate(registerName, contractAddress),
+                  ...newContractDataTemplate(prefix + registerName, contractAddress),
                   description: '',
                   contractName: 'SecureBlockchainTable',
                   contractType: 'SecureBlockchainTable,OwnableWithBackup',
@@ -108,7 +109,8 @@ export function SecureBlockchainTablePanel({ refresh }: Readonly<{ refresh: Noti
         </Button>
       ]}
       content={[
-        <TextField
+        <PrefixTextField
+          prefix={prefix}
           key={'text-field'}
           fullWidth={true}
           placeholder={'e.g. Salaries_2025'}
@@ -126,4 +128,4 @@ export function SecureBlockchainTablePanel({ refresh }: Readonly<{ refresh: Noti
       ]}
     />
   );
-}
+};

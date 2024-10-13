@@ -6,7 +6,6 @@ import { Paper } from '@mui/material';
 import { ContractRegistryListUi } from './ContractRegistryListUi';
 import { planDeployerTitle, PlanDeployerUi } from './PlanDeployerUi';
 import { ContractVerifierUi } from './ContractVerfierUi';
-import { getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 
 export function ContractRegistryUi() {
   const [value, setValue] = React.useState(0);

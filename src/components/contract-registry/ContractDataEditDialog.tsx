@@ -1,5 +1,5 @@
 import { isStatusMessage, NotifyRefresh, StatusMessage, warningMessage } from '../../types';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import {
   ContractData,
   getContractRegistry,
@@ -8,7 +8,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, Stack, TextField, TextFieldProps } from '@mui/material';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
@@ -85,7 +85,7 @@ export function ContractDataEditDialog({
             label={'Description'}
             change={(value) => setCd('description', value)}
             minRows={3}
-          />{' '}
+          />
           <AttributeRow key={'url'} value={url} label={'Url (Documentation)'} change={(value) => setCd('url', value)} />
           <AttributeRow
             key={'sourceCodeUrl'}
@@ -102,7 +102,8 @@ export function ContractDataEditDialog({
           <AttributeRow
             key={'constructorArgs'}
             value={constructorArgs}
-            label={`Constructor Arguments (eg.:"GlaruSoft AG", "GLS")`}
+            disabled={isUpdate}
+            label={`Constructor Arguments (eg.:"MyCoolCoin", "MCC")`}
             change={(value) => setCd('constructorArgs', value)}
           />
           {isUpdate && (
@@ -195,26 +196,16 @@ export function ContractDataEditDialog({
   );
 }
 
-function AttributeRow({
-  value,
-  label,
+const AttributeRow: FC<TextFieldProps & { minRows?: number; change: (value: string) => void }> = ({
   change,
-  minRows = 1
-}: Readonly<{
-  value: string;
-  label: string;
-  change: (value: string) => void;
-  minRows?: number;
-}>) {
-  return (
-    <TextField
-      label={label}
-      size={'small'}
-      fullWidth={true}
-      value={value}
-      onChange={(e) => change(e.target.value)}
-      rows={minRows}
-      multiline={minRows > 1}
-    />
-  );
-}
+  minRows = 1,
+  value
+}) => (
+  <TextField
+    fullWidth={true}
+    value={value}
+    onChange={(e) => change(e.target.value)}
+    rows={minRows}
+    multiline={minRows > 1}
+  />
+);

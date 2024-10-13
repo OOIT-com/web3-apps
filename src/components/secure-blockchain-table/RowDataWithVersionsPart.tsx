@@ -183,6 +183,7 @@ export function RowDataWithVersionsPart({
 
   return (
     <CollapsiblePanel
+      collapsed={true}
       title={`Row Data`}
       toolbar={[
         <Button key={'refresh'} onClick={refreshData}>

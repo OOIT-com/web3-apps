@@ -50,7 +50,7 @@ export const getContractRegistryContractAddress = () => contractAddress;
 export function initContractRegistry(web3: Web3, networkId: number): StatusMessage {
   contractAddress = getContractAddress(networkId, ContractName.CONTRACT_REGISTRY);
   const contract = new web3.eth.Contract(contractRegistryAbi as any, contractAddress);
-  instance = new ContractRegistry(contract);
+  instance = new ContractRegistry(contract, contractAddress);
   return successMessage(`Contract ${ContractName.CONTRACT_REGISTRY} successfully initialized!`);
 }
 
@@ -59,9 +59,11 @@ export const getContractRegistry = () => instance;
 
 export class ContractRegistry {
   private readonly contract: ContractRegistryContractType;
+  public readonly contractAddress: string;
 
-  constructor(contract: ContractRegistryContractType) {
+  constructor(contract: ContractRegistryContractType, contractAddress: string) {
     this.contract = contract;
+    this.contractAddress = contractAddress;
   }
 
   public async register(contractData: ContractData, from: string): Promise<StatusMessage> {
@@ -193,6 +195,16 @@ export class ContractRegistry {
         from
       });
       return successMessage(`${tag} Transaction receipt: ${transactionHash}`);
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async getOwner() {
+    const tag = '<getOwner>';
+    try {
+      const addr = await this.contract.methods.owner().call();
+      return addr.toLowerCase();
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);
     }

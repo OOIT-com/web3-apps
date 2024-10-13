@@ -8,17 +8,18 @@ import { Button, Stack } from '@mui/material';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TextFieldView } from '../common/TextFieldView';
-import { OwnableWithBackup } from './ContractRegistryListUi';
+import { CommandName, OwnableWithBackup } from './ContractRegistryListUi';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { useAppContext } from '../AppContextProvider';
+import { ButtonPanel } from '../common/ButtonPanel';
 
-export function ContractEntryView({
+export function ContractEntryDetailView({
   done,
   action,
   contractData
 }: {
   readonly done: NotifyFun;
-  readonly action: (command: string, index: number) => void;
+  readonly action: (command: CommandName, index: number) => void;
   readonly contractData: ContractData;
 }) {
   const app = useAppContext();
@@ -47,11 +48,11 @@ export function ContractEntryView({
     return <></>;
   }
   return (
-    <Dialog open={true} onClose={() => done()} maxWidth={'md'}>
+    <Dialog open={true} onClose={() => done()} maxWidth={'md'} fullWidth={true}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-        <Stack spacing={2} sx={{ width: '30em', padding: '1em 0' }}>
+        <Stack spacing={2} sx={{ width: '100%', padding: '1em 0' }}>
           <AddressBoxWithCopy
             key={'contractAddress'}
             label={'Contract Address*'}
@@ -59,54 +60,56 @@ export function ContractEntryView({
             reduced={false}
             useNames={true}
           />
-          <AttributeRow key={'name'} value={name} label={'Instance Name*'} />
-          <AttributeRow key={'contractName'} value={contractName} label={'Contract Name (e.g. AddressBook)*'} />
-          <AttributeRow key={'description'} value={description} label={'Description'} />{' '}
-          <AttributeRow key={'url'} value={url} label={'Url (Documentation)'} />
-          <AttributeRow key={'sourceCodeUrl'} value={sourceCodeUrl} label={'Source Code Url'} />
-          <AttributeRow
+          <TextFieldView key={'name'} value={name} label={'Instance Name*'} />
+          <TextFieldView key={'contractName'} value={contractName} label={'Contract Name (e.g. AddressBook)*'} />
+          <TextFieldView key={'description'} value={description} label={'Description'} />{' '}
+          <TextFieldView key={'url'} value={url} label={'Url (Documentation)'} />
+          <TextFieldView key={'sourceCodeUrl'} value={sourceCodeUrl} label={'Source Code Url'} />
+          <TextFieldView
             key={'contractType'}
             value={contractType}
             label={`Contract Types (e.g. ERC-20,${OwnableWithBackup}, ...)`}
           />
-          <AttributeRow key={'constructorArgs'} value={constructorArgs} label={`Constructor Arguments`} />
-          <AttributeRow key={'status'} value={status} label={`Status`} />
-          <AttributeRow
+          <TextFieldView key={'constructorArgs'} value={constructorArgs} label={`Constructor Arguments`} />
+          <TextFieldView key={'status'} value={status} label={`Status`} />
+          <TextFieldView
             key={'created'}
             value={created ? moment(1000 * +created.toString()).format('YYYY-MM-DD HH:mm') : '-'}
             label={`Created`}
           />
-          <AttributeRow
+          <TextFieldView
             key={'updated'}
             value={updated ? moment(1000 * +updated.toString()).format('YYYY-MM-DD HH:mm') : '-'}
             label={`Updated`}
           />
         </Stack>
-        <Stack direction={'row'} alignItems={'flex-end'} justifyContent={'space-between'}>
-          {contractType.includes(OwnableWithBackup) && (
-            <Button
-              onClick={() => action(OwnableWithBackup, index ?? -1)}
-              key={'backup-owner-button'}
-              disabled={!name || !contractName || !contractAddress}
-            >
-              Backup Owner Ui
+        <ButtonPanel
+          mode={'space-between'}
+          content={[
+            contractType.includes('OwnableWithBackup') && (
+              <Button
+                key={'backup-owner-button'}
+                onClick={() => action('OwnableWithBackup', index ?? -1)}
+                disabled={!name || !contractName || !contractAddress}
+              >
+                Backup Owner Ui
+              </Button>
+            ),
+            contractType.includes('OwnableWithBackup') && (
+              <Button
+                key={'change-owner'}
+                onClick={() => action('Transfer', index ?? -1)}
+                disabled={!name || !contractName || !contractAddress}
+              >
+                Change Owner
+              </Button>
+            ),
+            <Button key={'close'} onClick={() => done()}>
+              Close
             </Button>
-          )}
-          <Button key={'close'} onClick={() => done()}>
-            Close
-          </Button>
-        </Stack>
+          ]}
+        />
       </DialogContent>
     </Dialog>
   );
-}
-
-function AttributeRow({
-  value,
-  label
-}: Readonly<{
-  value: string;
-  label: string;
-}>) {
-  return <TextFieldView label={label} value={value} />;
 }

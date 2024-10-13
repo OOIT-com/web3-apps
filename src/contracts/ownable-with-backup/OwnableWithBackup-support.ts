@@ -1,4 +1,4 @@
-import { infoMessage, StatusMessage } from '../../types';
+import { infoMessage, StatusMessage, successMessage } from '../../types';
 import Web3 from 'web3';
 import { ownableWithBackupAbi } from './OwnableWithBackup-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
@@ -26,6 +26,18 @@ export class OwnableWithBackup {
 
   constructor(contract: OwnableWithBackupContractType) {
     this.contract = contract;
+  }
+
+  public async transferOwnership(newOwnerAddress: string, from: string): Promise<StatusMessage> {
+    const tag = '<TransferOwnership>';
+    try {
+      const { transactionHash } = await this.contract.methods.transferOwnership(newOwnerAddress).send({
+        from
+      });
+      return successMessage(`${tag} Transaction receipt: ${transactionHash}`);
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
   }
 
   public getContract = (): OwnableWithBackupContractType => this.contract;

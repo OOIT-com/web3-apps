@@ -30,7 +30,7 @@ export type DataRowEntry<T = unknown> = {
 export async function getSecureBlockchainTableList(): Promise<StatusMessage | ContractDataWithIndex[]> {
   const contractRegistry = getContractRegistry();
   if (!contractRegistry) {
-    return errorMessage('Contract Registry not available!');
+    return errorMessage('Contract Registry is not available!');
   }
   const smEntries: ContractDataWithIndex[] = [];
   const count = await contractRegistry.getContractDataCount();

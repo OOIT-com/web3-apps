@@ -1,22 +1,17 @@
 import TextField from '@mui/material/TextField';
-import { Autocomplete, Box } from '@mui/material';
+import { Autocomplete, FormHelperText } from '@mui/material';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { addressDataDisplay } from './address-book-utils';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { useAppContext } from '../AppContextProvider';
 
-export function AddressEntryField({
-  disabled = false,
-  label,
-  setAddress,
-  address
-}: Readonly<{
+export const AddressEntryField: FC<{
   disabled?: boolean;
   label?: string;
   address: string;
   setAddress: (address: string) => void;
-}>) {
+}> = ({ disabled = false, label, setAddress, address }) => {
   const { addressData = [] } = useAppContext();
   const [addressContent, setAddressContent] = useState('');
   useEffect(() => {
@@ -42,12 +37,12 @@ export function AddressEntryField({
           margin="dense"
           label={label ?? 'Address'}
           helperText={
-            <Box component={'span'} sx={{ color: 'black', fontStyle: 'italic', fontWeight: '800' }}>
+            <FormHelperText component={'div'} sx={{ color: 'black', fontStyle: 'italic', fontWeight: '800' }}>
               <AddressBoxWithCopy value={address} variant={'standard'} />
-            </Box>
+            </FormHelperText>
           }
         />
       )}
     />
   );
-}
+};

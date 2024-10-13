@@ -39,3 +39,15 @@ export function ButtonPanel({
     </Stack>
   );
 }
+
+//
+// export const ButtonPanel: FC<StackProps & { mode?: Mode; content: ReactElement | ReactNode | ReactNode[] | false }> = ({
+//   content,
+//   mode = 'right'
+// }) => {
+//   return (
+//     <Stack direction={'row'} spacing={1} sx={styles[mode]}>
+//       {content}
+//     </Stack>
+//   );
+// };

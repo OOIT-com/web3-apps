@@ -60,7 +60,6 @@ export class PublicKeyStoreV2 {
   }
 
   public async getPublicKey(address: string): Promise<string | StatusMessage> {
-    debugger;
     const tag = '<GetPublicKey>';
     try {
       return await this.contract.methods.getPublicKey(address).call();

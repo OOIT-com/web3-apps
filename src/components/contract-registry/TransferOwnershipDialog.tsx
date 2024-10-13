@@ -4,9 +4,11 @@ import { ReactNode, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { Button, Stack, TextField } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { LDBox } from '../common/StyledBoxes';
+import { useAppContext } from '../AppContextProvider';
+import { AddressEntryField } from '../address-book/AddressEntryField';
 
 export function TransferOwnershipDialog({
   done,
@@ -14,9 +16,10 @@ export function TransferOwnershipDialog({
   title
 }: {
   readonly done: NotifyFun;
-  readonly transfer: (newOwner: string) => Promise<StatusMessage>;
+  readonly transfer: (newOwner: string) => Promise<StatusMessage | void>;
   readonly title: ReactNode | string;
 }) {
+  const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [newOwner, setNewOwner] = useState('');
 
@@ -27,26 +30,27 @@ export function TransferOwnershipDialog({
         <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
         <Stack spacing={2} sx={{ width: '30em', padding: '1em 0' }}>
           <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>{title}</LDBox>
-
-          <TextField label={'New Owner'} onChange={(e) => setNewOwner(e.target.value)} />
+          <AddressEntryField label={'New Owner'} address={newOwner} setAddress={(addr) => setNewOwner(addr)} />
 
           <Stack direction={'row'} alignItems={'flex-end'} justifyContent={'space-between'}>
             <Button
               disabled={!newOwner}
-              onClick={async () => {
-                const res = await transfer(newOwner);
-                if (res.status !== 'success') {
-                  setStatusMessage(res);
-                } else {
-                  done();
-                }
-              }}
+              onClick={async () =>
+                wrap('Transfer ownership...', async () => {
+                  const res = await transfer(newOwner);
+                  if (res) {
+                    setStatusMessage(res);
+                  } else {
+                    done();
+                  }
+                })
+              }
               key={'action'}
             >
               Confirm
             </Button>
             <Button key={'close'} onClick={() => done()}>
-              Cancel
+              Close
             </Button>
           </Stack>
         </Stack>

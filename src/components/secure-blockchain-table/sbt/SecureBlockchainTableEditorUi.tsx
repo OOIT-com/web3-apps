@@ -1,16 +1,16 @@
 import { Stack } from '@mui/material';
-import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
-import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
+import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { isStatusMessage, NotifyRefresh, StatusMessage } from '../../types';
-import { StatusMessageElement } from '../common/StatusMessageElement';
-import { RowDataWithVersionsPart } from './RowDataWithVersionsPart';
-import { SetEditablePart } from './SetEditablePart';
-import { DataPart } from './DataPart';
-import { UserManagement } from './UserManagement';
-import { useAppContext } from '../AppContextProvider';
+import { isStatusMessage, NotifyRefresh, StatusMessage } from '../../../types';
+import { StatusMessageElement } from '../../common/StatusMessageElement';
+import { RowDataWithVersionsPart } from '../RowDataWithVersionsPart';
+import { SetEditablePart } from '../SetEditablePart';
+import { DataPart } from '../DataPart';
+import { UserManagement } from '../UserManagement';
+import { useAppContext } from '../../AppContextProvider';
 
 export function SecureBlockchainTableEditorUi({
   sbtManager,
@@ -37,6 +37,7 @@ export function SecureBlockchainTableEditorUi({
 
   return (
     <CollapsiblePanel
+      collapsible={false}
       level={'top'}
       title={`Secure Blockchain Table: ${sbtManager.name}`}
       toolbar={

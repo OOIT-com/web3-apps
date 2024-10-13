@@ -73,5 +73,5 @@ export function DataPart({
     </Stack>
   );
 
-  return <CollapsiblePanel title={`${label}`} toolbar={toolbar} content={content} />;
+  return <CollapsiblePanel collapsed={true} title={`${label}`} toolbar={toolbar} content={content} />;
 }

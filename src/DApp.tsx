@@ -4,7 +4,7 @@ import { blue, orange } from '@mui/material/colors';
 import { AppRouter } from './components/AppRouter';
 import { Snackbar } from './components/common/Snackbar';
 import { AppContextProvider } from './components/AppContextProvider';
-import Loader from './components/common/Loader';
+import Loader2 from './components/common/Loader2';
 
 export const ColorModeContext = createContext({
   toggleColorMode: () => {}
@@ -59,6 +59,16 @@ export function DApp() {
                 textTransform: 'none' // Disable the uppercase transformation globally
               }
             }
+          },
+          MuiFormHelperText: {
+            defaultProps: {
+              component: 'div'
+            }
+          },
+          MuiStack: {
+            defaultProps: {
+              component: 'div'
+            }
           }
         }
       }),
@@ -71,7 +81,7 @@ export function DApp() {
         <CssBaseline>
           <AppContextProvider>
             <AppRouter />
-            <Loader />
+            <Loader2 />
             <Snackbar />
           </AppContextProvider>
         </CssBaseline>
