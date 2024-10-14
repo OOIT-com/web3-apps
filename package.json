@@ -27,12 +27,16 @@
     "ethersv5": "npm:ethers@5.7.2",
     "file-saver": "^2.0.5",
     "file-type": "^19.3.0",
+    "i18next": "^23.16.0",
+    "i18next-browser-languagedetector": "^8.0.0",
     "moment": "^2.29.4",
     "notistack": "^3.0.1",
+    "nth-check": "^2.1.1",
     "pako": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
+    "react-i18next": "^15.0.3",
     "react-markdown": "^8.0.7",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
@@ -43,8 +47,7 @@
     "vm-browserify": "^1.1.2",
     "web-vitals": "^2.1.4",
     "web3": "4.8.0",
-    "xlsx": "^0.18.5",
-    "nth-check": "^2.1.1"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -63,6 +66,7 @@
     "buffer": "^6.0.3",
     "chai": "^4.3.7",
     "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "https-browserify": "^1.0.0",
     "mocha": "^10.2.0",
@@ -79,7 +83,6 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.5",
     "url": "^0.11.0",
-    "dotenv": "^16.4.5",
     "ws": "^8.18.0"
   },
   "scripts": {
