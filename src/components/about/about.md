@@ -46,4 +46,4 @@ On the following blockchains the following contracts are available
 Toni Bünter
 [OOIT.com AG](https://www.ooit.com)
 
-
+![ooit-logo-120x40.png](ooit-logo-120x40.png)
