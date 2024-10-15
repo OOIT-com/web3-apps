@@ -21,7 +21,7 @@ export const MDElement: FC<{ mdFile: string }> = ({ mdFile }) => {
         <ReactMarkdown
           rehypePlugins={[rehypeRaw]}
           components={{
-            img: ({ node, ...props }) => <img src={'/images/' + props.src} alt={props.alt} />,
+            img: ({ node, ...props }) => <img src={'./images/' + props.src} alt={props.alt} />,
             a: ({ node, ...props }) => (
               <a href={props.href} target="_blank" rel="noopener noreferrer">
                 {props.children}
