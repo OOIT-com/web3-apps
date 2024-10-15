@@ -35,6 +35,7 @@ export const AddressEntryField: FC<{
           {...params}
           variant="outlined"
           margin="dense"
+          size={'small'}
           label={label ?? 'Address'}
           helperText={
             <FormHelperText component={'div'} sx={{ color: 'black', fontStyle: 'italic', fontWeight: '800' }}>

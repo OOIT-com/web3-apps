@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, Fragment, useCallback, useEffect, useState } from 'react';
 import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import { Box, Stack, Table, TableBody, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import TextField from '@mui/material/TextField';
@@ -14,8 +14,9 @@ import { ConfirmData } from './types';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { isAddress, weiToEther } from '../../utils/web3-utils';
 import TableRowComp from '../common/TableRowComp';
+import { Html } from '../common/Html';
 
-export function RegisterNameUi({ universalNameStore }: { universalNameStore: UniversalNameStore }) {
+export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
   const { wrap } = app;
   const { web3, publicAddress } = app.web3Session || {};
@@ -83,7 +84,7 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
 
   const _resolvedAddr = mode === 'contract' ? addrUpdate : publicAddress;
   const resolvedAddr = isAddress(_resolvedAddr) ? _resolvedAddr : '';
-  const title = myName ? `Your Universal Name: ${myName}` : 'Register Universal Names';
+  const title = myName ? `Your Universal Name: ${myName}` : 'My Universal Names';
   const toolbar = (
     <Stack key={'mode-toggle'} direction={'row'} spacing={1}>
       <ToggleButtonGroup color="primary" value={mode} exclusive onChange={(event, value) => setMode(value)}>
@@ -157,7 +158,7 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
               key={'buttons'}
               colspan={[2]}
               elements={[
-                <Stack direction={'row'} spacing={1}>
+                <Stack key={'stack'} direction={'row'} spacing={1}>
                   <Button
                     key={'save'}
                     disabled={!!myName}
@@ -167,10 +168,10 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
                         setConfirmData({
                           title: `Save ${myNameUpdate} to UNS`,
                           content: [
-                            `Saving the name ${myNameUpdate} will cost a fee of ${fee}`,
-                            'Please press <b>accept</b> to start the registration!'
+                            <Fragment key={1}>{`Saving the name ${myNameUpdate} will cost a fee of ${fee}`}</Fragment>,
+                            <Html key={2} content={'Please press <b>accept</b> to start the registration!'} />
                           ],
-                          accept: () =>
+                          accept: () => {
                             wrap(`Saving ${myNameUpdate} ot UNS...`, async () => {
                               const contractAddress = mode === 'contract' ? addrUpdate : undefined;
                               if (contractAddress && !isAddress(contractAddress)) {
@@ -186,7 +187,8 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
                                   setStatusMessage(res);
                                 }
                               }
-                            }),
+                            });
+                          },
                           cancel: () => setConfirmData(undefined)
                         });
                       }
@@ -202,8 +204,10 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
                         await refreshData(resolvedAddr);
                         setConfirmData({
                           title: `Delete ${myName} to UNS`,
-                          content: [`Do you want to delele the name ${myName}? (Fee: ${fee})`],
-                          accept: () =>
+                          content: [
+                            <Fragment key={1}>{`Do you want to delele the name ${myName}? (Fee: ${fee})`}</Fragment>
+                          ],
+                          accept: () => {
                             wrap(`Saving ${myNameUpdate} ot UNS...`, async () => {
                               setConfirmData(undefined);
                               if (universalNameStore) {
@@ -213,7 +217,8 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
                                   setStatusMessage(res);
                                 }
                               }
-                            }),
+                            });
+                          },
                           cancel: () => setConfirmData(undefined)
                         });
                       }
@@ -231,4 +236,4 @@ export function RegisterNameUi({ universalNameStore }: { universalNameStore: Uni
       ]}
     />
   );
-}
+};

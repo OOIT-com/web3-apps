@@ -7,6 +7,7 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { decryptText, encryptText } from '../../utils/enc-dec-utils';
+import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 
 export function EncryptionAndDecryption() {
   const { wrap, web3Session } = useAppContext();
@@ -99,7 +100,7 @@ export function EncryptionAndDecryption() {
       </Stack>
 
       <Stack key={'enc-text'} direction={'row'}>
-        <TextField
+        <TextFieldWithCopy
           fullWidth={true}
           size={'small'}
           label={'Encrypted Text'}
@@ -109,7 +110,14 @@ export function EncryptionAndDecryption() {
       </Stack>
 
       <Stack key={'dec-text'} direction={'row'}>
-        <TextField fullWidth={true} size={'small'} label={'Decrypted Text'} value={decText} />
+        <TextField
+          multiline={true}
+          fullWidth={true}
+          disabled={true}
+          size={'small'}
+          label={'Decrypted Text'}
+          value={decText}
+        />
       </Stack>
     </Stack>
   );

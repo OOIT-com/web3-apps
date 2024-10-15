@@ -12,7 +12,7 @@ import { useAppContext } from '../AppContextProvider';
 import { NoContractFound } from '../common/NoContractFound';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import privateMessageStoreV2Png from '../images/private-message-store-v2.png';
+import privateMessageStorePng from '../images/private-message-store.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 import {
   loadPrivateMessageStoreV2,
@@ -61,7 +61,7 @@ export function PrivateMessageStoreV2Ui() {
     content.push(
       <StatusMessageElement
         key={'no-public-key-info'}
-        statusMessage={infoMessage('You did not yet create a for the Private Message Store yet.')}
+        statusMessage={infoMessage('You did not yet create a key pair for the Private Message Store yet.')}
       />
     );
     content.push(
@@ -84,7 +84,7 @@ export function PrivateMessageStoreV2Ui() {
               }
             }}
           >
-            Yes, create a key pair now for me!
+            Yes, create a key pair for me now!
           </Button>
         ]}
       />
@@ -113,7 +113,7 @@ export function PrivateMessageStoreV2Ui() {
   return (
     <CollapsiblePanel
       collapsible={false}
-      title={<AppTopTitle title={'Private Message Store (V2)'} avatar={privateMessageStoreV2Png} />}
+      title={<AppTopTitle title={'Private Message Store (V2)'} avatar={privateMessageStorePng} />}
       content={content}
     />
   );

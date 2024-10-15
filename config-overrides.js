@@ -21,9 +21,9 @@ module.exports = function override(config) {
       Buffer: ['buffer', 'Buffer']
     })
   ]);
-  config.module.rules.push({
-    test: /\.md$/,
-    use: 'raw-loader'
-  });
+  // config.module.rules.push({
+  //   test: /\.md/i,
+  //   use: 'raw-loader'
+  // });
   return config;
 };

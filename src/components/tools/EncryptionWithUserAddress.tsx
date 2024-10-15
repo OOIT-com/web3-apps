@@ -9,6 +9,8 @@ import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeySto
 
 import { useAppContext } from '../AppContextProvider';
 import { encryptText } from '../../utils/enc-dec-utils';
+import { AddressEntryField } from '../address-book/AddressEntryField';
+import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 
 export function EncryptionWithUserAddress() {
   const { wrap, web3Session } = useAppContext();
@@ -73,13 +75,10 @@ export function EncryptionWithUserAddress() {
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
 
       <Stack key={'user-address'} direction={'row'}>
-        <TextField
-          placeholder={'0x...'}
-          fullWidth={true}
-          size={'small'}
+        <AddressEntryField
           label={'User Address'}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setUserAddress(e.target.value)}
-          value={userAddress}
+          setAddress={(value: string) => setUserAddress(value)}
+          address={userAddress}
         />
       </Stack>
 
@@ -95,18 +94,7 @@ export function EncryptionWithUserAddress() {
           value={inText}
         />
       </Stack>
-
-      {!!encText && (
-        <Stack key={'enc-text'} direction={'row'}>
-          <TextField
-            fullWidth={true}
-            size={'small'}
-            label={'Encrypted Text'}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setEncText(e.target.value)}
-            value={encText}
-          />
-        </Stack>
-      )}
+      <TextFieldWithCopy value={encText} disabled={true} placeholder={'Encrypted Text'} />
     </Stack>
   );
 }

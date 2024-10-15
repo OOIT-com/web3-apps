@@ -26,8 +26,16 @@ export const WithdrawUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
       wrap('Refresh data...', async () => {
         if (universalNameStore && web3 && publicAddress) {
           const balance = await getContractBalance(web3, universalNameStore.contractAddress);
+          if (isStatusMessage(balance)) {
+            setStatusMessage(balance);
+            return;
+          }
           setBalance(balance);
           const myBalance = await getContractBalance(web3, publicAddress);
+          if (isStatusMessage(myBalance)) {
+            setStatusMessage(myBalance);
+            return;
+          }
           setMyBalance(myBalance);
         }
       }),

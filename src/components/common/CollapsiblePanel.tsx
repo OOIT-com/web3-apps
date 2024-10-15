@@ -43,6 +43,7 @@ export type CollapsiblePanelProps = {
   level?: Level;
   collapsible?: boolean;
   collapsed?: boolean;
+  spacing?: number;
 };
 export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
   title,
@@ -51,7 +52,8 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
   content,
   level = 'second',
   collapsible = true,
-  collapsed = false
+  collapsed = false,
+  spacing = 1
 }) => {
   const [exp, setExp] = useState(!collapsed);
 
@@ -104,8 +106,8 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
           {helpOn && <HelpBox help={help} done={() => setHelpOn(false)} />}
         </Stack>
       </LDAccordionSummary>
-      <AccordionDetails>
-        <Stack spacing={1}>{content}</Stack>
+      <AccordionDetails sx={{ marginTop: '1em' }}>
+        <Stack spacing={spacing}>{content}</Stack>
       </AccordionDetails>
     </Accordion>
   );

@@ -62,14 +62,14 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
       <DialogTitle>Info Page for {name}</DialogTitle>
       <DialogContent>
         <Stack spacing={4}>
-          <DialogContentText>{`This page shows information about the current connected blockchain ${name}.`}</DialogContentText>
+          <DialogContentText>{`This page shows information about the currently connected blockchain: ${name}.`}</DialogContentText>
           <TableContainer key="table" component={Paper}>
             <Table sx={{ minWidth: 800 }}>
               <TableBody>
                 <InfoTableRow key={'public-address'} label={'Your Address'} value={publicAddress} />
                 <InfoTableRow
                   key={'balance-ether'}
-                  label={`Your Balance ${currencySymbol}`}
+                  label={`Your Balance in: ${currencySymbol}`}
                   value={loading || !web3 ? 'loading' : web3.utils.fromWei(balanceWei, 'ether').toString()}
                 />
                 <InfoTableRow

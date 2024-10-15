@@ -2,7 +2,7 @@ import { IconButton, Stack, Tooltip } from '@mui/material';
 import { infoMessage, isStatusMessage } from '../../types';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { LDBox, PublicKeyBox } from './StyledBoxes';
 import { isAddress } from 'ethers';
 import { resolveAddress } from '../../address-names';
@@ -18,19 +18,13 @@ const defaultSx = {
 };
 const standardSx = { fontSize: '80%', padding: '0.4em', borderRadius: '0.4em', cursor: 'pointer' };
 
-export function AddressBoxWithCopy({
-  value = '-',
-  label = '',
-  variant = 'outlined',
-  reduced = true,
-  useNames = false
-}: Readonly<{
+export const AddressBoxWithCopy: FC<{
   value?: string;
   label?: string;
   variant?: 'standard' | 'outlined';
   reduced?: boolean;
   useNames?: boolean;
-}>) {
+}> = ({ value = '-', label = '', variant = 'outlined', reduced = true, useNames = false }) => {
   const { dispatchSnackbarMessage } = useAppContext();
   const [reduced0, setReduced0] = useState<boolean>(reduced);
   const [name, setName] = useState('');
@@ -86,4 +80,4 @@ export function AddressBoxWithCopy({
       </Tooltip>
     </Stack>
   );
-}
+};

@@ -10,6 +10,7 @@ import { displayAddress } from '../../utils/misc-util';
 import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
+import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 
 export function ContractDataRetrieveDialog({
   done,
@@ -35,6 +36,9 @@ export function ContractDataRetrieveDialog({
       <DialogContent>
         <Stack spacing={1}>
           <StatusMessageElement statusMessage={statusMessage} />
+          {!!contractData && (
+            <AddressBoxWithCopy value={contractData.contractAddress} reduced={false} label={contractData.name} />
+          )}
           <LDBox sx={{ fontSize: '90%', fontStyle: 'italic' }}>The retrieval does not support wildcards.</LDBox>
           <Stack direction={'row'} spacing={2} sx={{ width: '30em', padding: '1em 0' }}>
             <TextField
@@ -53,6 +57,7 @@ export function ContractDataRetrieveDialog({
                 wrap(
                   `Retrieve by ${isAddress(retrieveValue) ? 'Address' : 'Name'} for : ${retrieveValue}`,
                   async () => {
+                    setContractData(undefined);
                     const contractRegistry = getContractRegistry();
                     if (!contractRegistry) {
                       console.warn('ContractRegistry not initialized!');

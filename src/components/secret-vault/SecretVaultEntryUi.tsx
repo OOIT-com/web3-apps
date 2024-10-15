@@ -14,7 +14,7 @@ import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-bl
 import { orange } from '@mui/material/colors';
 import { encryptContent } from '../../utils/metamask-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { decryptKeyBlockValue } from './key-block-utils';
+import { decryptKeyBlockValue } from './secret-vault-utils';
 import { useAppContext } from '../AppContextProvider';
 import { PasswordTextField } from '../common/PasswordTextField';
 
@@ -73,7 +73,7 @@ export function KeyBlockEntry({
       </DialogTitle>
       <DialogContent>
         <Stack spacing={4}>
-          <DialogContentText>You can edit change the name and the secret.</DialogContentText>
+          <DialogContentText>Edit name and secret.</DialogContentText>
           {item0.inserted ? (
             <Box>
               Nr: {item0.index + 1} - Inserted at: {item0.inserted}
@@ -165,7 +165,9 @@ export function KeyBlockEntry({
               disabled={!(entry.enc && entry.value && dirty)}
               onClick={async () =>
                 wrap('Saving Secret Vault Entry...', async () => {
-                  setStatusMessage(infoMessage('Saving... Please confirm/reject MetaMask dialog!'));
+                  if (mode === 'metamask') {
+                    setStatusMessage(infoMessage('Saving... Please confirm/reject MetaMask dialog!'));
+                  }
                   try {
                     if (item0.index === -1) {
                       const res = await keyBlock.add(publicAddress, entry.name, entry.value);

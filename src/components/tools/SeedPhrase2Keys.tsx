@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useState } from 'react';
-import { Button, Stack, TextField, Tooltip } from '@mui/material';
+import { Button, Stack, Tooltip } from '@mui/material';
 import { Wallet } from 'alchemy-sdk';
 import { StyledHead } from '../common/StyledHead';
 import { errorMessage, StatusMessage, warningMessage } from '../../types';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
+import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 
 export function SeedPhrase2Keys() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
@@ -81,7 +82,7 @@ export function SeedPhrase2Keys() {
       </Stack>
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
       <Stack key={'seed-phrase'} direction={'row'}>
-        <TextField
+        <TextFieldWithCopy
           placeholder={'provide seed phrase or click <Random>'}
           fullWidth={true}
           size={'small'}

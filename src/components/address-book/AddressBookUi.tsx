@@ -19,8 +19,7 @@ import addressBookImg from '../images/address-book.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 
 export function AddressBookUi() {
-  const app = useAppContext();
-  const { wrap, web3Session, addressData = [], setAddressData } = app;
+  const { wrap, web3Session, addressData = [], setAddressData } = useAppContext();
   const { web3, publicAddress } = web3Session || {};
   const [owner, setOwner] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();

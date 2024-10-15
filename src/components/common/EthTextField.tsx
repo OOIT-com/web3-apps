@@ -1,0 +1,34 @@
+import * as React from 'react';
+import { FC } from 'react';
+import { InputAdornment, TextFieldProps } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { useAppContext } from '../AppContextProvider';
+import { Web3NotInitialized } from './Web3NotInitialized';
+import { getNetworkInfo } from '../../network-info';
+
+export const EthTextField: FC<TextFieldProps> = (props) => {
+  const { web3Session } = useAppContext();
+  const { networkId } = web3Session || {};
+
+  if (!networkId) {
+    return <Web3NotInitialized />;
+  }
+  const { currencySymbol } = getNetworkInfo(networkId);
+  return (
+    <TextField
+      value={props.value}
+      onChange={
+        //(e: ChangeEvent<HTMLInputElement>) => props.setAmountEth(e.target.value || '')
+        props.onChange
+      }
+      {...props}
+      autoFocus
+      fullWidth
+      slotProps={{
+        input: {
+          startAdornment: <InputAdornment position="start">{currencySymbol}</InputAdornment>
+        }
+      }}
+    />
+  );
+};

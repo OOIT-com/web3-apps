@@ -5,7 +5,7 @@ import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { Contract } from 'web3-eth-contract';
 import { getOwnableWithBackup, OwnableWithBackup } from '../ownable-with-backup/OwnableWithBackup-support';
-import { addressBookAbi, addressBookBytecode } from '../contracts-flattened-compiled/AddressBook';
+import { addressBookAbi, addressBookBytecode } from './AddressBook-abi';
 import { ContractName } from '../contract-utils';
 
 export { addressBookAbi, addressBookBytecode };
@@ -140,7 +140,7 @@ export class AddressBook {
   public async getAddressData(index: number): Promise<AddressDataWithIndex | StatusMessage> {
     const tag = '<GetAddressData>';
     try {
-      const o = (await this.contract.methods.getAddressData(index).call()) as AddressData;
+      const o: AddressDataWithIndex = await this.contract.methods.getAddressData(index).call();
       return { ...o, index };
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);

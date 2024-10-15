@@ -1,10 +1,10 @@
 import { Login } from './login/Login';
 import { Box, Container, Stack } from '@mui/material';
-import { AppHeader } from './AppHeader';
+import { AppHeader } from './landing-page/AppHeader';
 import { createHashRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom';
-import { AppMenu } from './AppMenu';
+import { AppMenu } from './landing-page/AppMenu';
 import { useEffect } from 'react';
-import { menuColumns, MenuEntry } from './menu-defs';
+import { menuColumns, MenuEntry } from './landing-page/menu-defs';
 import { useAppContext } from './AppContextProvider';
 import { ErrorPage } from './login/ErrorPage';
 import Loader2 from './common/Loader2';

@@ -14,7 +14,8 @@ import {
   Stack,
   Table,
   TableBody,
-  TableContainer
+  TableContainer,
+  Tooltip
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import TableRowComp from '../common/TableRowComp';
@@ -26,6 +27,8 @@ import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { Wallet } from 'alchemy-sdk';
 import { PasswordTextField } from '../common/PasswordTextField';
+
+const localStorageEVMName = '__EVM_SECRET_STORAGE_OOIT__';
 
 const warningMessage: StatusMessage = {
   status: 'warning',
@@ -72,6 +75,9 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
       <DialogContent>
         <Stack spacing={2}>
           <StatusMessageElement statusMessage={warningMessage}></StatusMessageElement>
+          <LDBox key={'blockchain-selection'} sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>
+            Blockchain
+          </LDBox>{' '}
           <FormControl fullWidth={true}>
             <InputLabel id={'network'}>{selectLabel}</InputLabel>
             <Select
@@ -88,42 +94,43 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
               ))}
             </Select>
           </FormControl>
-
           {secretList.length > 0 && (
             <Stack spacing={1}>
               <LDBox key={'secrets-title'} sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>
                 Available Secrets
               </LDBox>
               <TableContainer key={'secrets-table'}>
-                <Table>
+                <Table size="small">
                   <TableBody>
                     {secretList.map(({ name, secret }) => (
                       <TableRowComp
                         key={name}
                         elements={[
                           name,
-                          <Button
-                            key={'select'}
-                            onClick={async () => {
-                              const res = await connectWeb3({ networkId, secret });
-                              if (isStatusMessage(res)) {
-                                setStatusMessage(res);
-                              } else {
-                                done();
-                              }
-                            }}
-                          >
-                            Select
-                          </Button>,
-                          <Button
-                            key={'remove'}
-                            onClick={() => {
-                              removeSecretToLocalStorage(name);
-                              setSecretList(getSecretList);
-                            }}
-                          >
-                            Remove
-                          </Button>
+                          <Tooltip key={'select'} title={'Select and connect with this secret...'}>
+                            <Button
+                              onClick={async () => {
+                                const res = await connectWeb3({ networkId, secret });
+                                if (isStatusMessage(res)) {
+                                  setStatusMessage(res);
+                                } else {
+                                  done();
+                                }
+                              }}
+                            >
+                              Select
+                            </Button>
+                          </Tooltip>,
+                          <Tooltip key={'remove'} title={'Remove Secret from local store.'}>
+                            <Button
+                              onClick={() => {
+                                removeSecretToLocalStorage(name);
+                                setSecretList(getSecretList);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </Tooltip>
                         ]}
                       />
                     ))}
@@ -132,7 +139,6 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
               </TableContainer>
             </Stack>
           )}
-
           <Stack spacing={1}>
             <LDBox key={'secrets-title'} sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>
               Add Secret
@@ -149,7 +155,6 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
               value={secret}
               label={'Secret (passphrase or private key)'}
               onChange={(e) => setSecret(e.target.value)}
-              size={'small'}
             />
             <ButtonPanel
               key={'buttons'}
@@ -190,8 +195,6 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
     </Dialog>
   );
 }
-
-const localStorageEVMName = '__EVM_SECRET_STORAGE_OOIT__';
 
 function addSecretToLocalStorage(name: string, secret: string) {
   const s = localStorage.getItem(localStorageEVMName);

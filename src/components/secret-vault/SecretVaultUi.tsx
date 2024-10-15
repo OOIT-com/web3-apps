@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ChangeEvent, FC, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isStatusMessage, StatusMessage } from '../../types';
-import { KeyBlockEntry } from './KeyBlockEntryUi';
+import { KeyBlockEntry } from './SecretVaultEntryUi';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
 import Web3 from 'web3';
 import { getNetworkInfo } from '../../network-info';
@@ -26,7 +26,7 @@ import { grey } from '@mui/material/colors';
 import secretVaultPng from '../images/secret-vault.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 
-const KeyBlockUi: FC = () => {
+const SecretVaultUi: FC = () => {
   const { wrap, web3Session } = useAppContext();
   const { publicAddress, networkId = 0, web3 } = web3Session || {};
   const theme = useTheme();
@@ -136,7 +136,7 @@ const KeyBlockUi: FC = () => {
       <CollapsiblePanel
         level={'top'}
         collapsible={false}
-        title={<AppTopTitle avatar={secretVaultPng} title={'Welcome to the Secret Vault'} />}
+        title={<AppTopTitle avatar={secretVaultPng} title={'My Secret Vault'} />}
         content={content}
       />
       <KeyBlockEntry
@@ -153,7 +153,7 @@ const KeyBlockUi: FC = () => {
     </Fragment>
   );
 };
-export default KeyBlockUi;
+export default SecretVaultUi;
 
 async function refreshFromBlockchain(
   wrap: WrapFun,
