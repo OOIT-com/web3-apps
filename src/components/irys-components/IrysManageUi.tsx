@@ -32,12 +32,11 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
   const refreshIrysData = useCallback(async () => {
     const address = irysAccess.getAddress();
     if (address) {
-      wrap(`Loading Data for ${arName}...`, async () => {
+      return wrap(`Loading Data for ${arName}...`, async () => {
         setStatusMessage(undefined);
         const { polygonBalance, loadedBalance, balance, statusMessage, pricePerMega } = await loadIrysData(
           irysAccess,
-          address,
-          irysAccess.getNetworkId()
+          address
         );
         if (statusMessage.status === 'error') {
           setStatusMessage(statusMessage);
@@ -70,30 +69,46 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
     <Stack justifyContent="flex-start" alignItems="start" spacing={0.6}>
       <Table>
         <TableBody>
-          <TableRowComp key={'connection'} elements={[<Header2>Connection and Network Info</Header2>]} colspan={[3]} />
+          <TableRowComp
+            key={'connection'}
+            elements={[<Header2 key={'header'}>Connection and Network Info</Header2>]}
+            colspan={[3]}
+          />
           <TableRowComp
             key={'address'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>Connected address (Irys)</Box>,
-              <AddressBoxWithCopy value={irysData.address} label={'Account'} reduced={true} />
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
+                Connected address (Irys)
+              </Box>,
+              <AddressBoxWithCopy key={'address'} value={irysData.address} label={'Account'} reduced={true} />
             ]}
             colspan={[1, 2]}
           />
           <TableRowComp
             key={'fund-token-network'}
-            elements={[<Box sx={{ fontWeight: 'bold' }}>{`Irys Token Parameter`}</Box>, irysAccess.getToken()]}
+            elements={[
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys Token Parameter`}</Box>,
+              irysAccess.getToken()
+            ]}
             colspan={[1, 2]}
           />
           <TableRowComp
             key={'price-per-mb'}
-            elements={[<Box sx={{ fontWeight: 'bold' }}>Price per MB</Box>, +irysData.pricePerMega / 1e18]}
+            elements={[
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
+                Price per MB
+              </Box>,
+              +irysData.pricePerMega / 1e18
+            ]}
             colspan={[1, 2]}
           />
-          <TableRowComp key={'balances'} elements={[<Header2>Balances</Header2>]} colspan={[3]} />
+          <TableRowComp key={'balances'} elements={[<Header2 key={'title'}>Balances</Header2>]} colspan={[3]} />
           <TableRowComp
             key={'polygone-balance'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>{`Your balance on ${displayAddress(irysAccess.getAddress())}`}</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Your balance on ${displayAddress(
+                irysAccess.getAddress()
+              )}`}</Box>,
               +irysData.polygonBalance / 1e18
             ]}
             colspan={[1, 2]}
@@ -101,7 +116,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
           <TableRowComp
             key={'loaded-balance'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>{`Irys loaded balance (${irysAccess.getToken()})`}</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys loaded balance (${irysAccess.getToken()})`}</Box>,
               +irysData.loadedBalance / 1e18
             ]}
             colspan={[1, 2]}
@@ -109,7 +124,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
           <TableRowComp
             key={'balance'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>{`Irys balance (${irysAccess.getToken()})`}</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys balance (${irysAccess.getToken()})`}</Box>,
               +irysData.balance / 1e18
             ]}
             colspan={[1, 2]}
@@ -117,18 +132,27 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
           <TableRowComp
             key={'upload-allowance-in-mb'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>Upload allowance in MB</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
+                Upload allowance in MB
+              </Box>,
               Math.floor((100 * +irysData.loadedBalance) / +irysData.pricePerMega) / 100
             ]}
             colspan={[1, 2]}
           />
-          <TableRowComp key={'fund-withdraw'} elements={[<Header2>Fund and Withdraw Actions</Header2>]} colspan={[3]} />
+          <TableRowComp
+            key={'fund-withdraw'}
+            elements={[<Header2 key={'title'}>Fund and Withdraw Actions</Header2>]}
+            colspan={[3]}
+          />
           {/* FUND AMOUNT */}
           <TableRowComp
             key={'funding'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>Funding</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
+                Funding
+              </Box>,
               <TextField
+                key={'amount-to.fund'}
                 label={'Amount to fund'}
                 size={'small'}
                 type={'number'}
@@ -136,6 +160,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
                 onChange={(e) => setFundAmount(+e.target.value)}
               ></TextField>,
               <Button
+                key={'fund-button'}
                 size={'small'}
                 disabled={!fundStatus}
                 onClick={async () => {
@@ -145,7 +170,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
                         const fa = irysAccess.toAtomic(fundAmount);
                         if (fa) {
                           const fundTx = await irysAccess.fund(fa.toString());
-                          console.debug('fund tx id:', fundTx?.id);
+                          console.log('fund tx id:', fundTx?.id);
                         }
                       } catch (e) {
                         return errorMessage(`Funding of ${fundAmount} failed!`, e);
@@ -169,15 +194,19 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
           <TableRowComp
             key={'withdraw'}
             elements={[
-              <Box sx={{ fontWeight: 'bold' }}>Withdraw</Box>,
+              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
+                Withdraw
+              </Box>,
               <TextField
+                key={'amount-to-withdraw'}
                 label={'Amount to withdraw'}
                 size={'small'}
                 type={'number'}
                 value={withdrawAmount}
                 onChange={(e) => setWithdrawAmount(+e.target.value)}
-              ></TextField>,
+              />,
               <Button
+                key={'withdraw-button'}
                 size={'small'}
                 disabled={!withdrawAmountStatus}
                 onClick={async () => {
@@ -215,8 +244,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
 
 async function loadIrysData(
   irysAccess: IrysAccess,
-  address: string,
-  networkId: number
+  address: string
 ): Promise<
   IrysData & {
     statusMessage: StatusMessage;
@@ -228,7 +256,7 @@ async function loadIrysData(
     const balance = (await irysAccess.getBalance(address)).toString();
     const pricePerMega = (await irysAccess.getPrice(1024 * 1024)).toString();
     let polygonBalance = '0';
-    console.debug('getPolygonBalance', polygonBalance);
+    console.log('getPolygonBalance', polygonBalance);
     polygonBalance = (await irysAccess.getWeb3Session().web3.eth.getBalance(address)).toString();
 
     if (isStatusMessage(polygonBalance)) {

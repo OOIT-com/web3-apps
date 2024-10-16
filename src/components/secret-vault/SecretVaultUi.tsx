@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { ChangeEvent, FC, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
 import { isStatusMessage, StatusMessage } from '../../types';
-import { KeyBlockEntry } from './SecretVaultEntryUi';
+import { SecretVaultEntryUi } from './SecretVaultEntryUi';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
 import Web3 from 'web3';
 import { getNetworkInfo } from '../../network-info';
@@ -139,7 +139,7 @@ const SecretVaultUi: FC = () => {
         title={<AppTopTitle avatar={secretVaultPng} title={'My Secret Vault'} />}
         content={content}
       />
-      <KeyBlockEntry
+      <SecretVaultEntryUi
         key={'key-block-entry'}
         item={editItem}
         open={openEditor}

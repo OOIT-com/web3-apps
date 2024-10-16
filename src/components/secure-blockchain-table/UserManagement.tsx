@@ -72,7 +72,7 @@ export function UserManagement({
         mode={'space-between'}
         content={[
           <AddressEntryField
-            key={'address'}
+            key={'address-entry-field'}
             disabled={!editable}
             label={'New User'}
             address={newUser}
@@ -82,8 +82,9 @@ export function UserManagement({
             key={'add-user'}
             disabled={!newUser || !isAddress(newUser)}
             sx={{ whiteSpace: 'nowrap' }}
-            onClick={() =>
-              wrap(`Add user ${displayAddress(newUser)}...`, async () => {
+            onClick={async () => {
+              const res = wrap(`Add user ${displayAddress(newUser)}...`, async () => {
+                setStatusMessage(undefined);
                 const publicKeyStore = getPublicKeyStore();
                 if (!publicKeyStore) {
                   setStatusMessage(errorMessage('No public key store is available!'));
@@ -117,8 +118,11 @@ export function UserManagement({
                 } else {
                   refreshData();
                 }
-              }).catch(console.error)
-            }
+              });
+              if (isStatusMessage(res)) {
+                setStatusMessage(res);
+              }
+            }}
           >
             Add User
           </Button>

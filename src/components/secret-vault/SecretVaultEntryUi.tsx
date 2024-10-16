@@ -20,7 +20,7 @@ import { PasswordTextField } from '../common/PasswordTextField';
 
 type EditEntry = { value: string; enc: boolean; name: string };
 
-export function KeyBlockEntry({
+export function SecretVaultEntryUi({
   open,
   item,
   done,
@@ -58,7 +58,7 @@ export function KeyBlockEntry({
 
   const keyBlock = getKeyBlock();
   if (!keyBlock) {
-    console.warn('KeyBlock not initialized');
+    console.warn('Secret Vault not initialized');
     return <></>;
   }
 
@@ -66,7 +66,7 @@ export function KeyBlockEntry({
     <Dialog open={open} onClose={done} fullWidth={true} maxWidth={'md'}>
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="baseline" spacing={2}>
-          <Box>Edit KeyBlock Item{dirty ? '*' : ''}</Box>
+          <Box>Edit Secret Entry{dirty ? '*' : ''}</Box>
           <Box>{item0.index === -1 ? '' : `Inserted: ${item0.inserted}`}</Box>
           <Box sx={{ color: orange.A400 }}>{item0.index === -1 ? 'New' : `Index: ${item0.index}`}</Box>
         </Stack>

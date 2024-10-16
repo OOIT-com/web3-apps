@@ -1,5 +1,5 @@
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
 
 import { secureBlockchainTableAbi } from './SecureBlockchainTable';
 import {
@@ -341,6 +341,7 @@ export class SBTManager {
 
       const p = new Promise<number>((resolve) => {
         promiEvent.on('confirmation', ({ receipt }) => {
+          console.log(`addRowData blockHash: ${receipt?.blockHash}`);
           resolve(17);
         });
       });
@@ -373,6 +374,9 @@ export class SBTManager {
   public isEncrypted = (data: string) => data.startsWith(EncPrefix);
 
   public async decryptEncContent(encContent: string) {
+    if (!encContent) {
+      return infoMessage('Content is empty.');
+    }
     if (!this.isEncrypted(encContent)) {
       return errorMessage('Content is missing enc-prefix!');
     }
