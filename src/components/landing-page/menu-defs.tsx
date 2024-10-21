@@ -15,7 +15,7 @@ import artworkPng from '../images/artwork.png';
 import salaryManager from '../images/salary-manager.png';
 import sharedKey from '../images/shared-key.png';
 import publicKey from '../images/public-key.png';
-import publicKeyV2 from '../images/public-key-v2.png';
+import keyPairStorePng from '../images/key-pair-store.png';
 import addressBook from '../images/address-book.png';
 import thisIsMe from '../images/my-name.png';
 import universalNameStorePng from '../images/universal-name-store.png';
@@ -92,8 +92,8 @@ const menuColumnsAll: MenuColumn[] = [
 
       {
         path: 'public-key-store-v2',
-        name: 'Public Key Store V2',
-        icon: <AppIcon src={publicKeyV2} alt={'Public Key V2'} />,
+        name: 'Key Pair Store',
+        icon: <AppIcon src={keyPairStorePng} alt={'Public Key V2'} />,
         description: 'Provide a public encryption key for others to send you encrypted data.',
         element: <PublicKeyStoreV2Ui />
       },

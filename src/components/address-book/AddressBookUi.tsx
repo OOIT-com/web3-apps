@@ -2,7 +2,7 @@ import { Button, Stack, Table, TableBody, TableHead } from '@mui/material';
 import * as React from 'react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { AddressDataEditDialog } from './AddressDataEditDialog';

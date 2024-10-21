@@ -10,7 +10,7 @@ import { useContext, useState } from 'react';
 import { ColorModeContext } from '../../DApp';
 import { useNavigate } from 'react-router-dom';
 import { getNetworkInfo } from '../../network-info';
-import { Web3InfoPage } from '../Web3InfoPage';
+import { Web3InfoPage } from './Web3InfoPage';
 import { useIsSmall } from '../utils';
 import { displayAddress } from '../../utils/misc-util';
 import { useAppContext } from '../AppContextProvider';

@@ -76,6 +76,8 @@ export const isStatusMessage = (arg: any): arg is StatusMessage =>
 
 export type NotifyInfoFun = (info?: string) => void;
 export type NotifyFun = () => void;
+export type NotifyCommandFun<T = string> = (command: T) => void;
+
 export type NotifyRefresh = (refreshNeeded: boolean) => void;
 export type NotifyStatusMessage = (statusMessage: StatusMessage) => void;
 

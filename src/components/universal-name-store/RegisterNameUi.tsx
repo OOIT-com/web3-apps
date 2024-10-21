@@ -9,12 +9,12 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
-import { ConfirmDialog } from './ConfirmDialog';
-import { ConfirmData } from './types';
+import { ConfirmData, ConfirmDialog } from '../common/ConfirmDialog';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { isAddress, weiToEther } from '../../utils/web3-utils';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { Html } from '../common/Html';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -72,7 +72,7 @@ export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({
   }, [refreshData, mode, publicAddress]);
 
   if (!web3 || !publicAddress) {
-    return <StatusMessageElement statusMessage={warningMessage('Web3 is not initialized!')} />;
+    return <Web3NotInitialized />;
   }
   if (!universalNameStore) {
     return (

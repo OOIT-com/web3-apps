@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage, warningMessage } from '../../types';
 import { Box, Button, Stack, TextField } from '@mui/material';
 import {
   loadDefaultPublicKeyStoreV2,
@@ -11,9 +11,12 @@ import nacl from 'tweetnacl';
 import { decryptBuffer } from '../../utils/metamask-util';
 import { Buffer } from 'buffer';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { LDBox } from '../common/StyledBoxes';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext, WrapFun } from '../AppContextProvider';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import keyPairStorePng from '../images/key-pair-store.png';
+import { AppTopTitle } from '../common/AppTopTitle';
+import { ButtonPanel } from '../common/ButtonPanel';
 
 export function PublicKeyStoreV2Ui() {
   const { wrap, web3Session, dispatchSnackbarMessage, setPublicKeyHolderV2 } = useAppContext();
@@ -77,6 +80,7 @@ export function PublicKeyStoreV2Ui() {
       }
       const { publicKey, secretKey } = res;
       setPublicKeyHolderV2({ publicKey, secretKey });
+      setStatusMessage(successMessage(`Key Pair successfully loaded for you (${publicAddress})!`));
     }
   }, [publicAddress, publicKeyStoreV2, wrap, setPublicKeyHolderV2]);
 
@@ -88,40 +92,37 @@ export function PublicKeyStoreV2Ui() {
     return <StatusMessageElement statusMessage={errorMessage(`Web3 not initialized!`)} />;
   }
   if (!publicKeyStoreV2) {
-    return <StatusMessageElement statusMessage={errorMessage(`Public Key Store V2 is not available!`)} />;
+    return <StatusMessageElement statusMessage={errorMessage(`Key Pair Store is not available!`)} />;
   }
 
   return (
-    <Stack spacing={2}>
-      <Stack sx={{ border: 'solid 2px gray', borderRadius: '', padding: '1em 1em' }} spacing={2}>
-        <LDBox sx={{ fontSize: '1.6em', margin: '1em 0 0.4em 0' }}>Manage My Public and Encrypted Secret Keys</LDBox>
-
-        {/*{publicKeyHolderV2 ? (*/}
-        {/*  <>*/}
-        {/*    <PublicKeyOnNetwork value={publicKeyHolderV2.publicKey} label={'Public Key'} />*/}
-        {/*    <PublicKeyOnNetwork value={publicKeyHolderV2.secretKey} label={'Secret Key'} />*/}
-        {/*  </>*/}
-        {/*) : (*/}
-        {/*  <LDBox>No Public Key saved in PublicKeyStoreV2!</LDBox>*/}
-        {/*)}*/}
-
-        {myPublicKey && <AddressBoxWithCopy value={myPublicKey} label={'My Public Key (V2)'} reduced={false} />}
+    <CollapsiblePanel
+      collapsible={false}
+      level={'top'}
+      title={<AppTopTitle title={'Key Pair Store'} avatar={keyPairStorePng} />}
+      spacing={2}
+    >
+      <StatusMessageElement
+        key={'status-message'}
+        statusMessage={statusMessage}
+        onClose={() => setStatusMessage(undefined)}
+      />
+      <CollapsiblePanel key={'my-key-pair'} collapsible={false} level={'second'} title={'Manage my Key Pair'}>
+        {myPublicKey && <AddressBoxWithCopy value={myPublicKey} label={'My Public Key (V2)'} reduced={true} />}
         {myEncSecretKey0 && (
-          <AddressBoxWithCopy value={myEncSecretKey0} label={'My Encrypted Secret Key (V2)'} reduced={false} />
+          <AddressBoxWithCopy value={myEncSecretKey0} label={'My Encrypted Secret Key (V2)'} reduced={true} />
         )}
 
-        <Stack direction={'row'} spacing={1}>
+        <ButtonPanel key={'button-panel'} mode={'left'}>
           <Button key={'load'} onClick={loadAndDispatchKeys}>
-            Load Keys
+            Load Key Pair
           </Button>
-          <Button key={'save'} disabled={!!myPublicKey} onClick={createAndSaveNewPublicKey}>
-            Create a New Key Pair and save it...
+          <Button key={'create'} disabled={!!myPublicKey} onClick={createAndSaveNewPublicKey}>
+            Create and register a Key Pair ...
           </Button>
-        </Stack>
-      </Stack>
-
-      <Stack sx={{ border: 'solid 2px gray', borderRadius: '', padding: '1em 1em' }} spacing={2}>
-        <LDBox sx={{ fontSize: '1.6em', margin: '1em 0 0.4em 0' }}>Read a Public Key </LDBox>
+        </ButtonPanel>
+      </CollapsiblePanel>
+      <CollapsiblePanel key={'my-key-pair'} collapsible={false} level={'second'} title={'Read a Public Key'}>
         <Stack direction={'row'} spacing={1}>
           <TextField
             key={'address'}
@@ -133,7 +134,7 @@ export function PublicKeyStoreV2Ui() {
             }}
             value={address0}
             fullWidth
-            variant="standard"
+            variant="outlined"
           />
           <Button
             disabled={!address0}
@@ -157,10 +158,8 @@ export function PublicKeyStoreV2Ui() {
           </Button>
         </Stack>
         {publicKey0 && <AddressBoxWithCopy key={'pub'} value={publicKey0} reduced={false} label={'Public Key'} />}
-      </Stack>
-
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-    </Stack>
+      </CollapsiblePanel>
+    </CollapsiblePanel>
   );
 }
 

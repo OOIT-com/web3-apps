@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactNode } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 import { Stack, SxProps } from '@mui/material';
 
 type Mode = 'left' | 'right' | 'center' | 'space-between' | 'space-around';
@@ -26,28 +26,27 @@ const styles: Record<Mode, SxProps> = {
   }
 };
 
-export function ButtonPanel({
-  content,
-  mode = 'right'
-}: Readonly<{
-  content: ReactNode | ReactNode[];
-  mode?: Mode;
-}>) {
+export const ButtonPanel: FC<
+  PropsWithChildren<{
+    content?: ReactNode | ReactNode[];
+    mode?: Mode;
+    sx?: SxProps;
+  }>
+> = (props) => {
+  const { content, mode = 'right', children, sx = {} } = props;
+  // let sxFinal: SxProps = styles[mode] || {};
+  // if (typeof sx === 'object' && typeof sxFinal === 'object') {
+  //   sxFinal = { ...sx, ...sxFinal };
+  // }
+
+  const sxFinal: any = {
+    ...(typeof sx === 'function' ? {} : sx),
+    ...(typeof styles[mode] === 'function' ? {} : styles[mode])
+  };
+
   return (
-    <Stack direction={'row'} spacing={1} sx={styles[mode]}>
-      {content}
+    <Stack direction={'row'} spacing={1} sx={sxFinal}>
+      {content ?? children}
     </Stack>
   );
-}
-
-//
-// export const ButtonPanel: FC<StackProps & { mode?: Mode; content: ReactElement | ReactNode | ReactNode[] | false }> = ({
-//   content,
-//   mode = 'right'
-// }) => {
-//   return (
-//     <Stack direction={'row'} spacing={1} sx={styles[mode]}>
-//       {content}
-//     </Stack>
-//   );
-// };
+};

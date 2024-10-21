@@ -61,7 +61,7 @@ export function PrivateMessageStoreV2Ui() {
     content.push(
       <StatusMessageElement
         key={'no-public-key-info'}
-        statusMessage={infoMessage('You did not yet create a key pair for the Private Message Store yet.')}
+        statusMessage={infoMessage('You did not yet register a Key Pair for the Private Message Store yet.')}
       />
     );
     content.push(
@@ -75,7 +75,7 @@ export function PrivateMessageStoreV2Ui() {
             onClick={async () => {
               if (privateMessageStoreV2) {
                 const publicKeyStoreV2 = await privateMessageStoreV2.getPublicKeyStore();
-                const res = await wrap('Initializing key pair...', async () => publicKeyStoreV2.initMyKeys());
+                const res = await wrap('Create and register a Key Pair...', async () => publicKeyStoreV2.initMyKeys());
                 if (isStatusMessage(res)) {
                   setStatusMessage(res);
                 } else {
@@ -84,7 +84,7 @@ export function PrivateMessageStoreV2Ui() {
               }
             }}
           >
-            Yes, create a key pair for me now!
+            Yes, create and register a Key Pair for me now!
           </Button>
         ]}
       />

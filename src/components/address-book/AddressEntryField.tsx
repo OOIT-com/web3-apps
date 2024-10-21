@@ -19,8 +19,6 @@ export const AddressEntryField: FC<{
   //   setAddress(index === -1 ? addressContent : addressData[index].userAddress);
   // }, [setAddress, addressContent, addressData]);
 
-  console.debug(`Rendering AddressEntryField: ${address}`);
-
   return (
     <Autocomplete
       fullWidth={true}
@@ -34,7 +32,6 @@ export const AddressEntryField: FC<{
         const index = addressData.findIndex((e) => addressDataDisplay(e) === addressContent);
         const a = index === -1 ? addressContent : addressData[index].userAddress;
         setAddress(a);
-        console.debug(`Rendering onInputChange ${a}`);
       }}
       freeSolo
       options={addressData.map((e) => addressDataDisplay(e))}

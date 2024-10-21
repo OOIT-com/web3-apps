@@ -6,13 +6,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { NotifyFun } from '../types';
+import { NotifyFun } from '../../types';
 import { Paper, Stack, Table, TableBody, TableContainer } from '@mui/material';
-import { getNetworkInfo } from '../network-info';
+import { getNetworkInfo } from '../../network-info';
 import Web3 from 'web3';
-import { ContractName, getContractAddress } from '../contracts/contract-utils';
-import { useAppContext } from './AppContextProvider';
-import { InfoTableRow } from './common/InfoTableRow';
+import { ContractName, getContractAddress } from '../../contracts/contract-utils';
+import { useAppContext } from '../AppContextProvider';
+import { TableRowInfo } from '../common/TableRowInfo';
 
 export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: NotifyFun }>) {
   const app = useAppContext();
@@ -66,43 +66,43 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
           <TableContainer key="table" component={Paper}>
             <Table sx={{ minWidth: 800 }}>
               <TableBody>
-                <InfoTableRow key={'public-address'} label={'Your Address'} value={publicAddress} />
-                <InfoTableRow
+                <TableRowInfo key={'public-address'} label={'Your Address'} value={publicAddress} />
+                <TableRowInfo
                   key={'balance-ether'}
                   label={`Your Balance in: ${currencySymbol}`}
                   value={loading || !web3 ? 'loading' : web3.utils.fromWei(balanceWei, 'ether').toString()}
                 />
-                <InfoTableRow
+                <TableRowInfo
                   key={'publicKeyFromStore'}
                   label={'Your Public Key (from Store)'}
                   value={publicKeyFromStore}
                 />
-                <InfoTableRow
+                <TableRowInfo
                   key={'web3Session?.publicKeyHolder?.publicKey'}
                   label={'Your Public Key (Session)'}
                   value={web3Session?.publicKeyHolder?.publicKey}
                 />
-                <InfoTableRow
+                <TableRowInfo
                   key={'contract-registry'}
                   label={'Contract Registry'}
                   value={getContractAddress(networkId, ContractName.CONTRACT_REGISTRY)}
                 />
-                <InfoTableRow key={'name'} label={'Network Name'} value={loading || !web3 ? 'loading' : name} />
-                <InfoTableRow key={'chain-id'} label={'Chain Id'} value={loading || !web3 ? 'loading' : '' + chainId} />
-                <InfoTableRow
+                <TableRowInfo key={'name'} label={'Network Name'} value={loading || !web3 ? 'loading' : name} />
+                <TableRowInfo key={'chain-id'} label={'Chain Id'} value={loading || !web3 ? 'loading' : '' + chainId} />
+                <TableRowInfo
                   key={'gas-price-wei'}
                   label={'Gas Price Wei'}
                   value={loading || !web3 ? 'loading' : gasPriceWei + ''}
                 />
-                <InfoTableRow key={'faucet-urls'} label={'Faucet Urls'} type={'link'} values={faucetUrls} />
-                <InfoTableRow
+                <TableRowInfo key={'faucet-urls'} label={'Faucet Urls'} type={'link'} values={faucetUrls} />
+                <TableRowInfo
                   key={'block-explorer-url'}
                   label={'Block Explorer'}
                   type={'link'}
                   value={blockExplorerUrl}
                 />
-                <InfoTableRow key={'home-page'} label={'Home Page'} type={'link'} value={homePage} />
-                <InfoTableRow key={'web3-version'} label={'Web3 version'} value={Web3.version} />
+                <TableRowInfo key={'home-page'} label={'Home Page'} type={'link'} value={homePage} />
+                <TableRowInfo key={'web3-version'} label={'Web3 version'} value={Web3.version} />
               </TableBody>
             </Table>
           </TableContainer>

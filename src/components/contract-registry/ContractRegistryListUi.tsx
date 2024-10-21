@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Table, TableBody, TableHead } from '@mui/material';
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import {
   ContractData,
   ContractDataWithIndex,
@@ -217,7 +217,7 @@ export function ContractRegistryListUi() {
         <TransferOwnershipDialog
           key={'transfer'}
           done={() => setOpenDialog(undefined)}
-          title={`Transfer ${`${selected.name} (${displayAddress(selected.contractAddress)})`}`}
+          title={`Transfer ${selected.name} ${displayAddress(selected.contractAddress)}`}
           transfer={(newOwner: string) =>
             wrap('Transfer ownership...', async () => {
               if (selected) {

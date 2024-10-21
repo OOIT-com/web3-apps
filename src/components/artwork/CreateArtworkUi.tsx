@@ -1,468 +1,379 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage, warningMessage } from '../../types';
-import { Box, Checkbox, Stack, TextField } from '@mui/material';
+import { Fragment, useCallback, useEffect, useState } from 'react';
+import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
+import { Box, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
-import nacl, { box, BoxKeyPair } from 'tweetnacl';
+import { box, BoxKeyPair } from 'tweetnacl';
 import { saveAs } from 'file-saver';
-import { newNonce, secretKey2BoxKeyPair } from '../../utils/nacl-util';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { LDBox } from '../common/StyledBoxes';
 import { createSha256Hash } from '../../utils/crypto-util';
 import moment from 'moment';
 import { ArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
-import { UploadResponse } from '@irys/sdk/build/esm/common/types';
 import { Buffer } from 'buffer';
 import { contentType } from './irys-utils';
 import { uint8Array2Hex } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
+import { ButtonPanel } from '../common/ButtonPanel';
+import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { prepareArtwork } from './artwork-api';
+import { CreateArtworkSaveDialog } from './CreateArtworkSaveDialog';
+import { ConfirmDialog } from '../common/ConfirmDialog';
+import { createZip, ZipEntry } from '../../utils/zip-utils';
+import { safeFilename } from '../../utils/misc-util';
+import { EncryptionType, MetaData } from './types';
 
 export function CreateArtworkUi({
   irysAccess,
   artworkTimeProof
 }: Readonly<{
   irysAccess: IrysAccess;
-  artworkTimeProof?: ArtworkTimeProof;
+  artworkTimeProof: ArtworkTimeProof;
 }>) {
-  const { wrap, dispatchSnackbarMessage } = useAppContext();
+  const { wrap, web3Session } = useAppContext();
 
+  const [uploadFile, setUploadFile] = useState<File>();
   const [encryptedContent, setEncryptedContent] = useState<Uint8Array>();
-  const [keyPair, setKeyPair] = useState<BoxKeyPair>();
+  const [newKeyPair, setNewKeyPair] = useState<BoxKeyPair>(box.keyPair);
   const [contentHash, setContentHash] = useState('');
-  const [mime, setMime] = useState('');
-  const [encryptedContentHash, setEncryptedContentHash] = useState('');
 
-  const [providedFile, setProvidedFile] = useState<File>();
+  const [encryptionType, setEncryptionType] = useState<EncryptionType>('no-encryption');
 
-  const [useEncryption, setUseEncryption] = useState(true);
-  const [secretKeyHex, setSecretKeyHex] = useState('');
+  const [metaData, setMetaData] = useState<Partial<MetaData>>({});
+  const [secretMd, setSecretMd] = useState<Partial<MetaData>>({});
 
-  const [artworkDescription, setArtworkDescription] = useState('');
-  const [artworkAuthor, setArtworkAuthor] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  const [uploadResponse, setUploadResponse] = useState<UploadResponse>();
+  const [openSaveDialog, setOpenSaveDialog] = useState(false);
+  const [openConfirmDeleteDialog, setOpenConfirmDeleteDialog] = useState(false);
+  const clearAllData = useCallback(() => {
+    setUploadFile(undefined);
+    setEncryptedContent(undefined);
+    setContentHash('');
+    setEncryptionType('no-encryption');
+    setMetaData({});
+    setStatusMessage(undefined);
+  }, []);
 
   useEffect(() => {
-    if (providedFile) {
+    if (uploadFile) {
       wrap('Create SHA-256 Hash and Content-Type from provided file!', async () => {
-        const res = await createSha256Hash(providedFile);
+        const res = await createSha256Hash(uploadFile);
         if (isStatusMessage(res)) {
           setStatusMessage(res);
         } else {
           setContentHash(res);
-          const content = Buffer.from(await providedFile.arrayBuffer());
-          const m = await contentType(content, providedFile.name);
-          setMime(m);
         }
-      });
+      }).catch(console.error);
     } else {
       setContentHash('');
-      setMime('');
-      setEncryptedContentHash('');
       setEncryptedContent(undefined);
     }
-  }, [wrap, providedFile]);
-
+  }, [wrap, uploadFile]);
+  const { dataHash, artworkName, artworkDescription, artworkAuthor } = metaData;
+  const readyToPrepare = !!uploadFile && !!artworkName && web3Session;
+  const isPrepared = !!dataHash && readyToPrepare;
   return (
     <Stack spacing={2}>
-      <LDBox sx={{ fontSize: '1.6em', margin: '1em 0 0.4em 0' }}>Encryption and Proof of Artwork</LDBox>
-      <Stack key={'Step-1'} spacing={3} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack key={'toolbar'} direction={'row'} justifyContent="space-between" alignItems="baseline">
-          <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>Provide File (Artwork)</LDBox>
-          <Button
-            disabled={!providedFile}
-            onClick={() => {
-              setProvidedFile(undefined);
-            }}
-          >
-            Clear
+      <StatusMessageElement
+        key={'status-message'}
+        statusMessage={statusMessage}
+        onClose={() => setStatusMessage(undefined)}
+      />
+
+      <CollapsiblePanel
+        key={'create-artwork-information'}
+        title={'Artwork Information'}
+        collapsible={false}
+        toolbar={[
+          <Button key={'clear-button'} disabled={!uploadFile} onClick={() => setOpenConfirmDeleteDialog(true)}>
+            Clear all
           </Button>
-        </Stack>
-        <Stack key={'upload-file-control'} direction={'row'}>
-          {!providedFile ? (
+        ]}
+        content={[
+          <ButtonPanel key={'upload-file-control'} mode={'left'}>
             <FileUploader
+              key={'file-upload'}
               handleChange={(file: File) => {
-                setProvidedFile(file);
+                setUploadFile(file);
+                setMetaData((md) => ({ ...md, artworkName: file.name }));
               }}
               name="file"
+            >
+              <Button variant={'contained'}>Upload Artwork file</Button>
+            </FileUploader>
+            <Box key={'file-name-label'}>Artwork file name:</Box>{' '}
+            <Box key={'file-name'} sx={{ fontWeight: 'bold' }}>
+              {uploadFile?.name}
+            </Box>
+          </ButtonPanel>,
+          <RadioGroup
+            key={'encryption-type'}
+            value={encryptionType}
+            row
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setEncryptionType(event.target.value as EncryptionType)
+            }
+          >
+            <FormControlLabel
+              key={'no-encryption'}
+              value={'no-encryption'}
+              control={<Radio />}
+              label="Use No encryption"
             />
-          ) : (
-            <Stack spacing={1}>
-              <Stack direction={'row'} spacing={1}>
-                <CheckCircleIcon sx={{ color: 'green' }} />
-                <span>
-                  <b>File Name:</b> {providedFile?.name}
-                </span>
-              </Stack>
-              <Stack direction={'row'} spacing={1}>
-                <CheckCircleIcon sx={{ color: 'green' }} />
-                <span>
-                  <b>SHA 256 Hash:</b> {contentHash}
-                </span>
-              </Stack>
-            </Stack>
-          )}
-        </Stack>
-      </Stack>
-      {/* Encryption */}
-      <Stack key={'Step-2'} spacing={3} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack key={'toolbar'} direction={'row'} justifyContent="space-between" alignItems="baseline">
-          <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>
-            Use Encryption{' '}
-            <Checkbox size={'small'} onChange={(_, check) => setUseEncryption(check)} checked={useEncryption} />
-          </LDBox>
-          <Button
-            key={'new-key-pair'}
-            disabled={!useEncryption || !!keyPair || !!encryptedContent || !!secretKeyHex}
-            onClick={() => {
-              setSecretKeyHex('');
-              setKeyPair(box.keyPair());
-            }}
-          >
-            New Key Pair
-          </Button>
-          <Button
-            key={'create-key-pair'}
-            disabled={!secretKeyHex || !!encryptedContent}
-            onClick={() => {
-              if (secretKeyHex) {
-                try {
-                  const keyPair0 = secretKey2BoxKeyPair(secretKeyHex);
-                  setKeyPair(keyPair0);
-                } catch (e: any) {
-                  dispatchSnackbarMessage(errorMessage(`Creation of KeyPair failed! ${e?.message}`));
-                }
-              }
-            }}
-          >
-            Create Key Pair
-          </Button>
-          <Button
-            key={'encrypt-control'}
-            disabled={!providedFile || !keyPair || !!encryptedContent}
-            onClick={async () => {
-              if (providedFile && keyPair && !encryptedContent) {
-                await wrap('Encryption running  ...', async () => {
-                  const { secretKey, publicKey } = keyPair;
-                  const arrayBuffer = await providedFile.arrayBuffer();
-                  const data = new Uint8Array(arrayBuffer);
-                  const nonce = newNonce();
-                  const encrypted = nacl.box(data, nonce, publicKey, secretKey);
-                  if (!encrypted) {
-                    dispatchSnackbarMessage(errorMessage(`Could not encrypt the ${providedFile.name}!`));
-                  } else {
-                    const fullEncrypted = new Uint8Array(nonce.length + encrypted.length);
-                    fullEncrypted.set(nonce);
-                    fullEncrypted.set(encrypted, nonce.length);
-                    setEncryptedContent(fullEncrypted);
-                    const en = await createSha256Hash(fullEncrypted);
-                    setEncryptedContentHash(en);
-                  }
-                });
-              }
-            }}
-          >
-            Encrypt
-          </Button>
-          <Button
-            key={'clear'}
-            disabled={!keyPair && !secretKeyHex}
-            onClick={() => {
-              setKeyPair(undefined);
-              setSecretKeyHex('');
-              setEncryptedContentHash('');
-              setEncryptedContent(undefined);
-            }}
-          >
-            Clear
-          </Button>
-        </Stack>
-        {useEncryption && (
-          <Stack key={'keypair'} direction={'row'}>
-            {!keyPair ? (
-              <TextField
-                fullWidth={true}
-                placeholder={'-Hexadecimal-'}
-                label={'Secret Key (Hexadecimal)'}
-                onChange={(e) => setSecretKeyHex(e.target.value)}
-                value={secretKeyHex}
+            <FormControlLabel
+              key={'use-public-key-store-v2'}
+              value={'use-public-key-store-v2'}
+              control={<Radio />}
+              label="Use Public Key Store"
+            />
+            <FormControlLabel key={'new-key-pair'} value={'new-key-pair'} control={<Radio />} label="New Key Pair" />
+          </RadioGroup>,
+          <Fragment key={'new-key-pair'}>
+            {encryptionType === 'new-key-pair' && (
+              <ButtonPanel
+                mode={'left'}
+                key={'new-key-pair-panel'}
+                content={[
+                  <AddressBoxWithCopy
+                    key={'secret-key-hex'}
+                    label={'Secret Key for Encryption (Make sure to save it!)'}
+                    value={'0x' + Buffer.from(newKeyPair.secretKey).toString('hex')}
+                    reduced={false}
+                    variant={'outlined'}
+                  />,
+                  <Button
+                    key={'new-key-pair'}
+                    onClick={() => {
+                      setNewKeyPair(box.keyPair());
+                    }}
+                  >
+                    New Key Pair
+                  </Button>
+                ]}
               />
-            ) : (
-              <Stack spacing={1}>
-                <Stack direction={'row'} spacing={1}>
-                  <CheckCircleIcon sx={{ color: 'green' }} />
-                  <span>
-                    <b>Secret Key:</b> {uint8Array2Hex(keyPair.secretKey)}
-                  </span>
-                </Stack>
-
-                <Stack direction={'row'} spacing={1}>
-                  <CheckCircleIcon sx={{ color: 'green' }} />
-                  <span>
-                    <b>Public Key:</b> {uint8Array2Hex(keyPair.publicKey)}
-                  </span>
-                </Stack>
-                {!!encryptedContentHash && (
-                  <Stack direction={'row'} spacing={1}>
-                    <CheckCircleIcon sx={{ color: 'green' }} />
-                    <span>
-                      <b>SHA 256 Hash of encrypted content:</b> {encryptedContentHash}
-                    </span>
-                  </Stack>
-                )}
-              </Stack>
             )}
-          </Stack>
-        )}
-      </Stack>
+          </Fragment>,
+          <TextField
+            key={'artwork-name'}
+            label={'Artwork Name*'}
+            value={artworkName ?? ''}
+            onChange={(e) => setMetaData((md) => ({ ...md, artworkName: e.target.value }))}
+            fullWidth={true}
+          />,
+          <TextField
+            key={'artwork-description'}
+            label={'Artwork Description'}
+            value={artworkDescription ?? ''}
+            onChange={(e) => setMetaData((md) => ({ ...md, artworkDescription: e.target.value }))}
+            fullWidth={true}
+          />,
+          <TextField
+            key={'artwork-author'}
+            label={'Artwork Author'}
+            value={artworkAuthor ?? ''}
+            onChange={(e) => setMetaData((md) => ({ ...md, artworkAuthor: e.target.value }))}
+            fullWidth={true}
+          />
+        ]}
+      />
 
-      {
-        // Download keys and meta
-      }
+      <CollapsiblePanel
+        key={'prepare-artwork-package'}
+        level={'second'}
+        collapsible={false}
+        title={'Prepare Artwork Package'}
+        content={[
+          <Button
+            key={'prepare-package'}
+            variant={'contained'}
+            disabled={!readyToPrepare}
+            onClick={async () => {
+              if (readyToPrepare) {
+                const md: Partial<MetaData> = { ...metaData };
+                const privateMd: Partial<MetaData> = {};
 
-      <Stack key={'Step-3'} spacing={3} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack key={'toolbar'} direction={'row'} justifyContent="space-between" alignItems="baseline">
-          <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>Download Encrypted File and Meta Data</LDBox>
-          <Button
-            key={'download-encrypted'}
-            disabled={!encryptedContent || !providedFile || !contentHash}
-            onClick={async () => {
-              if (providedFile && encryptedContent) {
-                const blob = new Blob([encryptedContent], { type: 'application/octed' });
-                saveAs(blob, encryptedFilename(providedFile, contentHash));
-              }
-            }}
-          >
-            Download Encrypted File
-          </Button>
-          <Button
-            key={'download'}
-            disabled={!providedFile || !contentHash}
-            onClick={async () => {
-              if (providedFile && contentHash) {
-                saveAs(providedFile, providerFilename(providedFile, contentHash));
-              }
-            }}
-          >
-            Download (original) File
-          </Button>
-          <Button
-            key={'Download-Meta-Data'}
-            disabled={!encryptedContentHash || !keyPair || !contentHash || !providedFile}
-            onClick={() => {
-              if (keyPair && contentHash && providedFile && encryptedContentHash) {
-                saveMetaData({ providedFile, contentHash, encryptedContentHash, keyPair }).catch(console.error);
-              }
-            }}
-          >
-            Download Meta Data
-          </Button>
-          <Button
-            key={'download-all'}
-            disabled={!encryptedContentHash || !keyPair || !contentHash || !providedFile || !encryptedContent}
-            onClick={async () => {
-              if (keyPair && contentHash && providedFile && encryptedContentHash && encryptedContent) {
-                const blob = new Blob([encryptedContent], { type: 'application/octed' });
-                saveAs(blob, encryptedFilename(providedFile, contentHash));
-                saveAs(providedFile, providerFilename(providedFile, contentHash));
-                await saveMetaData({ providedFile, contentHash, encryptedContentHash, keyPair });
-              }
-            }}
-          >
-            Download All
-          </Button>
-        </Stack>
-      </Stack>
-      {/*
-
-      ***  Upload to Arweave ***
-
-      */}
-      <Stack key={'Step-upload-to-arweave'} spacing={3} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack key={'toolbar'} justifyContent="space-between" alignItems="baseline">
-          <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>Upload Artwork To Arweave</LDBox>
-          <Button
-            key={'upload-to-arweave'}
-            disabled={!providedFile || (useEncryption && !encryptedContent)}
-            onClick={async () => {
-              let content: Buffer | null = null;
-              if (!contentHash || !providedFile) {
-                return warningMessage('No contentHash!');
-              }
-              const metaData = [
-                {
-                  name: 'contentHash',
-                  value: contentHash
-                },
-                {
-                  name: 'filename',
-                  value: providedFile.name
+                const prep = await prepareArtwork({
+                  encryptionType,
+                  artworkFile: uploadFile,
+                  web3Session,
+                  secretKey: newKeyPair.secretKey
+                });
+                if (isStatusMessage(prep)) {
+                  setStatusMessage(prep);
+                  return;
                 }
-              ];
-              if (useEncryption) {
-                if (!encryptedContent || !encryptedContentHash || !keyPair) {
-                  return warningMessage('No encrypted content!');
-                } else {
-                  content = Buffer.from(encryptedContent);
-                  metaData.push({ name: 'encryptedContentHash', value: encryptedContentHash });
-                  metaData.push({ name: 'publicKey', value: uint8Array2Hex(keyPair.publicKey) });
+                const { data, dataHash, encryptedDataHash, encryptedData, encryptionSecret, encryptionKeyLocation } =
+                  prep;
+                md.dataHash = dataHash;
+                setEncryptedContent(encryptedData);
+
+                md.filename = uploadFile.name;
+                md.filemime = await contentType(Buffer.from(data), uploadFile.name);
+                md.filedate = moment(uploadFile.lastModified).format('YYYY-MM-DD HH:mm');
+                md.filesize = uploadFile.size;
+
+                if (encryptedData) {
+                  md.encryptedFilename = encryptedFilename(uploadFile, contentHash);
+                  md.encryptionKeyLocation = encryptionKeyLocation;
+                  privateMd.encryptionKey = encryptionSecret ? uint8Array2Hex(encryptionSecret) : '';
+                  privateMd.encryptionMethod = encryptionSecret ? 'NaCl/TweetNaCl BoxKeyPair' : '';
+                  privateMd.encryptionAlgorithm = encryptionSecret ? 'EC: Montgomery Curve25519' : '';
+                  privateMd.encryptedDataHash = encryptedDataHash;
                 }
+                setMetaData(md);
+                setSecretMd({ ...md, ...privateMd });
               } else {
-                content = Buffer.from(await providedFile.arrayBuffer());
-                metaData.push({ name: 'Content-Type', value: mime });
-              }
-
-              const res = await wrap('Irys (Arweave) Upload processing...', async () => {
-                try {
-                  if (!content) {
-                    return;
-                  }
-                  const res = await irysAccess.upload(content, metaData);
-                  if (isStatusMessage(res)) {
-                    setStatusMessage(res);
-                  } else {
-                    setUploadResponse(res);
-                  }
-                } catch (e) {
-                  return resolveAsStatusMessage('Irys Upload failed', e);
-                }
-              });
-              if (isStatusMessage(res)) {
-                setStatusMessage(res);
+                setStatusMessage(errorMessage('Not ready to prepare Artwork package!'));
               }
             }}
           >
-            {`Upload ${providedFile?.name ?? '-??-'} to Arweave`}
+            Prepare Artwork package
+          </Button>,
+          <Button
+            key={'download-package'}
+            variant={'contained'}
+            disabled={!isPrepared}
+            onClick={async () => {
+              if (isPrepared) {
+                const zipEntries: ZipEntry[] = [];
+                const arrayBuffer = await uploadFile.arrayBuffer();
+                const data = new Uint8Array(arrayBuffer);
+                zipEntries.push({
+                  name: 'metadata.json',
+                  data: Buffer.from(JSON.stringify(metaData), 'utf8')
+                });
+                zipEntries.push({
+                  name: uploadFile.name,
+                  data: Buffer.from(data)
+                });
+                if (encryptedContent) {
+                  zipEntries.push({
+                    name: encryptedFilename(uploadFile, contentHash),
+                    data: Buffer.from(encryptedContent)
+                  });
+                  zipEntries.push({
+                    name: 'secret-metadata.json',
+                    data: Buffer.from(JSON.stringify(secretMd), 'utf8')
+                  });
+                }
+
+                const zip = await createZip(zipEntries);
+                saveAs(new Blob([zip]), safeFilename(metaData.artworkName ?? 'my-artwork') + '.zip');
+              }
+            }}
+          >
+            Download Artwork Package
+          </Button>,
+          <Button
+            key={'save-artwork'}
+            variant={'contained'}
+            disabled={!isPrepared}
+            onClick={() => setOpenSaveDialog(true)}
+          >
+            Save Artwork to Blockchain
           </Button>
-        </Stack>
-        {!!uploadResponse && (
-          <Box>
-            <pre>{JSON.stringify(uploadResponse, null, ' ')}</pre>
-          </Box>
-        )}
-      </Stack>
-      {
-        //
-        // Save Artwork Data to Contract
-        //
-      }
-      <Stack key={'Step-4'} spacing={3} sx={{ border: 'solid 2px gray', borderRadius: '' }} p={2}>
-        <Stack key={'toolbar'} justifyContent="space-between" alignItems="baseline">
-          <LDBox sx={{ fontSize: '1.3em', margin: '1em 0 0.4em 0' }}>Create Artwork Time Proof Entry</LDBox>
-          {artworkTimeProof ? (
-            <Stack spacing={2} sx={{ width: '100%', margin: '1em 0 0.4em 0' }}>
-              <TextField
-                label={'Artwork Description'}
-                value={artworkDescription}
-                onChange={(e) => setArtworkDescription(e.target.value)}
-                fullWidth={true}
-              />
-              <TextField
-                label={'Artwork Author'}
-                value={artworkAuthor}
-                onChange={(e) => setArtworkAuthor(e.target.value)}
-                fullWidth={true}
-              />
-              <Button
-                key={'add-artwork'}
-                disabled={!contentHash || !providedFile || !artworkDescription || !artworkAuthor}
-                onClick={async () => {
-                  if (contentHash && providedFile && artworkTimeProof) {
-                    const res = await wrap('Save Artwork to Contract...', () =>
-                      artworkTimeProof.addArtwork({
-                        name: providedFile.name,
-                        description: artworkDescription,
-                        author: artworkAuthor,
-                        hash: contentHash,
-                        locationUri: JSON.stringify(uploadResponse)
-                      })
-                    );
-                    if (isStatusMessage(res)) {
-                      setStatusMessage(res);
-                    } else if (res) {
-                      setStatusMessage(successMessage(`Successfully add entry ${res}`));
-                    }
-                  }
-                }}
-              >
-                Publish Artwork Data
-              </Button>
-            </Stack>
-          ) : (
-            <StatusMessageElement statusMessage={infoMessage('No Artwork Time Proof Contract available!')} />
-          )}
-        </Stack>
-      </Stack>
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
+        ]}
+      />
+
+      {openConfirmDeleteDialog && (
+        <ConfirmDialog
+          key={'confirm-dialog'}
+          confirmData={{
+            title: 'Confirm clear form data',
+            cancel: () => setOpenConfirmDeleteDialog(false),
+            accept: () => {
+              clearAllData();
+              setOpenConfirmDeleteDialog(false);
+            }
+          }}
+        >
+          <Stack>Do you want to clear all data in this form?</Stack>
+        </ConfirmDialog>
+      )}
+      {openSaveDialog && isPrepared && (
+        <CreateArtworkSaveDialog
+          key={'save-dialog'}
+          irysAccess={irysAccess}
+          artworkTimeProof={artworkTimeProof}
+          metaData={metaData as MetaData}
+          data={encryptedContent || uploadFile}
+          done={() => {
+            setOpenSaveDialog(false);
+          }}
+        />
+      )}
+
+      {/*<Button*/}
+      {/*  key={'download-encrypted'}*/}
+      {/*  disabled={!encryptedContent || !providedFile || !contentHash}*/}
+      {/*  onClick={async () => {*/}
+      {/*    if (providedFile && encryptedContent) {*/}
+      {/*      const blob = new Blob([encryptedContent], { type: 'application/octed' });*/}
+      {/*      saveAs(blob, encryptedFilename(providedFile, contentHash));*/}
+      {/*    }*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Download File and MetaData*/}
+      {/*</Button>*/}
+      {/*<Button*/}
+      {/*  key={'download'}*/}
+      {/*  disabled={!providedFile || !contentHash}*/}
+      {/*  onClick={async () => {*/}
+      {/*    if (providedFile && contentHash) {*/}
+      {/*      saveAs(providedFile, providerFilename(providedFile, contentHash));*/}
+      {/*    }*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Download (original) File*/}
+      {/*</Button>*/}
+      {/*<Button*/}
+      {/*  key={'Download-Meta-Data'}*/}
+      {/*  disabled={!encryptedContentHash || !newKeyPair || !contentHash || !providedFile}*/}
+      {/*  onClick={() => {*/}
+      {/*    if (newKeyPair && contentHash && providedFile && encryptedContentHash) {*/}
+      {/*      saveMetaData({*/}
+      {/*        providedFile,*/}
+      {/*        contentHash,*/}
+      {/*        encryptedContentHash,*/}
+      {/*        keyPair: newKeyPair*/}
+      {/*      }).catch(console.error);*/}
+      {/*    }*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Download Meta Data*/}
+      {/*</Button>*/}
     </Stack>
   );
-}
-
-export async function decryptFile(encryptedContent: Uint8Array, keyPair: BoxKeyPair, filename: string) {
-  const nonce = encryptedContent.subarray(0, box.nonceLength);
-  const encContent = encryptedContent.subarray(box.nonceLength, encryptedContent.length);
-  const decryptedContent = nacl.box.open(encContent, nonce, keyPair.publicKey, keyPair.secretKey);
-  if (!decryptedContent) {
-    return errorMessage(`Could not decrypt the ${filename}!`);
-  } else {
-    return new Blob([decryptedContent], { type: 'application/octed' });
-  }
-}
-
-export function metadataFilename(providedFile: File, contentHash: string) {
-  return `${contentHash.substring(0, 8)}-metadata-${providedFile.name}.json`;
-}
-
-export function providerFilename(providedFile: File, contentHash: string) {
-  return `${contentHash.substring(0, 8)}-original-${providedFile.name}`;
 }
 
 export function encryptedFilename(providedFile: File, contentHash: string) {
   return `${contentHash.substring(0, 8)}-encrypted-${providedFile.name}`;
 }
 
-export function decryptedFilename(filename: string, contentHash: string) {
-  return `${contentHash.substring(0, 8)}-dencrypted-${filename}`;
-}
-
-export async function saveMetaData({
-  providedFile,
-  contentHash,
-  encryptedContentHash,
-  keyPair
-}: {
-  providedFile: File;
-  contentHash: string;
-  encryptedContentHash: string;
-  keyPair: BoxKeyPair;
-}) {
-  const filename = providedFile.name;
-  saveMetadataContent(metadataFilename(providedFile, contentHash), {
-    filename,
-    fileSize: providedFile.size,
-    encryptedFilename: encryptedFilename(providedFile, contentHash),
-    secretKey: uint8Array2Hex(keyPair.secretKey),
-    encryptionMethod: 'NaCl/TweetNaCl BoxKeyPair',
-    encryptionAlgorithm: 'EC: Montgomery Curve25519',
-    contentHash,
-    encryptedContentHash,
-    lastModified: moment(providedFile.lastModified).format('YYYY-MM-DD HH:mm')
-  });
-}
-
-export function saveMetadataContent(metadataFilename: string, content: Record<string, string | number>) {
-  const text = JSON.stringify(
-    {
-      ...content
-    },
-    null,
-    ' '
-  );
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, metadataFilename);
-}
+// export async function downloadMetaData({
+//   providedFile,
+//   contentHash,
+//   encryptedContentHash,
+//   keyPair
+// }: {
+//   providedFile: File;
+//   contentHash: string;
+//   encryptedContentHash: string;
+//   keyPair: BoxKeyPair;
+// }) {
+//   const filename = providedFile.name;
+//   downloadMetadataContent(metadataFilename(providedFile, contentHash), {
+//     filename,
+//     fileSize: providedFile.size,
+//     encryptedFilename: encryptedFilename(providedFile, contentHash),
+//     secretKey: uint8Array2Hex(keyPair.secretKey),
+//     encryptionMethod: 'NaCl/TweetNaCl BoxKeyPair',
+//     encryptionAlgorithm: 'EC: Montgomery Curve25519',
+//     contentHash,
+//     encryptedContentHash,
+//     lastModified: moment(providedFile.lastModified).format('YYYY-MM-DD HH:mm')
+//   });
+// }

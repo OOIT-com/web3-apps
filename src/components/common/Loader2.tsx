@@ -18,9 +18,7 @@ export const LBox = withStyles(Stack, (theme) => ({
 export default function Loader2() {
   const { loading } = useAppContext();
   const [start, setStart] = useState(false);
-  const handleClose = () => {
-    console.debug('Loader2 close');
-  };
+  const handleClose = () => {};
 
   useEffect(() => {
     setStart(false);

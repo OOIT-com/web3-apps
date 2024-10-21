@@ -87,7 +87,7 @@ export function ContracVerifierDialog({
                       await getMetaData(contractData.sourceCodeUrl);
                       const res = await fetch(contractData.sourceCodeUrl);
                       if (res.status === 200) {
-                        console.debug(await res.text());
+                        console.log(await res.text());
                       }
                     }
                   )

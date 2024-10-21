@@ -14,7 +14,7 @@ import { displayAddress } from '../../utils/misc-util';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
 import { TableComp } from '../common/TableComp';
-import { InfoTableRow } from '../common/InfoTableRow';
+import { TableRowInfo } from '../common/TableRowInfo';
 import { AppTopTitle } from '../common/AppTopTitle';
 import publicKeyPng from '../images/public-key.png';
 
@@ -136,12 +136,12 @@ export function PublicKeyStoreUi() {
           content={[
             <TableComp
               content={[
-                <InfoTableRow
+                <TableRowInfo
                   key={'pub'}
                   label={'Your Public Key from the store'}
                   value={<AddressBoxWithCopy key={'from-store'} value={publicKeyFromStore} reduced={false} />}
                 />,
-                <InfoTableRow
+                <TableRowInfo
                   key={'web3'}
                   label={'Your Public Key from the Web3 session'}
                   value={<AddressBoxWithCopy key={'from-session'} value={publicKeyHolder.publicKey} reduced={false} />}

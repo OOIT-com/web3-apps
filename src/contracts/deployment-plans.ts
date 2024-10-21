@@ -62,7 +62,7 @@ export const deploymentPlans: DeploymentPlan[] = [
     constructorArgDefs: []
   },
   {
-    label: 'Public Key Store V2',
+    label: 'Key Pair Store',
     contractName: 'PublicKeyStoreV2',
     defaultRegistryName: ContractName.PUBLIC_KEY_STORE_V2,
     contractType: 'PublicKeyStoreV2',

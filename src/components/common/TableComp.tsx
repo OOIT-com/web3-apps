@@ -1,22 +1,27 @@
 import { Table, TableBody, TableHead } from '@mui/material';
 import { TableRowCompProps } from './TableRowComp';
-import { ReactElement } from 'react';
+import { FC, PropsWithChildren, ReactElement } from 'react';
 
 type TableRowsUiElement = ReactElement<TableRowCompProps>;
 
-export function TableComp({ header, content }: { header?: TableRowsUiElement; content: TableRowsUiElement[] }) {
+export const TableComp: FC<
+  PropsWithChildren<{
+    header?: TableRowsUiElement;
+    content?: TableRowsUiElement[];
+  }>
+> = ({ header, content, children }) => {
   if (header) {
     return (
       <Table>
         <TableHead>{header}</TableHead>
-        <TableBody>{content}</TableBody>
+        <TableBody>{content || children}</TableBody>
       </Table>
     );
   }
 
   return (
     <Table>
-      <TableBody>{content}</TableBody>
+      <TableBody>{content || children}</TableBody>
     </Table>
   );
-}
+};

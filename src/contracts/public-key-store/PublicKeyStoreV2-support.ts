@@ -8,6 +8,8 @@ import { ContractName } from '../contract-utils';
 import { newBoxKeyPair } from '../../utils/nacl-util';
 import { encryptBuffer } from '../../utils/metamask-util';
 import { Buffer } from 'buffer';
+import { web3NotInitialized } from '../../components/common/Web3NotInitialized';
+import { displayKey } from '../../utils/enc-dec-utils';
 
 type PublicKeyStoreV2AbiType = typeof publicKeyStoreV2Abi;
 type PublicKeyStoreV2ContractType = Contract<PublicKeyStoreV2AbiType>;
@@ -33,6 +35,17 @@ export async function loadDefaultPublicKeyStoreV2(web3Session: Web3Session): Pro
   return instance;
 }
 
+export const getMySecretKeyV2 = async (web3Session: Web3Session | undefined): Promise<StatusMessage | Uint8Array> => {
+  if (!web3Session) {
+    return web3NotInitialized;
+  }
+  const pks2 = await loadDefaultPublicKeyStoreV2(web3Session);
+  if (isStatusMessage(pks2)) {
+    return pks2;
+  }
+  return await pks2.getSecretKey();
+};
+
 export function newPublicKeyStoreV2(web3Session: Web3Session, contractAddress: string): PublicKeyStoreV2 {
   return new PublicKeyStoreV2(web3Session, contractAddress);
 }
@@ -57,6 +70,25 @@ export class PublicKeyStoreV2 {
     } catch (e) {
       return resolveAsStatusMessage(`${tag} failed`, e);
     }
+  }
+
+  public async getSecretKey(): Promise<StatusMessage | Uint8Array> {
+    const encPrivateKey = await this.getEncSecretKey(this.web3Session.publicAddress);
+    debugger;
+    if (isStatusMessage(encPrivateKey)) {
+      return encPrivateKey;
+    }
+
+    if (!encPrivateKey) {
+      return errorMessage(
+        `Please register a Key Pair in 'Key Pair Store' (${displayKey(this.web3Session.publicAddress)}).`
+      );
+    }
+    const secretKey = await this.web3Session.decryptFun(Buffer.from(encPrivateKey, 'base64'));
+    if (!secretKey) {
+      return errorMessage('Could not decrypt private key!');
+    }
+    return secretKey;
   }
 
   public async getPublicKey(address: string): Promise<string | StatusMessage> {

@@ -6,7 +6,7 @@ import { Stack, Table, TableBody } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { isAddress } from 'ethers';
 import { displayAddress } from '../../utils/misc-util';
 import { decryptBase64 } from '../../utils/enc-dec-utils';

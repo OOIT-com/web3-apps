@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import { NotifyFun } from '../../../../types';
 import DialogContent from '@mui/material/DialogContent';
 import { Table, TableBody } from '@mui/material';
-import TableRowComp from '../../../common/TableRowComp';
+import { TableRowComp } from '../../../common/TableRowComp';
 import { AddressBoxWithCopy } from '../../../common/AddressBoxWithCopy';
 import Button from '@mui/material/Button';
 import { UpdateRowFun } from './SMTable';

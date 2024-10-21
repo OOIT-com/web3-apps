@@ -9,9 +9,10 @@ import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { ethNumberToWei, getContractBalance } from '../../utils/web3-utils';
 import { UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { TableComp } from '../common/TableComp';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export const WithdrawUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -47,7 +48,7 @@ export const WithdrawUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
   }, [refreshData]);
 
   if (!web3 || !publicAddress) {
-    return <StatusMessageElement statusMessage={warningMessage('Web3 is not initialized!')} />;
+    return <Web3NotInitialized />;
   }
   if (!universalNameStore) {
     return (

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage } from '../../types';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { Box, Paper } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,12 +11,14 @@ import { IrysAccess } from '../../utils/IrysAccess';
 import { CreateArtworkUi } from './CreateArtworkUi';
 import { DecryptFileUi } from './DecryptFileUi';
 import { getArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { MyArtworks } from './MyArtworks';
+import { MyArtworkListUi } from './MyArtworkListUi';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { AppTopTitle } from '../common/AppTopTitle';
 import artworkPng from '../images/artwork.png';
+import { NoContractFound } from '../common/NoContractFound';
+import { ContractName } from '../../contracts/contract-utils';
 
 const help = `
 
@@ -48,21 +50,21 @@ export function ArtworkUi() {
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      if (web3Session) {
-        const res = await wrap('Initializing Irys Access...', async () => {
-          const irys0 = new IrysAccess(web3Session);
-          const res = await irys0.init();
+    const init = async () =>
+      wrap('Initializing Irys Access...', async () => {
+        setStatusMessage(infoMessage('Initializing Irys Access...'));
+        if (web3Session) {
+          const _irysAccess = new IrysAccess(web3Session);
+          const res = await _irysAccess.init();
           if (isStatusMessage(res)) {
-            return res;
+            setStatusMessage(res);
+          } else {
+            setStatusMessage(undefined);
+            setIrysAccess(_irysAccess);
           }
-          setIrysAccess(irys0);
-        });
-        if (isStatusMessage(res)) {
-          setStatusMessage(res);
         }
-      }
-    };
+      });
+
     init().catch(console.error);
   }, [wrap, web3Session]);
 
@@ -71,6 +73,11 @@ export function ArtworkUi() {
   }
 
   const content: ReactNode[] = [<StatusMessageElement key={'statusMessage'} statusMessage={statusMessage} />];
+
+  const artworkTimeProof = getArtworkTimeProof();
+  if (!artworkTimeProof) {
+    return <NoContractFound name={ContractName.ARTWORK_TIME_PROOF} />;
+  }
 
   if (irysAccess) {
     content.push(
@@ -85,8 +92,8 @@ export function ArtworkUi() {
           </Tabs>
         </Box>
         <Paper sx={{ margin: '1em 0 1em 0' }}>
-          {value === 0 && <MyArtworks artworkTimeProof={getArtworkTimeProof()} />}
-          {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={getArtworkTimeProof()} />}
+          {value === 0 && <MyArtworkListUi artworkTimeProof={artworkTimeProof} />}
+          {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={artworkTimeProof} />}
           {value === 2 && <IrysManageUi irysAccess={irysAccess} />}
           {value === 3 && <IrysFileUpload irysAccess={irysAccess} />}
           {value === 4 && <DecryptFileUi />}

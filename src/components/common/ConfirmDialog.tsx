@@ -1,21 +1,28 @@
 import * as React from 'react';
-import { FC } from 'react';
+import { FC, PropsWithChildren, ReactNode } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import { ConfirmData } from './types';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
-import { Box, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import { NotifyFun } from '../../types';
 
-export const ConfirmDialog: FC<{ confirmData: ConfirmData }> = ({
-  confirmData: { title, cancel, accept, content = [] }
+export type ConfirmData = {
+  title: ReactNode | string;
+  content?: ReactNode[];
+  accept: NotifyFun;
+  cancel: NotifyFun;
+};
+export const ConfirmDialog: FC<PropsWithChildren<{ confirmData: ConfirmData }>> = ({
+  confirmData: { title, cancel, accept, content = [] },
+  children
 }) => {
   return (
     <Dialog open={true} onClose={cancel}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Stack spacing={2}>{content.map((e) => (typeof e === 'string' ? <Box key={e}>{e}</Box> : e))}</Stack>
+        <Stack spacing={2}>{content || children}</Stack>
       </DialogContent>
       <DialogActions>
         <Button key={'accept'} onClick={() => accept()}>

@@ -3,7 +3,7 @@ import { Button, Stack, Table, TableBody, TextField } from '@mui/material';
 import { LDBox } from '../common/StyledBoxes';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {

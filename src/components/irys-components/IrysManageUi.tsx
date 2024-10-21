@@ -5,7 +5,7 @@ import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../..
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import TextField from '@mui/material/TextField';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { Header2 } from '../common/StyledBoxes';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { displayAddress } from '../../utils/misc-util';
@@ -214,7 +214,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
                     const res = await wrap(`Processing withdraw ${withdrawAmount}`, async () => {
                       try {
                         const r = await irysAccess.withdrawBalance(irysAccess.toAtomic(withdrawAmount));
-                        console.debug('withdraw tx id:', r?.tx_id);
+                        console.log('withdraw tx id:', r?.tx_id);
                       } catch (e) {
                         return errorMessage(`Withdraw of ${withdrawAmount} failed!`, e);
                       } finally {
@@ -257,7 +257,7 @@ async function loadIrysData(
     const pricePerMega = (await irysAccess.getPrice(1024 * 1024)).toString();
     let polygonBalance = '0';
     console.log('getPolygonBalance', polygonBalance);
-    polygonBalance = (await irysAccess.getWeb3Session().web3.eth.getBalance(address)).toString();
+    polygonBalance = (await irysAccess.web3Session.web3.eth.getBalance(address)).toString();
 
     if (isStatusMessage(polygonBalance)) {
       statusMessage = polygonBalance;

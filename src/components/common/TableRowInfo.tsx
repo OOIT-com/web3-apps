@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC, ReactNode } from 'react';
 import { Box, Stack } from '@mui/material';
-import TableRowComp from './TableRowComp';
+import { TableRowComp } from './TableRowComp';
 import { LabelBox } from './StyledBoxes';
 import { ExternalLink } from './ExternalLink';
 
@@ -11,7 +11,7 @@ export type InfoRowProps = {
   values?: (string | ReactNode)[];
   value?: string | ReactNode;
 };
-export const InfoTableRow: FC<InfoRowProps> = ({ label, value, type = 'text', values }) => {
+export const TableRowInfo: FC<InfoRowProps> = ({ label, value, type = 'text', values }) => {
   let controls: ReactNode[] | string[] | null = null;
 
   if (value) {

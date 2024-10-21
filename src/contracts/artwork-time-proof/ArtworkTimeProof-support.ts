@@ -8,7 +8,7 @@ import { ContractRegistry } from '../contract-registry/ContractRegistry-support'
 import { ContractName } from '../contract-utils';
 
 type ArtworkTimeProofType = typeof artworkTimeProofAbi;
-export type ArtworkType = {
+export type ArtworkEntry = {
   name: string;
   description: string;
   author: string;
@@ -65,7 +65,7 @@ export class ArtworkTimeProof {
     return this.getArtworkCount(this.from);
   }
 
-  async getArtwork(user: string, index: number): Promise<ArtworkType | StatusMessage> {
+  async getArtwork(user: string, index: number): Promise<ArtworkEntry | StatusMessage> {
     const tag = '<GetArtwork>';
     try {
       return await this.contract.methods.getArtwork(user, index).call();
@@ -74,7 +74,7 @@ export class ArtworkTimeProof {
     }
   }
 
-  async getMyArtwork(index: number): Promise<ArtworkType | StatusMessage> {
+  async getMyArtwork(index: number): Promise<ArtworkEntry | StatusMessage> {
     return this.getArtwork(this.from, index);
   }
 
@@ -84,7 +84,7 @@ export class ArtworkTimeProof {
     author,
     hash,
     locationUri = ''
-  }: ArtworkType): Promise<string | StatusMessage> {
+  }: ArtworkEntry): Promise<string | StatusMessage> {
     const tag = '<AddArtwork>';
     try {
       const res = await this.contract.methods

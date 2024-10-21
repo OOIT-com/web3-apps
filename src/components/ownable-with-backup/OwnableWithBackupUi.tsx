@@ -4,7 +4,7 @@ import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../..
 import { LDBox } from '../common/StyledBoxes';
 import { getOwnableWithBackup } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { toUserMessage } from '../../contracts/contract-utils';
 import { BackupOwnerEditUi } from './BackupOwnerEditUi';

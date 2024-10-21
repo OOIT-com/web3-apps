@@ -1,15 +1,15 @@
 import { LDAccordionSummary, LDBox } from './StyledBoxes';
 import * as React from 'react';
-import { FC, ReactNode, useState } from 'react';
-import { Accordion, IconButton, Stack } from '@mui/material';
+import { FC, PropsWithChildren, ReactNode, useState } from 'react';
+import { Accordion, IconButton, Stack, SxProps } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { HelpBox } from './HelpBox';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 type Level = 'top' | 'second' | 'third' | 'fourth' | 'fifth';
-type Styles = 'title' | 'outer';
-const styles: Record<Level, Record<Styles, any>> = {
+type StylesProps = { title: SxProps; outer: SxProps; outerSpacing?: number };
+const styles: Record<Level, StylesProps> = {
   top: {
     title: {
       fontSize: '1.6em',
@@ -27,8 +27,9 @@ const styles: Record<Level, Record<Styles, any>> = {
     outer: { border: 'solid 1px gray', borderRadius: '' }
   },
   fourth: {
-    title: { fontSize: '1.1em', margin: '0.3em 0 0.4em 0' },
-    outer: { border: 'solid 1px gray', borderRadius: '' }
+    title: { fontSize: '1em', margin: '0.1em 0 0.1em 0' },
+    outer: { border: 'solid 1px gray', borderRadius: '' },
+    outerSpacing: 1
   },
   fifth: {
     title: { fontSize: '1.1em', margin: '0.3em 0 0.4em 0' },
@@ -39,13 +40,13 @@ export type CollapsiblePanelProps = {
   title: string | ReactNode;
   help?: string | ReactNode;
   toolbar?: ReactNode | ReactNode[];
-  content: ReactNode | ReactNode[];
+  content?: ReactNode | ReactNode[];
   level?: Level;
   collapsible?: boolean;
   collapsed?: boolean;
   spacing?: number;
 };
-export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
+export const CollapsiblePanel: FC<PropsWithChildren<CollapsiblePanelProps>> = ({
   title,
   help,
   toolbar,
@@ -53,7 +54,8 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
   level = 'second',
   collapsible = true,
   collapsed = false,
-  spacing = 1
+  spacing = 1,
+  children
 }) => {
   const [exp, setExp] = useState(!collapsed);
 
@@ -80,9 +82,15 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
 
   return (
     <Accordion expanded={!collapsible || exp} onChange={() => setExp((b) => !b)}>
-      <LDAccordionSummary expandIcon={expandIcon} aria-controls="panel1bh-content" id="panel1bh-header">
+      <LDAccordionSummary expandIcon={expandIcon} aria-controls="panel1bh-data" id="panel1bh-header">
         <Stack sx={{ width: '100%' }}>
-          <Stack key={'title-row'} direction={'row'} justifyContent="space-between" alignItems="center" spacing={4}>
+          <Stack
+            key={'title-row'}
+            direction={'row'}
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={styles[level].outerSpacing || 4}
+          >
             <LDBox sx={styles[level].title} direction="row" justifyContent="flex-start" alignItems="center" spacing={1}>
               {titleElement}
             </LDBox>
@@ -107,7 +115,7 @@ export const CollapsiblePanel: FC<CollapsiblePanelProps> = ({
         </Stack>
       </LDAccordionSummary>
       <AccordionDetails sx={{ marginTop: '1em' }}>
-        <Stack spacing={spacing}>{content}</Stack>
+        <Stack spacing={spacing}>{content || children}</Stack>
       </AccordionDetails>
     </Accordion>
   );

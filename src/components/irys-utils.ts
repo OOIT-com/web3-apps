@@ -57,5 +57,4 @@ export async function testIrys22(web3: Web3, key: string, isMainnet: boolean) {
   const irys = await getIrys(web3, key, isMainnet);
   const irys2 = await getIrys22(key, isMainnet);
   await irys2.ready();
-  console.debug('irys address: ', irys.address);
 }

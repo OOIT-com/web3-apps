@@ -18,7 +18,7 @@ import {
   Tooltip
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { networks } from '../../network-info';
 import { connectWithLocalstore } from './connect-with-localstore';
 import { useNavigate } from 'react-router-dom';
@@ -71,7 +71,7 @@ export function ConnectWithLocalstore({ done }: Readonly<{ done: NotifyFun }>) {
   const selectLabel = 'Select Blockchain';
   return (
     <Dialog open={true} onClose={done}>
-      <DialogTitle>Connect with Browsers Local Storage</DialogTitle>
+      <DialogTitle>Connect with Local Storage Wallet</DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <StatusMessageElement statusMessage={warningMessage}></StatusMessageElement>

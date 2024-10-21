@@ -13,6 +13,7 @@ import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export function UniqueNameStoreUi() {
   const app = useAppContext();
@@ -79,11 +80,8 @@ export function UniqueNameStoreUi() {
     getMyName().catch(console.error);
   }, [getMyName]);
 
-  if (!publicAddress) {
-    return <StatusMessageElement statusMessage={warningMessage(`No public address available!`)} />;
-  }
-  if (!web3) {
-    return <StatusMessageElement statusMessage={warningMessage('Web3 is not initialized!')} />;
+  if (!publicAddress || !web3) {
+    return <Web3NotInitialized />;
   }
   if (!uniqueNameStore) {
     return (

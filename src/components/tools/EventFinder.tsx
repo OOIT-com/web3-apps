@@ -5,7 +5,7 @@ import { StyledHead } from '../common/StyledHead';
 import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { Contract } from 'web3-eth-contract';
 import Web3, { EventLog } from 'web3';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { artworkTimeProofAbi } from '../../contracts/artwork-time-proof/ArtworkTimeProof';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';

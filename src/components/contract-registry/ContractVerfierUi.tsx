@@ -1,7 +1,7 @@
 import { Button, Table, TableBody, TableHead } from '@mui/material';
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
 import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import {
   ContractData,
   ContractDataWithIndex,

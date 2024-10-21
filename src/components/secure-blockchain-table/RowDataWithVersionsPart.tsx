@@ -14,7 +14,7 @@ import {
   TableHead,
   TextField
 } from '@mui/material';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';

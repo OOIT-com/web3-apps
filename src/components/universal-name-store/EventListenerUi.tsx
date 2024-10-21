@@ -7,7 +7,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { Table, TableBody } from '@mui/material';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { NoContractFound } from '../common/NoContractFound';
 

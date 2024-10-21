@@ -21,7 +21,7 @@ export const TextFieldWithCopy: FC<PasswordTextFieldProps> = (props) => {
             <InputAdornment position="end">
               <Tooltip title={'Copy to Clipboard!'}>
                 <IconButton
-                  aria-label="copy-content-to-clipboard"
+                  aria-label="copy-data-to-clipboard"
                   onClick={async () => {
                     const v = props.value;
                     if (v && typeof v === 'string') {

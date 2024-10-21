@@ -9,7 +9,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { NameAddressEntry, UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import Button from '@mui/material/Button';
 
 export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {

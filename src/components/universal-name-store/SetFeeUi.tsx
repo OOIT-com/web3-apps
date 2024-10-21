@@ -10,9 +10,10 @@ import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { ethNumberToWei, weiToEther } from '../../utils/web3-utils';
 import { UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
-import TableRowComp from '../common/TableRowComp';
+import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { TableComp } from '../common/TableComp';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -43,7 +44,7 @@ export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ unive
   }, [refreshData]);
 
   if (!web3 || !publicAddress) {
-    return <StatusMessageElement statusMessage={warningMessage('Web3 is not initialized!')} />;
+    return <Web3NotInitialized />;
   }
   if (!universalNameStore) {
     return (

@@ -11,6 +11,7 @@ import { getCurrentAddress, getCurrentNetworkId } from '../../utils/web3-utils';
 import { decryptFunMetamask } from './connect-with-metamask';
 import { useAppContext } from '../AppContextProvider';
 import { StatusMessageElement } from '../common/StatusMessageElement';
+import LinkIcon from '@mui/icons-material/Link';
 
 export const ConnectWithMetamaskButton: React.FC = () => {
   const navigate = useNavigate();
@@ -121,7 +122,9 @@ export const ConnectWithMetamaskButton: React.FC = () => {
 
   return (
     <Tooltip title={'Connect with MetaMask or other EVM Plugin Wallet'}>
-      <Button onClick={connectMetaMask}>Connect With MetaMask</Button>
+      <Button startIcon={<LinkIcon />} variant={'contained'} onClick={connectMetaMask} color={'primary'}>
+        Connect with MetaMask Wallet
+      </Button>
     </Tooltip>
   );
 };

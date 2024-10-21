@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { TableCell, TableRow } from '@mui/material';
 
 export type AlignName = 'inherit' | 'left' | 'center' | 'right' | 'justify';
 export type AlignType = AlignName | AlignName[];
 export type TableRowCompProps = {
-  elements: (string | number | boolean | ReactNode)[];
+  elements: (string | number | ReactNode)[];
   align?: AlignType;
   colspan?: number[];
 };
-export default function TableRowComp({ elements, align, colspan = [] }: TableRowCompProps) {
+export const TableRowComp: FC<TableRowCompProps> = ({ elements, align, colspan = [] }) => {
   return (
     <TableRow>
       {elements.map((e, i) => (
@@ -18,7 +18,7 @@ export default function TableRowComp({ elements, align, colspan = [] }: TableRow
       ))}
     </TableRow>
   );
-}
+};
 
 function getAlign(index: number, align?: AlignType): AlignName {
   if (!align) {
