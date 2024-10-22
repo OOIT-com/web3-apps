@@ -3,8 +3,8 @@ import * as React from 'react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import { Stack, TextField } from '@mui/material';
-import { StatusMessageElement } from '../common/StatusMessageElement';
-import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { StatusMessageElement } from './StatusMessageElement';
+import { CollapsiblePanel } from './CollapsiblePanel';
 import { useAppContext } from '../AppContextProvider';
 
 export function DataPart({
