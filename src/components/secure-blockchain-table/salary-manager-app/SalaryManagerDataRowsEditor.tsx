@@ -185,6 +185,6 @@ export function SalaryManagerDataRowsEditor({
           saveRowDataToContract={saveRowDataToContract}
         />
       ]}
-    ></CollapsiblePanel>
+    />
   );
 }
