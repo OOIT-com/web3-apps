@@ -14,7 +14,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { ArtworkTable } from './ArtworkTable';
 
-export const MyArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artworkTimeProof }) => {
+export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artworkTimeProof }) => {
   const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [artworkList, setArtworkList] = useState<ArtworkEntry[]>([]);
@@ -22,7 +22,7 @@ export const MyArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ ar
   const [artworkDetail, setArtworkDetail] = useState<ArtworkEntry>();
 
   const refreshArtworkList = useCallback(async () => {
-    const artworkList = await wrap('Loading my Artwork entries...', () => getMyArtworks(artworkTimeProof));
+    const artworkList = await wrap('Loading Artwork entries...', () => getMyArtworks(artworkTimeProof));
     if (isStatusMessage(artworkList)) {
       setStatusMessage(artworkList);
     } else {
@@ -51,7 +51,7 @@ export const MyArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ ar
     <ArtworkTable
       key={'table'}
       filterValue={filterValue}
-      rows={artworkList}
+      artworkEntries={artworkList}
       refresh={refreshArtworkList}
       action={(artwork) => setArtworkDetail(artwork)}
     />

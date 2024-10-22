@@ -4,8 +4,10 @@ import * as nacl from 'tweetnacl';
 import { encrypt } from '../../utils/nacl-util';
 import { createSha256Hash } from '../../utils/crypto-util';
 import { getMySecretKeyV2 } from '../../contracts/public-key-store/PublicKeyStoreV2-support';
+import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 
 export async function getMyArtworks(artworkTimeProof: ArtworkTimeProof): Promise<ArtworkEntry[] | StatusMessage> {
+  const tag = '<getMyArtworks>';
   try {
     const len = await artworkTimeProof.getMyArtworkCount();
     if (isStatusMessage(len)) {
@@ -22,7 +24,7 @@ export async function getMyArtworks(artworkTimeProof: ArtworkTimeProof): Promise
     }
     return items;
   } catch (e) {
-    return errorMessage('Serious Error', e);
+    return resolveAsStatusMessage(tag, e);
   }
 }
 

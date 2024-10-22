@@ -13,16 +13,17 @@ import { downloadLink } from '../../utils/irys-utils';
 
 export const ArtworkTable: FC<{
   filterValue: string;
-  rows: ArtworkEntry[];
+  artworkEntries: ArtworkEntry[];
   refresh: NotifyFun;
   action: (item: ArtworkEntry, a?: string) => void;
-}> = ({ filterValue, rows, refresh, action }) => {
+}> = ({ filterValue, artworkEntries, refresh, action }) => {
   return (
     <TableContainer component={Paper}>
       <TableComp
         header={<TableRowComp elements={['Time', 'Name', 'Description', 'Hash', 'Download']} key={'header'} />}
       >
-        {rows
+        {artworkEntries
+
           .filter((row) => row.name.includes(filterValue))
           .map((row) => (
             <TableRow

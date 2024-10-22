@@ -11,7 +11,7 @@ import { IrysAccess } from '../../utils/IrysAccess';
 import { CreateArtworkUi } from './CreateArtworkUi';
 import { DecryptFileUi } from './DecryptFileUi';
 import { getArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { MyArtworkListUi } from './MyArtworkListUi';
+import { ArtworkListUi } from './ArtworkListUi';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
@@ -92,7 +92,7 @@ export function ArtworkUi() {
           </Tabs>
         </Box>
         <Paper sx={{ margin: '1em 0 1em 0' }}>
-          {value === 0 && <MyArtworkListUi artworkTimeProof={artworkTimeProof} />}
+          {value === 0 && <ArtworkListUi artworkTimeProof={artworkTimeProof} />}
           {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={artworkTimeProof} />}
           {value === 2 && <IrysManageUi irysAccess={irysAccess} />}
           {value === 3 && <IrysFileUpload irysAccess={irysAccess} />}
