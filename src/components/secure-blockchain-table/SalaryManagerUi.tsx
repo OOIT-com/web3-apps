@@ -1,20 +1,20 @@
 import * as React from 'react';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Paper } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { SecureBlockchainTableListUi } from './sbt/SecureBlockchainTableListUi';
-import { SecureBlockchainTableEditorUi } from './sbt/SecureBlockchainTableEditorUi';
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
-import { SalaryManagerApp } from './salary-manager-app/SalaryManagerApp';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { AppTopTitle } from '../common/AppTopTitle';
 import salaryManagerPng from '../images/salary-manager.png';
 import { ContractRegistry, getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import defjson from './salary-manager-app/gen-table/sm-defs.json';
+import { AppSwitch } from './AppSwitch';
 
 export type SBTOpenMode = 'edit' | 'app';
 export type SalaryManagerTabConfig = { sbtManager: SBTManager; mode: SBTOpenMode };
@@ -75,6 +75,7 @@ export function SalaryManagerUi() {
       level={'top'}
       title={<AppTopTitle title={'Salary Manager'} avatar={salaryManagerPng} />}
       content={[
+        <div key={'json'}>{JSON.stringify(defjson)}</div>,
         <StatusMessageElement
           key={'status-message'}
           statusMessage={statusMessage}
@@ -98,15 +99,3 @@ export function SalaryManagerUi() {
     ></CollapsiblePanel>
   );
 }
-
-const AppSwitch: FC<{ config?: SalaryManagerTabConfig; done: NotifyFun }> = ({ config, done }) => {
-  if (!config) {
-    return <StatusMessageElement statusMessage={infoMessage('No Salary Manager selected!')} />;
-  }
-
-  if (config.mode === 'edit') {
-    return <SecureBlockchainTableEditorUi sbtManager={config.sbtManager} done={done} />;
-  }
-
-  return <SalaryManagerApp sbtManager={config.sbtManager} done={done} />;
-};

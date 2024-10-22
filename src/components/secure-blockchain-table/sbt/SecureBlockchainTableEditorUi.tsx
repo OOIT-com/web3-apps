@@ -8,7 +8,7 @@ import { isStatusMessage, NotifyRefresh, StatusMessage } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { RowDataWithVersionsPart } from '../RowDataWithVersionsPart';
 import { SetEditablePart } from '../SetEditablePart';
-import { DataPart } from '../DataPart';
+import { DataPart } from '../../common/DataPart';
 import { UserManagement } from '../UserManagement';
 import { useAppContext } from '../../AppContextProvider';
 

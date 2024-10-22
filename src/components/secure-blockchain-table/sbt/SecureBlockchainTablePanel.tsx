@@ -1,6 +1,6 @@
 import { Button } from '@mui/material';
 import * as React from 'react';
-import { FC, useEffect, useState } from 'react';
+import { FC, Fragment, useEffect, useState } from 'react';
 import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import {
@@ -25,6 +25,7 @@ export const SecureBlockchainTablePanel: FC<{ refresh: NotifyFun; prefix: string
 
   const [registerName, setRegisterName] = useState('');
   const [namesUsed, setNamesUsed] = useState<string[]>([]);
+  const [retryRegister, setRetryRegister] = useState<ContractData>();
 
   const contractRegistry = getContractRegistry();
 
@@ -78,8 +79,8 @@ export const SecureBlockchainTablePanel: FC<{ refresh: NotifyFun; prefix: string
             }
 
             const res = await wrap(`Secure Blockchain Table Registration ${registerName}...`, async () => {
+              setStatusMessage(undefined);
               if (publicAddress && contractRegistry) {
-                setStatusMessage(undefined);
                 const contractData: ContractData = {
                   ...newContractDataTemplate(prefix + registerName, contractAddress),
                   description: '',
@@ -88,9 +89,15 @@ export const SecureBlockchainTablePanel: FC<{ refresh: NotifyFun; prefix: string
                   sourceCodeUrl: '',
                   constructorArgs: JSON.stringify(constructorArgs)
                 };
-                return await contractRegistry.register(contractData, publicAddress);
+                setRetryRegister(undefined);
+                const sm = await contractRegistry.register(contractData, publicAddress);
+                if (sm.status !== 'success') {
+                  setRetryRegister(contractData);
+                }
+                return sm;
+              } else {
+                return errorMessage('Contract Registry not available!');
               }
-              return errorMessage('Contract Registry not available!');
             });
             setStatusMessage(res);
             refresh();
@@ -124,7 +131,31 @@ export const SecureBlockchainTablePanel: FC<{ refresh: NotifyFun; prefix: string
           key={'status'}
           statusMessage={statusMessage}
           onClose={() => setStatusMessage(undefined)}
-        />
+        />,
+        <Fragment key={'retry'}>
+          {!!retryRegister && (
+            <Button
+              variant={'contained'}
+              onClick={() =>
+                wrap('', async () => {
+                  if (contractRegistry && retryRegister) {
+                    setRetryRegister(undefined);
+                    setStatusMessage(undefined);
+
+                    const sm = await contractRegistry.register(retryRegister, publicAddress);
+                    if (sm.status !== 'success') {
+                      setRetryRegister(retryRegister);
+                    } else {
+                      setStatusMessage(sm);
+                    }
+                  }
+                })
+              }
+            >
+              Retry Registry of {retryRegister.name}
+            </Button>
+          )}
+        </Fragment>
       ]}
     />
   );
