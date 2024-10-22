@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactWidget, WidgetProps } from '../types';
 import { resolveEditable } from '../utils';
 import { TextField } from '@mui/material';
+import humanizeString from 'humanize-string';
 
 let counter = 0;
 export const InputUi: ReactWidget = ({ def, value, cx = {}, action }: Readonly<WidgetProps>) => {
@@ -20,7 +21,7 @@ export const InputUi: ReactWidget = ({ def, value, cx = {}, action }: Readonly<W
   return (
     <TextField
       size={'small'}
-      label={def.label ?? def.name}
+      label={def.label ?? humanizeString(def.name)}
       autoComplete={'off'}
       fullWidth
       multiline={!!def.multiline}

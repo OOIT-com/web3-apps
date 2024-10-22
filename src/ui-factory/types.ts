@@ -67,6 +67,7 @@ export type FormatterFun = (value: PValue) => string;
 export type ReactWidget = (prop: WidgetProps) => ReactElement;
 
 //export type SRecord = Record<string, string>;
+export type IdValue = string | number;
 export type PValue = boolean | string | number;
 export type PRecord = Record<string, PValue>;
 export type SetData = (data: PRecord) => void;

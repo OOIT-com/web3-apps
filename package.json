@@ -28,6 +28,7 @@
     "ethersv5": "npm:ethers@5.7.2",
     "file-saver": "^2.0.5",
     "file-type": "^19.3.0",
+    "humanize-string": "^3.0.0",
     "i18next": "^23.16.0",
     "i18next-browser-languagedetector": "^8.0.0",
     "jszip": "^3.10.1",
@@ -43,6 +44,7 @@
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
     "rehype-raw": "^7.0.0",
+    "secp256k1": ">=5.0.1",
     "stream-browserify": "^3.0.0",
     "tss-react": "^4.8.6",
     "tweetnacl": "^1.0.3",
@@ -50,8 +52,7 @@
     "vm-browserify": "^1.1.2",
     "web-vitals": "^2.1.4",
     "web3": "4.8.0",
-    "xlsx": "^0.18.5",
-    "secp256k1": ">=5.0.1"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

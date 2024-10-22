@@ -3,6 +3,7 @@ import React from 'react';
 import { AttributeUi } from './AttributeUi';
 import { AttributeDef, PRecord, SetData } from './types';
 import { TableRowComp } from '../components/common/TableRowComp';
+import humanizeString from 'humanize-string';
 
 export const AttributeTableUi = ({
   data,
@@ -19,7 +20,7 @@ export const AttributeTableUi = ({
         <TableRowComp
           key={attDef.name}
           elements={[
-            <LabelUi key={'label'} label={attDef.label ?? attDef.name} />,
+            <LabelUi key={'label'} label={attDef.label ?? humanizeString(attDef.name)} />,
             <AttributeUi
               key={'control'}
               attDef={{ ...attDef, noLabel: true }}
