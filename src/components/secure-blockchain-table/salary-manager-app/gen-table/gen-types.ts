@@ -1,10 +1,12 @@
-import { PRecord, PValue } from '../../../../ui-factory/types';
+import { IdValue, PRecord, PValue } from '../../../../ui-factory/types';
 
-export type FormatterFun = (value: PValue, data?: PRecord) => string;
+export type FormatterFun = (value: PValue | PRecord, data?: PRecord) => string;
 export type FormatterDic = Record<string, FormatterFun>;
 
+export type GenUpdateRowFun = (cmd: 'update' | 'reset' | 'delete', id: IdValue, field: string, value: any) => void;
+
 export type GenAttType = 'number' | 'string' | 'boolean';
-export type AttStyle = 'normal' | 'bold';
+export type GenAttStyle = 'normal' | 'bold';
 
 export interface GenAttributeDef {
   name: string;
@@ -13,18 +15,36 @@ export interface GenAttributeDef {
   editable?: boolean;
   type?: GenAttType;
   formatter?: string;
-  style?: AttStyle;
-  groups?: string[];
+  style?: GenAttStyle;
+  selectionGroups?: string[];
   sumRow?: 'average' | 'sum' | 'count';
   cellStyle?: {
     pinned?: 'left' | 'right';
-    style?: AttStyle;
+    style?: GenAttStyle;
     maxWidth?: number;
     minWidth?: number;
     flex?: number;
     cellClass?: string;
   };
 }
+export type GenTableMode = 'initialData' | 'editable' | 'readonly';
+export type ResizeMode = 'sizeToFit' | 'autoSizeAll';
+export type SaveDataRowFun = (dataRow: GenDataRow) => void;
+export type GenUpdatableDataRow = PRecord;
+export interface OperationalFields {
+  // operational
+
+  rowIndex: number;
+  dirty: boolean;
+  version: number;
+  userAddress: string;
+
+  created?: number;
+  status?: number;
+  updatedFields?: PRecord;
+}
+
+export type GenDataRow = PRecord & { operationalFields: OperationalFields };
 
 export type SelectionGroups = string[];
 
@@ -80,127 +100,116 @@ export const testdef: GenTableDef = {
       name: 'prevPartTime',
       type: 'number',
       editable: false,
-      groups: ['prevWork']
+      selectionGroups: ['prevWork']
     },
     {
       name: 'prevMonthsWorked',
       type: 'number',
       editable: false,
-      groups: ['prevWork']
+      selectionGroups: ['prevWork']
     },
     {
       name: 'prevEmployeeFunction',
       type: 'number',
       editable: false,
-      groups: ['prevWork']
+      selectionGroups: ['prevWork']
     },
     {
       name: 'newPartTime',
       type: 'number',
-      groups: ['newWork']
+      selectionGroups: ['newWork']
     },
     {
       name: 'newMonthsWorked',
       type: 'number',
-      groups: ['newWork']
+      selectionGroups: ['newWork']
     },
     {
       name: 'newEmployeeFunction',
       type: 'string',
-      groups: ['newWork']
+      selectionGroups: ['newWork']
     },
     {
       name: 'prevFixed',
       type: 'number',
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'prevBonus',
       type: 'number',
       editable: false,
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'prevCarAllowance',
       type: 'number',
       editable: false,
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'prevMobileAllowance',
       type: 'number',
       editable: false,
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'prevPensionFundPayment',
       type: 'number',
       editable: false,
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'prevOther',
       type: 'number',
       editable: false,
-      groups: ['prevComp']
+      selectionGroups: ['prevComp']
     },
     {
       name: 'newFixed',
       type: 'number',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       name: 'newBonus',
       type: 'number',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       type: 'number',
       name: 'newCarAllowance',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       name: 'newMobileAllowance',
       type: 'number',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       name: 'newPensionFundPayment',
       type: 'number',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       name: 'newOther',
       type: 'number',
-      groups: ['newComp']
+      selectionGroups: ['newComp']
     },
     {
       name: 'prevCompTotal',
       type: 'number',
-      groups: ['summaries']
+      selectionGroups: ['summaries']
     },
     {
       name: 'newCompTotal',
       type: 'number',
-      groups: ['summaries']
+      selectionGroups: ['summaries']
     },
     {
       name: 'comparePercentage',
       type: 'number',
       formatter: 'percentage',
       sumRow: 'average',
-      groups: ['summaries']
+      selectionGroups: ['summaries']
     }
   ]
 };
-
-export interface OperationalFields {
-  // operational
-  dirty: boolean;
-  version: number;
-  userAddress: string;
-
-  created?: number;
-  status?: number;
-  updatedFields?: string[];
-}

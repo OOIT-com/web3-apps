@@ -70,4 +70,11 @@ export type ReactWidget = (prop: WidgetProps) => ReactElement;
 export type IdValue = string | number;
 export type PValue = boolean | string | number;
 export type PRecord = Record<string, PValue>;
+export type PRecordCompatible<T> = Pick<
+  T,
+  {
+    [K in keyof T]: T[K] extends boolean | string | number ? K : never;
+  }[keyof T]
+>;
+
 export type SetData = (data: PRecord) => void;

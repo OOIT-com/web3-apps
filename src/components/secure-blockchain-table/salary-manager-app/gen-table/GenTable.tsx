@@ -1,71 +1,57 @@
 import { Stack, useTheme } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { CellEditRequestEvent, ColDef, GetRowIdParams, GridApi } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-material.css'; // import material theme
 import 'ag-grid-community/styles/ag-grid.css';
 import Button from '@mui/material/Button';
-import { calcSumRows, getSMColDef } from '../sm-table/sm-table-col-def';
-import { applyColCollection } from '../sm-table/sm-column-selection-utils';
-import {
-  ColumnSelectionName,
-  ResizeMode,
-  SMDataRow,
-  SMDataRowUpdateableKeys,
-  SMTableMode,
-  ToggleState
-} from '../sm-table/types';
-import { SMDataRowDialog } from '../sm-table/SMDataRowDialog';
 import { useAppContext } from '../../../AppContextProvider';
 import { StatusMessageElement } from '../../../common/StatusMessageElement';
 import { errorMessage } from '../../../../types';
-import { getResizeMode, getToggleState, saveResizeMode } from '../sm-table/utils';
 
-import '../sm-table/sm-table.css';
-import { SMColumnSelection } from '../sm-table/SMColumnSelection';
+import '../gen-table/gen-table.css';
+import { GenDataRow, GenTableDef, GenTableMode, ResizeMode, SaveDataRowFun, GenUpdateRowFun } from './gen-types';
+import { applyColCollection, calcSumRows } from './sum-row-utils';
+import { getResizeMode, getToggleState, saveResizeMode } from './gen-utils';
+import { getGenColDef } from './gen-table-col-def';
+import { GenDataRowDialog } from './GenDataRowDialog';
+import { GenColumnSelection } from './GenColumnSelection';
 
-export type UpdateRowFun = (
-  cmd: 'update' | 'reset' | 'delete',
-  userId: string,
-  field: SMDataRowUpdateableKeys,
-  value: any
-) => void;
+type GenTableProps = {
+  def: GenTableDef;
+  dataRows: GenDataRow[];
+  owner?: string;
+  mode?: GenTableMode;
+  height?: number;
+  updateRow?: GenUpdateRowFun;
+  saveRowDataToContract?: SaveDataRowFun;
+};
 
-export type SaveDataRowFun = (dataRow: SMDataRow) => void;
-
-export function GenTable({
+export const GenTable: FC<GenTableProps> = ({
+  def,
   dataRows,
-  prevYear,
-  newYear,
   owner,
   updateRow,
   saveRowDataToContract,
   height = 10
-}: Readonly<{
-  dataRows: SMDataRow[];
-  prevYear: number;
-  newYear: number;
-  owner?: string;
-  mode?: SMTableMode;
-  height?: number;
-  updateRow?: UpdateRowFun;
-  saveRowDataToContract?: SaveDataRowFun;
-}>) {
+}) => {
   const { web3Session } = useAppContext();
 
   const theme = useTheme();
-  const [openAction, setOpenAction] = useState<SMDataRow>();
-  const [toggleState, setToggleState] = useState<Partial<ToggleState<ColumnSelectionName>>>(getToggleState(''));
+  const [openAction, setOpenAction] = useState<GenDataRow>();
+  const [toggleState, setToggleState] = useState<string[]>(getToggleState(''));
 
-  const [gridApi, setGridApi] = useState<GridApi<SMDataRow>>();
+  const [gridApi, setGridApi] = useState<GridApi<GenDataRow>>();
 
-  const getRowId = useCallback(({ data }: GetRowIdParams<SMDataRow>) => data.userId, []);
+  const getRowId = useCallback(({ data }: GetRowIdParams<GenDataRow>) => data.id.toString(), []);
+
+  const selectionGroupMap = useMemo(() => {}, [def]);
 
   useEffect(() => {
     if (gridApi && toggleState) {
-      applyColCollection(gridApi, toggleState);
+      applyColCollection(def, gridApi, toggleState);
     }
-  }, [toggleState, gridApi]);
+  }, [toggleState, gridApi, def]);
 
   // Apply settings across all columns
   const defaultColDef = useMemo<ColDef>(() => {
@@ -74,7 +60,10 @@ export function GenTable({
       editable: true
     };
   }, []);
-  const pinnedBottomRowData: SMDataRow[] = useMemo(() => (dataRows ? calcSumRows(dataRows) : []), [dataRows]);
+  const pinnedBottomRowData: GenDataRow[] = useMemo(
+    () => (dataRows ? calcSumRows(def, dataRows) : []),
+    [dataRows, def]
+  );
   const [resizeMode, setResizeMode] = useState<ResizeMode>(getResizeMode('sm'));
 
   useEffect(() => {
@@ -90,13 +79,12 @@ export function GenTable({
 
   const columnDefs = useMemo(
     () =>
-      getSMColDef({
-        prevYear,
-        newYear,
+      getGenColDef({
+        def,
         setOpenAction,
         saveRowDataToContract
       }),
-    [prevYear, newYear, saveRowDataToContract, setOpenAction]
+    [def, saveRowDataToContract]
   );
 
   if (!web3Session?.publicAddress) {
@@ -105,13 +93,7 @@ export function GenTable({
 
   return (
     <Stack spacing={1}>
-      <SMColumnSelection
-        key={'column-selection'}
-        prevYear={prevYear}
-        newYear={newYear}
-        setToggleState={setToggleState}
-        toggleState={toggleState}
-      />
+      <GenColumnSelection key={'column-selection'} setToggleState={setToggleState} toggleState={toggleState} />
       <Stack key={'grid-options'} direction={'row'} justifyContent="space-between" alignItems="baseline">
         <Button
           onClick={() => {
@@ -144,15 +126,15 @@ export function GenTable({
             colDef: { field },
             oldValue,
             newValue
-          }: CellEditRequestEvent<SMDataRow>) => {
+          }: CellEditRequestEvent<GenDataRow>) => {
             if (oldValue === newValue) {
               return;
             }
             if (updateRow && field && typeof rowIndex === 'number') {
-              updateRow('update', data.userId, field as SMDataRowUpdateableKeys, newValue);
+              updateRow('update', data.id.toString(), field as string, newValue);
             }
           }}
-          // onCellClicked={(event: CellClickedEvent<SMDataRow>) => {
+          // onCellClicked={(event: CellClickedEvent<GenDataRow>) => {
           //   const { column, data } = event;
           //   if ('dirty' === column.getColId()) {
           //     setOpenAction(data);
@@ -161,8 +143,8 @@ export function GenTable({
         />
       </div>
       {!!openAction && (
-        <SMDataRowDialog data={openAction} done={() => setOpenAction(undefined)} owner={owner} action={updateRow} />
+        <GenDataRowDialog data={openAction} done={() => setOpenAction(undefined)} owner={owner} action={updateRow} />
       )}
     </Stack>
   );
-}
+};

@@ -1,5 +1,6 @@
 import { StatusMessage } from '../../../types';
 import { SMDataRow } from './sm-table/types';
+import { PRecord } from '../../../ui-factory/types';
 
 export interface Year {
   year: number;
@@ -70,5 +71,13 @@ export interface InitialData {
   newYear: number;
   officeRate: OfficeRate[];
   smTableRows: SMDataRow[];
+  loadMessages?: StatusMessage[];
+}
+
+export interface GenInitialData {
+  created: string;
+  name: string;
+  description: string;
+  rows: PRecord[];
   loadMessages?: StatusMessage[];
 }

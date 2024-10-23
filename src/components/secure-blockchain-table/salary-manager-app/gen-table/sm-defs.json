@@ -42,7 +42,7 @@
       "name": "prevPartTime",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevWork"
       ]
     },
@@ -50,7 +50,7 @@
       "name": "prevMonthsWorked",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevWork"
       ]
     },
@@ -58,35 +58,35 @@
       "name": "prevEmployeeFunction",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevWork"
       ]
     },
     {
       "name": "newPartTime",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newWork"
       ]
     },
     {
       "name": "newMonthsWorked",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newWork"
       ]
     },
     {
       "name": "newEmployeeFunction",
       "type": "string",
-      "groups": [
+      "selectionGroups": [
         "newWork"
       ]
     },
     {
       "name": "prevFixed",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
@@ -94,7 +94,7 @@
       "name": "prevBonus",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
@@ -102,7 +102,7 @@
       "name": "prevCarAllowance",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
@@ -110,7 +110,7 @@
       "name": "prevMobileAllowance",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
@@ -118,7 +118,7 @@
       "name": "prevPensionFundPayment",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
@@ -126,63 +126,63 @@
       "name": "prevOther",
       "type": "number",
       "editable": false,
-      "groups": [
+      "selectionGroups": [
         "prevComp"
       ]
     },
     {
       "name": "newFixed",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "name": "newBonus",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "type": "number",
       "name": "newCarAllowance",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "name": "newMobileAllowance",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "name": "newPensionFundPayment",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "name": "newOther",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "newComp"
       ]
     },
     {
       "name": "prevCompTotal",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "summaries"
       ]
     },
     {
       "name": "newCompTotal",
       "type": "number",
-      "groups": [
+      "selectionGroups": [
         "summaries"
       ]
     },
@@ -191,7 +191,7 @@
       "type": "number",
       "formatter": "percentage",
       "sumRow": "average",
-      "groups": [
+      "selectionGroups": [
         "summaries"
       ]
     }
