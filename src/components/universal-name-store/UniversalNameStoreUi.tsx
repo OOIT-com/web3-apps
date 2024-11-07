@@ -71,9 +71,8 @@ export function UniversalNameStoreUi() {
 
   content.push(<NameListUi key={'name-list-ui'} universalNameStore={universalNameStore} />);
 
-  content.push(<EventListenerUi key={'event-listener-ui'} universalNameStore={universalNameStore} />);
-
   if (isOwner) {
+    content.push(<EventListenerUi key={'event-listener-ui'} universalNameStore={universalNameStore} />);
     content.push(<OwnerAdminUi key={'owner-admin'} universalNameStore={universalNameStore} />);
   }
   return (

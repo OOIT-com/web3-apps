@@ -19,24 +19,7 @@ import { AppTopTitle } from '../common/AppTopTitle';
 import artworkPng from '../images/artwork.png';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
-
-const help = `
-
-Here you can encrypt, create a SHA 256 hash, decrypt and create a artwork proof.
-
-You can:
-
-- *Encrypt*: Provide a file, encrypt it and download it including the metadata with secret key and hash.
-- *Decrpyt* : Decrypt the file.
-- *Create Artwork Time Proof*: create a secure time entry on the the blockchain.
-- *List all your Artwork Time Proof*: List all Artwork Time Proofs entries created. 
-
-All processing is done locally on your browser memory *no data* is stored or uploaded to any site or kept in a local storage! 
-There is a file size limit due to the browser (On Chrome: currently c.a. 50 MB).
-
-    
-`;
-
+import help from './ArtworkHelp.md';
 export function ArtworkUi() {
   const { wrap, web3Session } = useAppContext();
   const { web3, publicAddress } = web3Session || {};

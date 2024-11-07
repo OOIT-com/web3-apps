@@ -1,28 +1,29 @@
-import { InitialData } from './types';
+import { SMInitialData } from '../types';
 import { ReactNode, useState } from 'react';
-import { SMTable } from './sm-table/SMTable';
+import { SMTable } from './SMTable';
 import { Stack } from '@mui/material';
-import { StatusMessageElement } from '../../common/StatusMessageElement';
-import { updateCompensationComparisons } from './sm-table/sm-table-col-def';
+import { StatusMessageElement } from '../../../common/StatusMessageElement';
+import { updateCompensationComparisons } from './sm-table-col-def';
 
 export function InitialDataDisplay({
   initialData
 }: Readonly<{
-  initialData?: InitialData;
+  initialData?: string;
 }>) {
   const [messagesClosed, setMessagesClosed] = useState(false);
 
   const content: ReactNode[] = [];
 
   if (initialData) {
-    const { smTableRows, prevYear, newYear } = initialData;
+    const smData = JSON.parse(initialData) as SMInitialData;
+    const { smTableRows, prevYear, newYear } = smData;
     const dataRows = smTableRows.map((dataRow) => updateCompensationComparisons(dataRow));
     content.push(<SMTable key={'sm-table'} dataRows={dataRows} newYear={newYear} prevYear={prevYear} />);
 
     if (!messagesClosed) {
       content.push(
         <Stack key={'messages'}>
-          {initialData.loadMessages?.map((sm, index) => (
+          {smData.loadMessages?.map((sm, index) => (
             <StatusMessageElement
               key={sm.userMessage}
               statusMessage={sm}

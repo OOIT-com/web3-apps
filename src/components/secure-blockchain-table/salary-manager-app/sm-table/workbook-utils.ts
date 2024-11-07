@@ -1,10 +1,10 @@
 import { utils, WorkBook } from 'xlsx';
-import { AllData, CurrencyRate, InitialData, Office, OfficeRate, Year } from '../types';
+import { AllData, CurrencyRate, SMInitialData, Office, OfficeRate, Year } from '../types';
 import { errorMessage, infoMessage, StatusMessage } from '../../../../types';
 import moment from 'moment';
 import { prepareDataRows } from './utils';
 
-export const workbookToInitialData = (wb: WorkBook): InitialData | StatusMessage => {
+export const workbookToInitialData = (wb: WorkBook): SMInitialData | StatusMessage => {
   // Years
   const wsYears = wb.Sheets['Years'];
   const loadMessages: StatusMessage[] = [];

@@ -1,5 +1,5 @@
 import { isStatusMessage, StatusMessage } from '../../../types';
-import { InitialData } from './types';
+import { SMInitialData } from './types';
 import { WrapFun } from '../../AppContextProvider';
 import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import {
@@ -12,10 +12,21 @@ import {
 } from './sm-table/types';
 import { read, WorkBook } from 'xlsx';
 
+export const getSMInitialDataFromContract = async (
+  wrap: WrapFun,
+  sbtManager: SBTManager
+): Promise<SMInitialData | StatusMessage> => {
+  const data = await getInitialDataFromContract(wrap, sbtManager);
+  if (isStatusMessage(data)) {
+    return data;
+  }
+  return JSON.parse(data) as SMInitialData;
+};
+
 export const getInitialDataFromContract = async (
   wrap: WrapFun,
   sbtManager: SBTManager
-): Promise<InitialData | StatusMessage> =>
+): Promise<string | StatusMessage> =>
   wrap('Loading Initial Data...', async () => {
     const data = await sbtManager.getInitialData();
     if (isStatusMessage(data)) {
@@ -25,14 +36,14 @@ export const getInitialDataFromContract = async (
     if (isStatusMessage(decData)) {
       return decData;
     }
-    return JSON.parse(decData) as InitialData;
+    return decData;
   });
 
-export const saveInitialData = async (wrap: WrapFun, sbtManager: SBTManager, initialData: InitialData) =>
+export const saveInitialData = async (wrap: WrapFun, sbtManager: SBTManager, initialData: string) =>
   wrap('Save Initial Data...', async () => {
-    const data = JSON.stringify(initialData);
+    //const data = JSON.stringify(initialData);
 
-    const encData = await sbtManager.encryptContent(data);
+    const encData = await sbtManager.encryptContent(initialData);
     if (isStatusMessage(encData)) {
       return encData;
     }

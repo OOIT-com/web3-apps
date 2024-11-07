@@ -2,11 +2,10 @@ import { SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlo
 import { useAppContext } from '../../AppContextProvider';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Tooltip } from '@mui/material';
-import { InitialData } from './types';
 import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
-import { InitialDataDisplay } from './InitialDataDisplay';
+import { InitialDataDisplay } from './sm-table/InitialDataDisplay';
 import { getInitialDataFromContract, saveInitialData } from './sm-app-utils';
 import { InititalDataUploaderButton } from './InititalDataUploaderButton';
 
@@ -18,19 +17,19 @@ export function SalaryManagerInitialDataPanel({
 }: Readonly<{
   readonly: boolean;
   sbtManager: SBTManager;
-  initialData?: InitialData;
-  setInitialData: (initialData: InitialData) => void;
+  initialData?: string;
+  setInitialData: (initialData: string) => void;
 }>) {
   const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
 
   const loadInitialData = useCallback(async () => {
     setStatusMessage(undefined);
-    const initialData0 = await getInitialDataFromContract(wrap, sbtManager);
-    if (isStatusMessage(initialData0)) {
-      setStatusMessage(initialData0);
+    const _initialData = await getInitialDataFromContract(wrap, sbtManager);
+    if (isStatusMessage(_initialData)) {
+      setStatusMessage(_initialData);
     } else {
-      setInitialData(initialData0);
+      setInitialData(_initialData);
     }
   }, [wrap, sbtManager, setInitialData]);
 
@@ -63,7 +62,7 @@ export function SalaryManagerInitialDataPanel({
         </Tooltip>,
         <InititalDataUploaderButton
           key={'initial-data-excel-uploader'}
-          setUploadResult={(res: StatusMessage | InitialData) =>
+          setUploadResult={(res: StatusMessage | string) =>
             isStatusMessage(res) ? setStatusMessage(res) : setInitialData(res)
           }
         />,

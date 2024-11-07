@@ -1,6 +1,7 @@
 import { GenAttributeDef, GenAttType, GenDataRow, GenTableDef } from './gen-types';
 import { IdValue, PValue } from '../../../../ui-factory/types';
 import { ColumnState, GridApi } from 'ag-grid-community';
+import { resolveId } from './gen-utils';
 
 export const resolveType = (att: GenAttributeDef): GenAttType => att.type || 'string';
 export const defaultByType = (genType?: GenAttType): PValue =>
@@ -17,10 +18,11 @@ export const resolveDefault = (att: GenAttributeDef, defaultValue: PValue): PVal
   return defaultByType(type);
 };
 
-export const templateRow = (def: GenTableDef, id: IdValue): GenDataRow =>
+export const templateRow = (def: GenTableDef, idValue: IdValue): GenDataRow =>
   def.attributes.reduce((acc, att) => {
-    if (att.name === 'id') {
-      acc[att.name] = resolveDefault(att, id);
+    const idName = def.idName;
+    if (att.name === idName) {
+      acc[att.name] = resolveDefault(att, idValue);
     } else {
       acc[att.name] = defaultByType(att.type);
     }
@@ -91,17 +93,19 @@ export const applyColCollection = (def: GenTableDef, gridApi: GridApi<GenDataRow
 export const genApplyUpdateCellEvent = (
   dataRows: GenDataRow[],
   {
-    id,
+    def,
+    idValue,
     field,
     value
   }: {
-    id: IdValue;
+    def: GenTableDef;
+    idValue: IdValue;
     field: string;
     value: any;
   }
 ): GenDataRow[] =>
   dataRows.map((dataRow) => {
-    if (dataRow.id === id) {
+    if (resolveId(def, dataRow) === idValue) {
       const newDataRow = { ...dataRow };
       const sameValue = newDataRow[field] === value;
       if (newDataRow.operationalFields.updatedFields && sameValue) {

@@ -1,8 +1,7 @@
 import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { useAppContext } from '../../AppContextProvider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { InitialData } from './types';
-import { isStatusMessage, StatusMessage, warningMessage } from '../../../types';
+import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
@@ -18,6 +17,7 @@ import {
   saveRowData
 } from './sm-app-utils';
 import { calcSumRows, updateCompensationComparisons } from './sm-table/sm-table-col-def';
+import { SMInitialData } from './types';
 
 export function SalaryManagerDataRowsEditor({
   sbtManager,
@@ -25,7 +25,7 @@ export function SalaryManagerDataRowsEditor({
   mode = 'editable'
 }: Readonly<{
   sbtManager: SBTManager;
-  initialData: InitialData;
+  initialData: string;
   mode?: SMTableMode;
 }>) {
   const { wrap } = useAppContext();
@@ -34,10 +34,16 @@ export function SalaryManagerDataRowsEditor({
   const [dataRowEntries, setDataRowEntries] = useState<DataRowEntry<SMUpdatableDataRow>[]>();
   const [dataRows, setDataRows] = useState<SMDataRow[]>([]);
   const [dirty, setDirty] = useState(false);
+  const [parsedInitialData, setParsedInitialData] = useState<SMInitialData>();
 
+  useEffect(() => {
+    if (initialData) {
+      setParsedInitialData(JSON.parse(initialData));
+    }
+  }, [initialData]);
   const refreshRowDataFromContract = useCallback(async () => {
     setStatusMessage(undefined);
-    if (!initialData) {
+    if (!parsedInitialData) {
       setStatusMessage(warningMessage(`No initial data found for ${sbtManager.name}!`));
       return;
     }
@@ -55,7 +61,7 @@ export function SalaryManagerDataRowsEditor({
       setStatusMessage(rowDataEntries0);
     } else {
       setDataRowEntries(rowDataEntries0);
-      const initialDataRows = mergeInitialDataAndRowData(initialData.smTableRows, rowDataEntries0);
+      const initialDataRows = mergeInitialDataAndRowData(parsedInitialData.smTableRows, rowDataEntries0);
 
       // merge unsaved changes
       setDataRows((currentDataRows) => {
@@ -63,7 +69,7 @@ export function SalaryManagerDataRowsEditor({
         return mergeUnsavedDataRows({ initialDataRows, updatedFieldsMap });
       });
     }
-  }, [wrap, sbtManager, initialData, setDataRowEntries, setDataRows]);
+  }, [parsedInitialData, sbtManager, wrap]);
 
   useEffect(() => {
     refreshRowDataFromContract().catch(console.error);
@@ -132,6 +138,10 @@ export function SalaryManagerDataRowsEditor({
     return newDataRows;
   }, [dataRows]);
 
+  if (!parsedInitialData) {
+    return <StatusMessageElement statusMessage={errorMessage('Data loading...')}></StatusMessageElement>;
+  }
+
   return (
     <CollapsiblePanel
       level={'second'}
@@ -176,8 +186,8 @@ export function SalaryManagerDataRowsEditor({
         <SMTable
           key={`sm-table+${dataRows.length}`}
           dataRows={editableDataRows}
-          newYear={initialData.newYear}
-          prevYear={initialData.prevYear}
+          newYear={parsedInitialData.newYear}
+          prevYear={parsedInitialData.prevYear}
           height={40}
           mode={mode}
           owner={owner}

@@ -15,6 +15,7 @@ import { isAddress, weiToEther } from '../../utils/web3-utils';
 import { TableRowComp } from '../common/TableRowComp';
 import { Html } from '../common/Html';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import helpFile from './RegisterNameHelp.md';
 
 export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -104,6 +105,7 @@ export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({
   return (
     <CollapsiblePanel
       title={title}
+      help={helpFile}
       level={'second'}
       collapsible={true}
       collapsed={true}
@@ -163,10 +165,36 @@ export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({
                     key={'save'}
                     disabled={!!myName}
                     onClick={async () => {
+                      setStatusMessage(undefined);
+                      // check name
+                      const checkRes = await wrap(`Check correctness of name ${myNameUpdate}...`, () =>
+                        universalNameStore.checkValidString(myNameUpdate)
+                      );
+                      if (checkRes === false) {
+                        setStatusMessage(errorMessage(`Name ${myNameUpdate} is not valid!`));
+                        return;
+                      }
+                      if (isStatusMessage(checkRes)) {
+                        setStatusMessage(checkRes);
+                        return;
+                      }
+                      // is name taken
+                      const checkTaken = await wrap(`Check if ${myNameUpdate} is taken...`, () =>
+                        universalNameStore.getAddressByName(myNameUpdate)
+                      );
+                      if (typeof checkTaken === 'string' && checkTaken.length > 0) {
+                        setStatusMessage(errorMessage(`Name ${myNameUpdate} is taken!`));
+                        return;
+                      }
+                      if (isStatusMessage(checkTaken)) {
+                        setStatusMessage(checkTaken);
+                        return;
+                      }
+
                       if (resolvedAddr) {
                         await refreshData(resolvedAddr);
                         setConfirmData({
-                          title: `Save ${myNameUpdate} to UNS`,
+                          title: `Save ${myNameUpdate} to Universal Name Service`,
                           content: [
                             <Fragment key={1}>{`Saving the name ${myNameUpdate} will cost a fee of ${fee}`}</Fragment>,
                             <Html key={2} content={'Please press <b>accept</b> to start the registration!'} />

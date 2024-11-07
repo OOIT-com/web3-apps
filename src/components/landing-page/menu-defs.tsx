@@ -23,7 +23,7 @@ import contractRegistryPng from '../images/contract-registry.png';
 import toolsPng from '../images/tools.png';
 import paymentsPng from '../images/payments.png';
 import aboutPng from '../images/about.png';
-import { SalaryManagerUi } from '../secure-blockchain-table/SalaryManagerUi';
+import { SecureBlockchainTableUi } from '../secure-blockchain-table/SecureBlockchainTableUi';
 import { UniversalNameStoreUi } from '../universal-name-store/UniversalNameStoreUi';
 import { UiGallery } from '../ui-gallery/UiGallery';
 import { AddressBookUi } from '../address-book/AddressBookUi';
@@ -74,7 +74,7 @@ const menuColumnsAll: MenuColumn[] = [
         name: 'Salary Manager',
         icon: <AppIcon src={salaryManager} alt={'Salary Manager'} />,
         description: 'Save and secret salary management tool!',
-        element: <SalaryManagerUi />
+        element: <SecureBlockchainTableUi />
       }
     ]
   },

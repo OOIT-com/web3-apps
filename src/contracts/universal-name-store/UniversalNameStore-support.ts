@@ -104,10 +104,24 @@ export class UniversalNameStore {
     }
   }
 
+  public async checkValidString(name: string): Promise<boolean | StatusMessage> {
+    const tag = `<Check Valid Name ${name}>`;
+    try {
+      const res = await this.contract.methods.checkValidString(name).call();
+      return res;
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
   public async getAddressByName(name: string): Promise<string | StatusMessage> {
     const tag = `<Get Address By Name ${name}>`;
     try {
-      return await this.contract.methods.getAddressByName(name).call();
+      const res = await this.contract.methods.getAddressByName(name).call();
+      if (isZeroAddress(res)) {
+        return '';
+      }
+      return res;
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);
     }

@@ -63,7 +63,7 @@ export interface SalaryManager {
 
 // excel -> readonly data ->
 
-export interface InitialData {
+export interface SMInitialData {
   created: string;
   name: string;
   description: string;
@@ -78,6 +78,6 @@ export interface GenInitialData {
   created: string;
   name: string;
   description: string;
-  rows: PRecord[];
+  smTableRows: PRecord[];
   loadMessages?: StatusMessage[];
 }

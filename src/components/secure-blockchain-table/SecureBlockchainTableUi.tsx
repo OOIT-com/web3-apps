@@ -13,13 +13,12 @@ import salaryManagerPng from '../images/salary-manager.png';
 import { ContractRegistry, getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import defjson from './salary-manager-app/gen-table/sm-defs.json';
 import { AppSwitch } from './AppSwitch';
 
 export type SBTOpenMode = 'edit' | 'app';
 export type SalaryManagerTabConfig = { sbtManager: SBTManager; mode: SBTOpenMode };
 
-export function SalaryManagerUi() {
+export function SecureBlockchainTableUi() {
   const { wrap, web3Session } = useAppContext();
   const { publicAddress } = web3Session || {};
   const [value, setValue] = React.useState(0);
@@ -75,7 +74,6 @@ export function SalaryManagerUi() {
       level={'top'}
       title={<AppTopTitle title={'Salary Manager'} avatar={salaryManagerPng} />}
       content={[
-        <div key={'json'}>{JSON.stringify(defjson)}</div>,
         <StatusMessageElement
           key={'status-message'}
           statusMessage={statusMessage}

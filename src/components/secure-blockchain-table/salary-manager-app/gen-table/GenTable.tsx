@@ -10,9 +10,9 @@ import { StatusMessageElement } from '../../../common/StatusMessageElement';
 import { errorMessage } from '../../../../types';
 
 import '../gen-table/gen-table.css';
-import { GenDataRow, GenTableDef, GenTableMode, ResizeMode, SaveDataRowFun, GenUpdateRowFun } from './gen-types';
+import { GenDataRow, GenTableDef, GenTableMode, GenUpdateRowFun, ResizeMode, SaveDataRowFun } from './gen-types';
 import { applyColCollection, calcSumRows } from './sum-row-utils';
-import { getResizeMode, getToggleState, saveResizeMode } from './gen-utils';
+import { getResizeMode, getToggleState, resolveId, saveResizeMode } from './gen-utils';
 import { getGenColDef } from './gen-table-col-def';
 import { GenDataRowDialog } from './GenDataRowDialog';
 import { GenColumnSelection } from './GenColumnSelection';
@@ -39,13 +39,11 @@ export const GenTable: FC<GenTableProps> = ({
 
   const theme = useTheme();
   const [openAction, setOpenAction] = useState<GenDataRow>();
-  const [toggleState, setToggleState] = useState<string[]>(getToggleState(''));
+  const [toggleState, setToggleState] = useState<string[]>(getToggleState(def.name));
 
   const [gridApi, setGridApi] = useState<GridApi<GenDataRow>>();
 
-  const getRowId = useCallback(({ data }: GetRowIdParams<GenDataRow>) => data.id.toString(), []);
-
-  const selectionGroupMap = useMemo(() => {}, [def]);
+  const getRowId = useCallback(({ data }: GetRowIdParams<GenDataRow>) => resolveId(def, data)?.toString() || '', [def]);
 
   useEffect(() => {
     if (gridApi && toggleState) {
@@ -90,7 +88,6 @@ export const GenTable: FC<GenTableProps> = ({
   if (!web3Session?.publicAddress) {
     return <StatusMessageElement statusMessage={errorMessage('Now Web3 Connection!')} />;
   }
-
   return (
     <Stack spacing={1}>
       <GenColumnSelection key={'column-selection'} setToggleState={setToggleState} toggleState={toggleState} />
@@ -131,7 +128,10 @@ export const GenTable: FC<GenTableProps> = ({
               return;
             }
             if (updateRow && field && typeof rowIndex === 'number') {
-              updateRow('update', data.id.toString(), field as string, newValue);
+              const idValue = resolveId(def, data);
+              if (idValue) {
+                updateRow('update', idValue, field as string, newValue);
+              }
             }
           }}
           // onCellClicked={(event: CellClickedEvent<GenDataRow>) => {
@@ -143,7 +143,13 @@ export const GenTable: FC<GenTableProps> = ({
         />
       </div>
       {!!openAction && (
-        <GenDataRowDialog data={openAction} done={() => setOpenAction(undefined)} owner={owner} action={updateRow} />
+        <GenDataRowDialog
+          def={def}
+          data={openAction}
+          done={() => setOpenAction(undefined)}
+          owner={owner}
+          action={updateRow}
+        />
       )}
     </Stack>
   );

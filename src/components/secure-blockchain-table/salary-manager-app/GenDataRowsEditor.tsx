@@ -1,23 +1,15 @@
 import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { useAppContext } from '../../AppContextProvider';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { GenInitialData } from './types';
-import { isStatusMessage, StatusMessage, warningMessage } from '../../../types';
+import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 
 import { GenTable } from './gen-table/GenTable';
-import {
-  GenDataRow,
-  GenTableDef,
-  GenTableMode,
-  GenUpdatableDataRow,
-  GenUpdateRowFun,
-  OperationalFields
-} from './gen-table/gen-types';
+import { GenDataRow, GenTableDef, GenTableMode, GenUpdateRowFun, OperationalFields } from './gen-table/gen-types';
 import { PRecord, PRecordCompatible } from '../../../ui-factory/types';
-import { calcSumRows, genApplyUpdateCellEvent } from './gen-table/sum-row-utils';
 import {
   createUpdatedFieldsMap,
   mergeInitialDataAndRowData,
@@ -26,33 +18,44 @@ import {
   readLatestDataRowsFromContract,
   saveRowData
 } from './gen-table/gen-utils';
-import { updateCompensationComparisons } from './gen-table/gen-table-col-def';
+import { metadata } from './gen-table/metadata/metadata';
 
 export function GenDataRowsEditor({
-  def,
   sbtManager,
   initialData,
+  metaData,
   mode = 'editable'
 }: Readonly<{
-  def: GenTableDef;
   sbtManager: SBTManager;
-  initialData: GenInitialData;
+  initialData: string;
+  metaData: string;
   mode?: GenTableMode;
 }>) {
   const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [owner, setOwner] = useState('');
-  const [dataRowEntries, setDataRowEntries] = useState<DataRowEntry<GenUpdatableDataRow>[]>();
+  const [def, setDef] = useState<GenTableDef>();
+  const [dataRowEntries, setDataRowEntries] = useState<DataRowEntry<PRecord>[]>();
   const [dataRows, setDataRows] = useState<GenDataRow[]>([]);
-  const [dirty, setDirty] = useState(false);
+
+  useEffect(() => {
+    if (metaData) {
+      const def = metadata[metaData];
+      if (def) {
+        setDef(def);
+      } else {
+        setStatusMessage(errorMessage('No GenTableDef found from metaData!'));
+      }
+    }
+  }, [metaData]);
 
   const refreshRowDataFromContract = useCallback(async () => {
     setStatusMessage(undefined);
-    if (!initialData) {
+    if (!initialData || !def) {
       setStatusMessage(warningMessage(`No initial data found for ${sbtManager.name}!`));
       return;
     }
-
+    const parseInitialData = JSON.parse(initialData || '{}') as GenInitialData;
     // owner
     const owner = await sbtManager.owb.owner();
     if (isStatusMessage(owner)) {
@@ -66,45 +69,25 @@ export function GenDataRowsEditor({
       setStatusMessage(rowDataEntries0);
     } else {
       setDataRowEntries(rowDataEntries0);
-      const initialDataRows = mergeInitialDataAndRowData(initialData.rows, rowDataEntries0);
+      const initialDataRows = mergeInitialDataAndRowData(def, parseInitialData.smTableRows, rowDataEntries0);
 
       // merge unsaved changes
       setDataRows((currentDataRows) => {
-        const updatedFieldsMap = createUpdatedFieldsMap(currentDataRows);
-        return mergeUnsavedDataRows({ initialDataRows, updatedFieldsMap });
+        const updatedFieldsMap = createUpdatedFieldsMap(def, currentDataRows);
+        return mergeUnsavedDataRows({ def, initialDataRows, updatedFieldsMap });
       });
     }
-  }, [wrap, sbtManager, initialData, setDataRowEntries, setDataRows]);
+  }, [def, initialData, sbtManager, wrap]);
 
   useEffect(() => {
     refreshRowDataFromContract().catch(console.error);
   }, [initialData, refreshRowDataFromContract]);
 
-  const updateRow: GenUpdateRowFun = useCallback(
-    (cmd, id, field, value) => {
-      switch (cmd) {
-        case 'update':
-          setDataRows((dataRows) => genApplyUpdateCellEvent(dataRows, { id, field, value }));
-          break;
-        case 'reset':
-          setDataRows((dataRows0) =>
-            dataRows0.map((dataRow) => {
-              const dataRow0 = { ...dataRow };
-              if (dataRow0.id === id && dataRow0.updatedFields) {
-                delete dataRow0.updatedFields;
-              }
-              return dataRow0;
-            })
-          );
-      }
-    },
-    [setDataRows]
-  );
-
   const genUpdateRow: GenUpdateRowFun = useCallback(
     (cmd, userId, field, value) => {
       switch (cmd) {
         case 'update':
+          console.debug('update', field, value);
           //setDataRows((dataRows) => genApplyUpdateCellEvent(dataRows, { userId, field, value }));
           break;
         case 'reset':
@@ -124,11 +107,16 @@ export function GenDataRowsEditor({
 
   const saveRowDataToContract = useCallback(
     async (dataRow: GenDataRow) => {
-      if (!sbtManager) {
+      if (!sbtManager || !def) {
         return;
       }
       const updatableRow: PRecord = prepareUpdatableDataRow(def, dataRow);
-      const res = await saveRowData({ wrap, sbtManager, rowIndex: dataRow.operationalFields.rowIndex, updatableRow });
+      const res = await saveRowData({
+        wrap,
+        sbtManager,
+        rowIndex: dataRow.operationalFields.rowIndex,
+        updatableRow
+      });
       if (isStatusMessage(res)) {
         setStatusMessage(res);
         return;
@@ -147,23 +135,8 @@ export function GenDataRowsEditor({
       }
       await refreshRowDataFromContract();
     },
-    [sbtManager, refreshRowDataFromContract, wrap]
+    [sbtManager, def, wrap, refreshRowDataFromContract]
   );
-
-  const editableDataRows = useMemo(() => {
-    let dirty = false;
-    const newDataRows = dataRows.map((dataRow0) => {
-      if (dataRow0.updatedFields) {
-        dirty = true;
-      }
-      dataRow0 = JSON.parse(JSON.stringify(dataRow0));
-      dataRow0 = updateCompensationComparisons(dataRow0);
-      return dataRow0;
-    });
-    calcSumRows(def, newDataRows);
-    setDirty(dirty);
-    return newDataRows;
-  }, [dataRows]);
 
   const genDataRows: GenDataRow[] = useMemo(() => {
     const getDataRows: GenDataRow[] = dataRows.map((dr) => {
@@ -181,6 +154,28 @@ export function GenDataRowsEditor({
     return getDataRows;
   }, [dataRows]);
 
+  const content: ReactNode[] = [
+    <StatusMessageElement
+      key={'status-message'}
+      statusMessage={statusMessage}
+      onClose={() => setStatusMessage(undefined)}
+    />
+  ];
+
+  if (def) {
+    content.push(
+      <GenTable
+        key={`gen-table`}
+        def={def}
+        dataRows={genDataRows}
+        height={40}
+        mode={mode}
+        owner={owner}
+        updateRow={genUpdateRow}
+        saveRowDataToContract={saveRowDataToContract}
+      />
+    );
+  }
   return (
     <CollapsiblePanel
       level={'second'}
@@ -192,7 +187,6 @@ export function GenDataRowsEditor({
           Refresh from Contract
         </Button>,
         <Button
-          disabled={!dirty}
           key={'save-rows'}
           onClick={() => {
             setStatusMessage(undefined);
@@ -216,24 +210,7 @@ export function GenDataRowsEditor({
           Save Data
         </Button>
       ]}
-      content={[
-        <StatusMessageElement
-          key={'status-message'}
-          statusMessage={statusMessage}
-          onClose={() => setStatusMessage(undefined)}
-        />,
-
-        <GenTable
-          key={`gen-table`}
-          def={def}
-          dataRows={genDataRows}
-          height={40}
-          mode={mode}
-          owner={owner}
-          updateRow={genUpdateRow}
-          saveRowDataToContract={saveRowDataToContract}
-        />
-      ]}
+      content={content}
     />
   );
 }

@@ -6,6 +6,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { HelpBox } from './HelpBox';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { ButtonPanel } from './ButtonPanel';
 
 type Level = 'top' | 'second' | 'third' | 'fourth' | 'fifth';
 type StylesProps = { title: SxProps; outer: SxProps; outerSpacing?: number };
@@ -65,7 +66,7 @@ export const CollapsiblePanel: FC<PropsWithChildren<CollapsiblePanelProps>> = ({
   let titleElement = typeof title === 'string' ? <Stack sx={{ whiteSpace: 'nowrap' }}>{title}</Stack> : title;
   if (help) {
     titleElement = (
-      <Stack direction={'row'} justifyContent="left" alignItems="baseline" spacing={1} sx={{ whiteSpace: 'nowrap' }}>
+      <ButtonPanel sx={{ whiteSpace: 'nowrap' }}>
         {title}
         <IconButton
           onClick={(e) => {
@@ -76,14 +77,14 @@ export const CollapsiblePanel: FC<PropsWithChildren<CollapsiblePanelProps>> = ({
         >
           <InfoOutlinedIcon />
         </IconButton>
-      </Stack>
+      </ButtonPanel>
     );
   }
 
   return (
     <Accordion expanded={!collapsible || exp} onChange={() => setExp((b) => !b)}>
       <LDAccordionSummary expandIcon={expandIcon} aria-controls="panel1bh-data" id="panel1bh-header">
-        <Stack sx={{ width: '100%' }}>
+        <Stack sx={{ width: '100%' }} spacing={1}>
           <Stack
             key={'title-row'}
             direction={'row'}

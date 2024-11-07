@@ -8,14 +8,16 @@ import { TableRowComp } from '../../../common/TableRowComp';
 import { AddressBoxWithCopy } from '../../../common/AddressBoxWithCopy';
 import Button from '@mui/material/Button';
 import moment from 'moment';
-import { GenDataRow, GenUpdateRowFun } from './gen-types';
+import { GenDataRow, GenTableDef, GenUpdateRowFun } from './gen-types';
+import { resolveId } from './gen-utils';
 
-export const GenDataRowDialog: FC<{ data: GenDataRow; done: NotifyFun; owner?: string; action?: GenUpdateRowFun }> = ({
-  data,
-  done,
-  action,
-  owner = ''
-}) => {
+export const GenDataRowDialog: FC<{
+  def: GenTableDef;
+  data: GenDataRow;
+  done: NotifyFun;
+  owner?: string;
+  action?: GenUpdateRowFun;
+}> = ({ def, data, done, action, owner = '' }) => {
   const { firstName, lastName, operationalFields } = data;
   const { version, userAddress, rowIndex, created } = data.operationalFields;
   return (
@@ -46,7 +48,10 @@ export const GenDataRowDialog: FC<{ data: GenDataRow; done: NotifyFun; owner?: s
                   <Button
                     key={'reset'}
                     onClick={() => {
-                      action('reset', data.id.toString(), 'id', data.userId);
+                      const idValue = resolveId(def, data);
+                      if (idValue) {
+                        action('reset', idValue.toString(), def.idName, data.userId);
+                      }
                       done();
                     }}
                   >

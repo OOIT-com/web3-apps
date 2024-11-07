@@ -11,7 +11,7 @@ import {
 import { SecureBlockchainTablePanel } from './SecureBlockchainTablePanel';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { OwnableWithBackupDialog } from '../../ownable-with-backup/OwnableWithBackupDialog';
-import { SalaryManagerTabConfig, SBTOpenMode } from '../SalaryManagerUi';
+import { SalaryManagerTabConfig, SBTOpenMode } from '../SecureBlockchainTableUi';
 import { useAppContext } from '../../AppContextProvider';
 
 export const SecureBlockchainTableListUi: FC<{

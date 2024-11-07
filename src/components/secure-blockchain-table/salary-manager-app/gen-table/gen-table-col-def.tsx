@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import { Fragment } from 'react';
 import { PValue } from '../../../../ui-factory/types';
 import { GenAttStyle, GenAttType, GenDataRow, GenTableDef, SaveDataRowFun } from './gen-types';
-import { templateRow } from './sum-row-utils';
 import humanizeString from 'humanize-string';
 
 type CellStyleParts = { style: GenAttStyle; editable: boolean; type: GenAttType };
