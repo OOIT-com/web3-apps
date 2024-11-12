@@ -11,11 +11,13 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { TableRowComp } from '../common/TableRowComp';
 import Button from '@mui/material/Button';
+import { NameRetrievalDialog } from './NameRetrievalDialog';
 
 export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
   const { wrap } = app;
   const { web3, publicAddress } = app.web3Session || {};
+  const [startRetrieval, setStartRetrieval] = useState(false);
   const [count, setCount] = useState('0');
   const [entries, setEntries] = useState<NameAddressEntry[]>([]);
 
@@ -69,6 +71,9 @@ export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
       key={'na'}
       title={'Name List'}
       toolbar={[
+        <Button key={'retrieval'} onClick={() => setStartRetrieval(true)}>
+          Retrieval
+        </Button>,
         <Button key={'refresh'} onClick={() => refreshData()}>
           Refresh
         </Button>
@@ -89,6 +94,15 @@ export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
               <TableRowComp key={name} elements={[name, address, owner]} />
             ))}
           </TableBody>
+          ,
+          {startRetrieval && (
+            <NameRetrievalDialog
+              key={'name-retrieval-dialog'}
+              universalNameStore={universalNameStore}
+              done={() => setStartRetrieval(false)}
+            />
+          )}
+          );
         </Table>
       ]}
     />
