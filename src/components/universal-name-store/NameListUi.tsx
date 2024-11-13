@@ -69,7 +69,7 @@ export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
       collapsed={true}
       level={'second'}
       key={'na'}
-      title={'Name List'}
+      title={'List of all Universal Names'}
       toolbar={[
         <Button key={'retrieval'} onClick={() => setStartRetrieval(true)}>
           Retrieval
@@ -94,16 +94,15 @@ export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ uni
               <TableRowComp key={name} elements={[name, address, owner]} />
             ))}
           </TableBody>
-          ,
-          {startRetrieval && (
-            <NameRetrievalDialog
-              key={'name-retrieval-dialog'}
-              universalNameStore={universalNameStore}
-              done={() => setStartRetrieval(false)}
-            />
-          )}
-          );
-        </Table>
+        </Table>,
+
+        startRetrieval && (
+          <NameRetrievalDialog
+            key={'name-retrieval-dialog'}
+            universalNameStore={universalNameStore}
+            done={() => setStartRetrieval(false)}
+          />
+        )
       ]}
     />
   );

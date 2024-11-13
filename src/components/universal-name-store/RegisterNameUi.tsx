@@ -16,6 +16,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { Html } from '../common/Html';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import helpFile from './RegisterNameHelp.md';
+import { ButtonPanel } from '../common/ButtonPanel';
 
 export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -87,7 +88,7 @@ export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({
   const resolvedAddr = isAddress(_resolvedAddr) ? _resolvedAddr : '';
   const title = myName ? `Your Universal Name: ${myName}` : 'My Universal Names';
   const toolbar = (
-    <Stack key={'mode-toggle'} direction={'row'} spacing={1}>
+    <ButtonPanel key={'mode-toggle'}>
       <ToggleButtonGroup color="primary" value={mode} exclusive onChange={(event, value) => setMode(value)}>
         <ToggleButton value="myAddress" sx={{ whiteSpace: 'nowrap' }}>
           My Address
@@ -99,7 +100,7 @@ export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({
       <Button key={'refresh-button'} onClick={() => refreshData(resolvedAddr)}>
         Refresh
       </Button>
-    </Stack>
+    </ButtonPanel>
   );
 
   return (

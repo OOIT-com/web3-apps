@@ -1,4 +1,4 @@
-# Register Name Help
+# Help for Registering a Universal Name
 
 ## What names can I register?
 
@@ -11,3 +11,4 @@
 
 - Names cannot start or end with a period (.) or hyphen (-)
 - Allowed characters: uppercase letters (A-Z), digits (0-9), hyphens (-), or periods (.)
+- For convenience, names may be display and entered with lower case letters. But the registered name is in upper case.

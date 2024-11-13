@@ -17,6 +17,7 @@ import uns from '../images/universal-name-store.png';
 import { EventListenerUi } from './EventListenerUi';
 import { NoContractFound } from '../common/NoContractFound';
 import { AppTopTitle } from '../common/AppTopTitle';
+import { UniversalNamePropertiesUi } from './UniversalNamePropertiesUi';
 
 export function UniversalNameStoreUi() {
   const app = useAppContext();
@@ -70,6 +71,7 @@ export function UniversalNameStoreUi() {
   content.push(<RegisterNameUi key={'register-name'} universalNameStore={universalNameStore} />);
 
   content.push(<NameListUi key={'name-list-ui'} universalNameStore={universalNameStore} />);
+  content.push(<UniversalNamePropertiesUi key={'universal-name-properties'} universalNameStore={universalNameStore} />);
 
   if (isOwner) {
     content.push(<EventListenerUi key={'event-listener-ui'} universalNameStore={universalNameStore} />);

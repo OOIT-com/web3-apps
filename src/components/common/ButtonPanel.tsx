@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { FC, PropsWithChildren, ReactNode } from 'react';
-import { Stack, SxProps } from '@mui/material';
+import { Stack, Theme } from '@mui/material';
+import { SystemStyleObject } from '@mui/system/styleFunctionSx/styleFunctionSx';
 
 type Mode = 'left' | 'right' | 'center' | 'space-between' | 'space-around';
-const styles: Record<Mode, SxProps> = {
+const styles: Record<Mode, SystemStyleObject<Theme>> = {
   left: {
     justifyContent: 'flex-start',
     alignItems: 'center'
@@ -30,18 +31,14 @@ export const ButtonPanel: FC<
   PropsWithChildren<{
     content?: ReactNode | ReactNode[];
     mode?: Mode;
-    sx?: SxProps;
+    sx?: SystemStyleObject<Theme>;
   }>
 > = (props) => {
   const { content, mode = 'right', children, sx = {} } = props;
-  // let sxFinal: SxProps = styles[mode] || {};
-  // if (typeof sx === 'object' && typeof sxFinal === 'object') {
-  //   sxFinal = { ...sx, ...sxFinal };
-  // }
 
-  const sxFinal: any = {
-    ...(typeof sx === 'function' ? {} : sx),
-    ...(typeof styles[mode] === 'function' ? {} : styles[mode])
+  const sxFinal: SystemStyleObject<Theme> = {
+    ...sx,
+    ...styles[mode]
   };
 
   return (

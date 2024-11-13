@@ -18,6 +18,8 @@ export type NameAddressEntry = {
   owner: string;
 };
 
+export type UniversalNameProperty = { key: string; value: string; index: number };
+
 let instance: UniversalNameStore | undefined = undefined;
 
 export async function getUniversalNameStore(web3Session: Web3Session): Promise<UniversalNameStore | StatusMessage> {
@@ -121,7 +123,7 @@ export class UniversalNameStore {
       if (isZeroAddress(res)) {
         return '';
       }
-      return res;
+      return res.toLowerCase();
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);
     }
@@ -214,5 +216,87 @@ export class UniversalNameStore {
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);
     }
+  }
+
+  public async getKeyCountByAddress(addr: string): Promise<BigInt | StatusMessage> {
+    const tag = '<Get Key Count>';
+    try {
+      return await this.contract.methods.getKeyCountByAddress(addr).call();
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async getKeyByAddress(addr: string, index: number): Promise<string | StatusMessage> {
+    const tag = '<Get Key By Address>';
+    try {
+      return await this.contract.methods.getKeyByAddress(addr, index).call();
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async getValueByAddress(addr: string, key: string): Promise<string | StatusMessage> {
+    const tag = '<Get Key By Address>';
+    try {
+      return await this.contract.methods.getValueByAddress(addr, key).call();
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async setValue(name: string, key: string, value: string): Promise<void | StatusMessage> {
+    const tag = '<Set Value>';
+    try {
+      const fee = await this.getFee();
+
+      if (isStatusMessage(fee)) {
+        return fee;
+      }
+      const from = this.publicAddress;
+      const v = fee.toString();
+      await this.contract.methods.setValue(name, key, value).call({ value: v, from });
+      await this.contract.methods.setValue(name, key, value).send({ value: v, from });
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async removeValue(name: string, key: string): Promise<void | StatusMessage> {
+    const tag = '<Set Value>';
+    try {
+      const fee = await this.getFee();
+      if (isStatusMessage(fee)) {
+        return fee;
+      }
+      const from = this.publicAddress;
+      const value = fee.toString();
+      await this.contract.methods.removeValue(name, key).call({ value, from });
+      await this.contract.methods.removeValue(name, key).send({ value, from });
+    } catch (e) {
+      return resolveAsStatusMessage(`${tag}`, e);
+    }
+  }
+
+  public async getProperties(addr: string): Promise<UniversalNameProperty[] | StatusMessage> {
+    const properties: UniversalNameProperty[] = [];
+
+    const keyCount = await this.getKeyCountByAddress(addr);
+    if (isStatusMessage(keyCount)) {
+      return keyCount;
+    }
+    for (let index = 0; index < +keyCount.toString(); index++) {
+      const key = await this.getKeyByAddress(addr, index);
+      if (isStatusMessage(key)) {
+        return key;
+      }
+      const value = await this.getValueByAddress(addr, key);
+      if (isStatusMessage(value)) {
+        return value;
+      }
+      properties.push({ key, value, index });
+    }
+
+    return properties;
   }
 }
