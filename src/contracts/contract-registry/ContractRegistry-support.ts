@@ -12,7 +12,7 @@ type ContractRegistryContractType = Contract<ContractRegistryAbiType>;
 export const contract: undefined = undefined;
 export let contractAddress = '';
 
-export const newContractDataTemplate = (name: string, contractAddress: string): ContractData => ({
+export const newContractDataTemplate = (name: string, contractAddress: string): ContractDataWithIndex => ({
   name,
   contractAddress,
   description: '',
@@ -27,22 +27,23 @@ export const newContractDataTemplate = (name: string, contractAddress: string): 
 });
 
 export type ContractData = {
-  name: string;
   contractAddress: string;
+  name: string;
   description: string;
   constructorArgs: string;
+
   url: string;
   sourceCodeUrl: string;
   contractName: string;
   contractType: string;
+
   status: string;
-  created?: number;
-  updated?: number;
-  index?: number;
+  created: number;
+  updated: number;
 };
 
 export type ContractDataWithIndex = ContractData & {
-  index: number;
+  index?: number;
 };
 
 export const getContractRegistryContractAddress = () => contractAddress;

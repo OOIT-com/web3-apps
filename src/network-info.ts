@@ -1,5 +1,4 @@
 import { NetworkInfo } from './types';
-
 export const networks: NetworkInfo[] = [
   {
     name: 'n/a',
@@ -67,6 +66,7 @@ export const networks: NetworkInfo[] = [
     blockExplorerUrl: 'https://polygonscan.com',
     rpcUrl: 'https://rpc-mainnet.maticvigil.com',
     PostFix: 'POLYGON_MAINNET',
+    irysTokenname: 'matic',
     isMainnet: true,
     isEVM: true
   },
@@ -77,6 +77,7 @@ export const networks: NetworkInfo[] = [
     blockExplorerUrl: 'https://www.oklink.com/amoy',
     rpcUrl: 'https://rpc-amoy.polygon.technology',
     PostFix: 'POLYGON_AMOY',
+    irysTokenname: 'matic',
     isMainnet: false,
     faucetUrls: ['https://getblock.io/faucet/matic-amoy/'],
     isEVM: true
@@ -89,6 +90,7 @@ export const networks: NetworkInfo[] = [
     rpcUrl: 'https://rpcapi.fantom.network',
     PostFix: 'FANTOM_MAINNET',
     homePage: 'https://fantom.foundation',
+    irysTokenname: 'fantom',
     isMainnet: true,
     isEVM: true
   },
@@ -99,6 +101,7 @@ export const networks: NetworkInfo[] = [
     blockExplorerUrl: 'https://explorer.testnet.fantom.network',
     rpcUrl: 'https://rpc.testnet.fantom.network',
     PostFix: 'FANTOM_TESTNET',
+    irysTokenname: 'fantom',
     isMainnet: false,
     isEVM: true
   },
@@ -159,7 +162,19 @@ export const networks: NetworkInfo[] = [
     blockExplorerUrl: 'https://subnets-test.avax.network/c-chain',
     rpcUrl: 'https://rpc.ankr.com/avalanche_fuji-c',
     PostFix: 'AVAX_FUJI_TESTNET',
+    irysTokenname: 'avalanche',
     isMainnet: false,
+    isEVM: true
+  },
+  {
+    name: 'Avalanche C-Chain',
+    chainId: 43114,
+    currencySymbol: 'AVAX',
+    blockExplorerUrl: 'https://cchain.explorer.avax.network',
+    rpcUrl: 'https//api.avax.network/ext/bc/C/rpc',
+    PostFix: 'AVAX_MAINNET',
+    isMainnet: true,
+    irysTokenname: 'avalanche',
     isEVM: true
   }
 ];

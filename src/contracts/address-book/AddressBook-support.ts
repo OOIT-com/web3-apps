@@ -23,13 +23,12 @@ export type AddressData = {
   name2: string;
   name3: string;
   status: string;
-  created?: number;
-  updated?: number;
-  index?: number;
+  created: number;
+  updated: number;
 };
 
 export type AddressDataWithIndex = AddressData & {
-  index: number;
+  index?: number;
 };
 
 export async function initAddressBook(contractRegistry: ContractRegistry, web3: Web3): Promise<StatusMessage> {
@@ -167,7 +166,7 @@ export class AddressBook {
 
 //
 //
-export const newAddressDataTemplate = (name: string): AddressData => ({
+export const newAddressDataTemplate = (name: string): AddressDataWithIndex => ({
   name,
   userAddress: '',
   description: '',

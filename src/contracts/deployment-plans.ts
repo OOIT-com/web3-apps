@@ -21,7 +21,7 @@ export const deploymentPlans: DeploymentPlan[] = [
   {
     label: 'Contract Registry',
     contractName: 'ContractRegistry',
-    defaultRegistryName: 'ADDRESS_BOOK',
+    defaultRegistryName: 'CONTRACT_REGISTRY',
     contractType: 'ContractRegistry,OwnableWithBackup',
     contractABI: JSON.stringify(contractRegistryAbi),
     contractBytecode: contractRegistryBytecode,

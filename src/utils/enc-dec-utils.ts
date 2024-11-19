@@ -2,7 +2,6 @@ import { Buffer } from 'buffer';
 import { DecryptFun } from '../components/login/connect-with-localstore';
 import { errorMessage, StatusMessage, Web3Session } from '../types';
 import { encryptBuffer } from './metamask-util';
-import { getPublicEncryptionKey } from '../components/public-key-store-v2/PublicKeyStoreV2Ui';
 import { newBoxKeyPair } from './nacl-util';
 
 export function hex2Uint8Array(hexString: string): Uint8Array {
@@ -86,6 +85,14 @@ export async function decryptBase64(base64: string, decryptFun: DecryptFun): Pro
   } catch (e) {
     return errorMessage('Text Decryption Error!', e);
   }
+}
+
+export async function getPublicEncryptionKey(from: string) {
+  const w = window as any;
+  return (await w?.ethereum?.request({
+    method: 'eth_getEncryptionPublicKey',
+    params: [from]
+  })) as string;
 }
 
 export async function newEncSecret(web3Session: Web3Session): Promise<string | StatusMessage> {

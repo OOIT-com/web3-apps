@@ -72,7 +72,7 @@ export const successMessage = (userMessage: string): StatusMessage => ({
 });
 
 export const isStatusMessage = (arg: any): arg is StatusMessage =>
-  arg && typeof arg === 'object' && arg.status && arg.userMessage;
+  !!(arg && typeof arg === 'object' && arg.status && arg.userMessage);
 
 export type NotifyInfoFun = (info?: string) => void;
 export type NotifyFun = () => void;
@@ -96,11 +96,12 @@ export interface PublicKeyHolderV2 {
 }
 
 export type SnackbarMessage = StatusMessage & { duration: number; counter: number };
+export type CurrencySymbol = 'ETH' | 'MATIC' | 'BNB' | 'FTM' | 'S' | 'tFIL' | 'AVAX' | 'FIL' | 'MOVR' | 'n/a';
 
 export type NetworkInfo = {
   name: string;
   chainId: number;
-  currencySymbol: string;
+  currencySymbol: CurrencySymbol;
   blockExplorerUrl: string;
   rpcUrl: string;
   PostFix: string;
@@ -108,4 +109,5 @@ export type NetworkInfo = {
   isEVM?: boolean;
   homePage?: string;
   faucetUrls?: string[];
+  irysTokenname?: string;
 };

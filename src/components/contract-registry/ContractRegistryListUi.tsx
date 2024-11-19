@@ -123,7 +123,7 @@ export function ContractRegistryListUi() {
       <TableBody>
         {data.map((cd) => {
           const elements = [
-            `Nr ${cd.index + 1}`,
+            `Nr ${(cd.index ?? 0) + 1}`,
             <Button
               key={'name'}
               variant={'text'}
@@ -173,6 +173,7 @@ export function ContractRegistryListUi() {
   if (contractData4Edit) {
     content.push(
       <ContractDataEditDialog
+        key={'contract-data-edit'}
         contractDataIn={contractData4Edit}
         done={(refreshNeeded: boolean) => {
           setContractData4Edit(undefined);
@@ -230,6 +231,7 @@ export function ContractRegistryListUi() {
       )}
       {openDialog === 'DataView' && selected && (
         <ContractEntryDetailView
+          key={'detail-view'}
           contractData={selected}
           done={() => setOpenDialog(undefined)}
           action={(command, index) => {

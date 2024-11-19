@@ -122,7 +122,7 @@ export function PublicKeyStoreV2Ui() {
           </Button>
         </ButtonPanel>
       </CollapsiblePanel>
-      <CollapsiblePanel key={'my-key-pair'} collapsible={false} level={'second'} title={'Read a Public Key'}>
+      <CollapsiblePanel key={'read-a-public-key'} collapsible={false} level={'second'} title={'Read a Public Key'}>
         <Stack direction={'row'} spacing={1}>
           <TextField
             key={'address'}
@@ -180,12 +180,4 @@ async function loadKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: Public
   const secretKey = new Uint8Array(decSecretKeyBuff);
   const { publicKey } = nacl.box.keyPair.fromSecretKey(secretKey);
   return { publicKey, secretKey };
-}
-
-export async function getPublicEncryptionKey(from: string) {
-  const w = window as any;
-  return (await w?.ethereum?.request({
-    method: 'eth_getEncryptionPublicKey',
-    params: [from]
-  })) as string;
 }

@@ -1,6 +1,6 @@
 import { NotifyFun, StatusMessage } from '../../types';
 import { useState } from 'react';
-import { ContractData } from '../../contracts/contract-registry/ContractRegistry-support';
+import { ContractDataWithIndex } from '../../contracts/contract-registry/ContractRegistry-support';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -20,7 +20,7 @@ export function ContractEntryDetailView({
 }: {
   readonly done: NotifyFun;
   readonly action: (command: CommandName, index: number) => void;
-  readonly contractData: ContractData;
+  readonly contractData: ContractDataWithIndex;
 }) {
   const app = useAppContext();
   const { web3Session } = app || {};

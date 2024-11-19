@@ -5,7 +5,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import { Button, Stack, TextField } from '@mui/material';
 import moment from 'moment/moment';
-import { AddressData, getAddressBook, newAddressDataTemplate } from '../../contracts/address-book/AddressBook-support';
+import {
+  AddressDataWithIndex,
+  getAddressBook,
+  newAddressDataTemplate
+} from '../../contracts/address-book/AddressBook-support';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { useAppContext } from '../AppContextProvider';
@@ -15,7 +19,7 @@ export function AddressDataEditDialog({
   addressDataIn
 }: {
   readonly done: NotifyRefresh;
-  readonly addressDataIn: AddressData | 'new';
+  readonly addressDataIn: AddressDataWithIndex | 'new';
 }) {
   const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
   const { publicAddress } = web3Session || {};
@@ -28,7 +32,10 @@ export function AddressDataEditDialog({
     addressData;
 
   const isUpdate = addressDataIn !== 'new';
-  const title = isUpdate ? `Address ${index === undefined ? '' : 'Nr ' + (index + 1)}` : 'New Address';
+  let title = 'New Address';
+  if (isUpdate) {
+    title = `Address ${index === undefined ? '' : 'Nr ' + (index + 1)}`;
+  }
 
   const addressBook = getAddressBook();
   if (!publicAddress || !addressBook) {
@@ -79,7 +86,7 @@ export function AddressDataEditDialog({
               label={'Created'}
               size={'small'}
               fullWidth={true}
-              value={created && moment(1000 * +created.toString()).format('YYYY-MM-DD HH:mm')}
+              value={created ? moment(1000 * +created.toString()).format('YYYY-MM-DD HH:mm') : ''}
             />
           )}
           {isUpdate && (
@@ -89,7 +96,7 @@ export function AddressDataEditDialog({
               label={'Updated'}
               size={'small'}
               fullWidth={true}
-              value={updated && moment(1000 * +updated.toString()).format('YYYY-MM-DD HH:mm')}
+              value={updated ? moment(1000 * +updated.toString()).format('YYYY-MM-DD HH:mm') : ''}
             />
           )}
         </Stack>

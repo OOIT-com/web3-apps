@@ -72,10 +72,10 @@ const getWebIrys = async (web3Session: Web3Session): Promise<IrysType | StatusMe
   //   //return errorMessage(`Currently session mode ${mode} is not yet supported!`);
   // }
 
-  const { currencySymbol, isMainnet } = getNetworkInfo(networkId);
+  const { irysTokenname, currencySymbol, isMainnet } = getNetworkInfo(networkId);
   const url = process.env.REACT_APP_IRYS_URL ?? '';
 
-  const token = currencySymbol;
+  const token = irysTokenname ?? currencySymbol;
   // if (!token) {
   //   return errorMessage(`No Irys Token defined for ${name}!`);
   // }
@@ -84,7 +84,7 @@ const getWebIrys = async (web3Session: Web3Session): Promise<IrysType | StatusMe
   }
 
   // const provider = new BrowserProvider(w.ethereum);
-  let rpcUrl = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
+  let rpcUrl: string | undefined = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
   let provider;
   if (mode === 'localstore') {
     if (localstore_not_supported) {
@@ -104,7 +104,7 @@ const getWebIrys = async (web3Session: Web3Session): Promise<IrysType | StatusMe
   let network = 'devnet';
   if (isMainnet) {
     network = 'mainnet';
-    rpcUrl = '';
+    rpcUrl = undefined;
   }
   // Devnet RPC URLs change often, use a recent one from https://chainlist.org
   // const rpcUrl = networkInfo.rpcUrl;

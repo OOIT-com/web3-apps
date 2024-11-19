@@ -1,7 +1,7 @@
 import { isStatusMessage, NotifyRefresh, StatusMessage, warningMessage } from '../../types';
 import { FC, useState } from 'react';
 import {
-  ContractData,
+  ContractDataWithIndex,
   getContractRegistry,
   newContractDataTemplate
 } from '../../contracts/contract-registry/ContractRegistry-support';
@@ -18,7 +18,7 @@ export function ContractDataEditDialog({
   contractDataIn
 }: {
   readonly done: NotifyRefresh;
-  readonly contractDataIn: ContractData | 'new';
+  readonly contractDataIn: ContractDataWithIndex | 'new';
 }) {
   const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
   const { publicAddress } = web3Session || {};

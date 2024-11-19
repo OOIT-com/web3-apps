@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { errorMessage, infoMessage, PublicKeyHolderV2, SnackbarMessage, StatusMessage, Web3Session } from '../types';
-import { AddressData } from '../contracts/address-book/AddressBook-support';
+import { AddressData, AddressDataWithIndex } from '../contracts/address-book/AddressBook-support';
 
 let SnackbarMessageCounter = 0;
 const noop = () => {};
@@ -26,7 +26,7 @@ export type AppContextData = {
   publicKeyHolderV2?: PublicKeyHolderV2;
   setPublicKeyHolderV2: (a?: PublicKeyHolderV2) => void;
   //
-  addressData?: AddressData[];
+  addressData?: AddressDataWithIndex[];
   setAddressData: SetAddressData;
 };
 

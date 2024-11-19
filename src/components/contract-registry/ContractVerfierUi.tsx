@@ -76,7 +76,7 @@ export function ContractVerifierUi() {
       <TableBody>
         {data.map((cd) => {
           const elements = [
-            `Nr ${cd.index + 1}`,
+            `Nr ${(cd.index ?? 0) + 1}`,
             cd.name,
             <AddressBoxWithCopy key={'contract-address'} value={cd.contractAddress} useNames={false} />,
             <Button
