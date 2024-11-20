@@ -5,7 +5,7 @@ import { Box, Paper } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { IrysManageUi } from '../irys-components/IrysManageUi';
+import { IrysFundingUi } from '../irys-components/IrysFundingUi';
 import { IrysFileUpload } from './IrysFileUpload';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { CreateArtworkUi } from './CreateArtworkUi';
@@ -77,7 +77,7 @@ export function ArtworkUi() {
         <Paper sx={{ margin: '1em 0 1em 0' }}>
           {value === 0 && <ArtworkListUi artworkTimeProof={artworkTimeProof} />}
           {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={artworkTimeProof} />}
-          {value === 2 && <IrysManageUi irysAccess={irysAccess} />}
+          {value === 2 && <IrysFundingUi irysAccess={irysAccess} />}
           {value === 3 && <IrysFileUpload irysAccess={irysAccess} />}
           {value === 4 && <DecryptFileUi />}
         </Paper>

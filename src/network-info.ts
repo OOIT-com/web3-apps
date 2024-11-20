@@ -156,11 +156,11 @@ export const networks: NetworkInfo[] = [
     isMainnet: true
   },
   {
-    name: 'Avalanche C-Chain Fuji - Testnet',
+    name: 'Avalanche Fuji Testnet',
     chainId: 43113,
     currencySymbol: 'AVAX',
+    rpcUrl: 'https://api.avax-test.network/ext/bc/C/rpc',
     blockExplorerUrl: 'https://subnets-test.avax.network/c-chain',
-    rpcUrl: 'https://rpc.ankr.com/avalanche_fuji-c',
     PostFix: 'AVAX_FUJI_TESTNET',
     irysTokenname: 'avalanche',
     isMainnet: false,

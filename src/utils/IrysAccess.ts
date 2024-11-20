@@ -6,7 +6,6 @@ import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../ty
 import { getNetworkInfo } from '../network-info';
 import { Buffer } from 'buffer';
 import type { Readable } from 'stream';
-import { UploadResponse } from '@irys/sdk/build/esm/common/types';
 import BaseWebIrys from '@irys/web-upload/dist/types/base';
 
 export type Tags = {
@@ -63,7 +62,7 @@ export class IrysAccess {
     return this.irys?.withdrawBalance(amount);
   }
 
-  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<UploadResponse | StatusMessage> {
+  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<any | StatusMessage> {
     if (!this.irys) {
       return errorMessage('Irys not initialized!');
     }

@@ -10,7 +10,6 @@ import { createSha256Hash } from '../../utils/crypto-util';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
-import { UploadResponse } from '@irys/sdk/build/esm/common/types';
 import { useAppContext } from '../AppContextProvider';
 
 export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
@@ -18,7 +17,7 @@ export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess
   const { publicAddress } = web3Session || {};
 
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  const [uploadResponse, setUploadResponse] = useState<UploadResponse>();
+  const [uploadResponse, setUploadResponse] = useState<any>();
   const [contentHash, setContentHash] = useState('');
 
   const [providedFile, setProvidedFile] = useState<File>();
