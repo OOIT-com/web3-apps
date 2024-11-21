@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import { Box, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
@@ -25,6 +25,7 @@ import { ConfirmDialog } from '../common/ConfirmDialog';
 import { createZip, ZipEntry } from '../../utils/zip-utils';
 import { safeFilename } from '../../utils/misc-util';
 import { EncryptionType, MetaData } from './types';
+import { loadIrysData } from '../../utils/irys-utils';
 
 export function CreateArtworkUi({
   irysAccess,
@@ -35,6 +36,7 @@ export function CreateArtworkUi({
 }>) {
   const { wrap, web3Session } = useAppContext();
 
+  const [irysDataMessage, setIrysDataMessage] = useState<StatusMessage>();
   const [uploadFile, setUploadFile] = useState<File>();
   const [encryptedContent, setEncryptedContent] = useState<Uint8Array>();
   const [newKeyPair, setNewKeyPair] = useState<BoxKeyPair>(box.keyPair);
@@ -56,6 +58,32 @@ export function CreateArtworkUi({
     setMetaData({});
     setStatusMessage(undefined);
   }, []);
+
+  useEffect(() => {
+    // check if funds are available
+    if (irysAccess) {
+      wrap('Check if funds are available', async () => {
+        const irysData = await loadIrysData(irysAccess);
+        if (isStatusMessage(irysData)) {
+          setStatusMessage(irysData);
+        } else {
+          if (irysData.uploadableMegabytes === 0) {
+            setIrysDataMessage(errorMessage(`Upload to Arweave not possible! Please use 'Irys Funding' first!`));
+          } else if (irysData.uploadableMegabytes < 1) {
+            setIrysDataMessage(
+              errorMessage(`Critical low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
+            );
+          } else if (irysData.uploadableMegabytes < 10) {
+            setIrysDataMessage(
+              warningMessage(`Low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
+            );
+          } else {
+            setIrysDataMessage(infoMessage(`Irys Upload capacity (to Arweave): ${irysData.uploadableMegabytes} MB`));
+          }
+        }
+      }).catch(console.error);
+    }
+  }, [wrap, irysAccess]);
 
   useEffect(() => {
     if (uploadFile) {
@@ -85,7 +113,7 @@ export function CreateArtworkUi({
 
       <CollapsiblePanel
         key={'create-artwork-information'}
-        title={'Artwork Information'}
+        title={'Create Artwork Proof'}
         collapsible={false}
         toolbar={[
           <Button key={'clear-button'} disabled={!uploadFile} onClick={() => setOpenConfirmDeleteDialog(true)}>
@@ -93,6 +121,7 @@ export function CreateArtworkUi({
           </Button>
         ]}
         content={[
+          <StatusMessageElement key="irys-data" statusMessage={irysDataMessage} />,
           <ButtonPanel key={'upload-file-control'} mode={'left'}>
             <FileUploader
               key={'file-upload'}

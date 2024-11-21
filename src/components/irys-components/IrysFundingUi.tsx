@@ -11,43 +11,34 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { displayAddress } from '../../utils/misc-util';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { useAppContext } from '../AppContextProvider';
-
-type IrysData = {
-  polygonBalance: string;
-  address: string;
-  balance: string;
-  loadedBalance: string;
-  pricePerMega: string;
-};
+import { IrysData, loadIrysData } from '../../utils/irys-utils';
+import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
+import { getNetworkInfo } from '../../network-info';
 
 const arName = 'Irys (Arweave)';
 
-export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
-  const { wrap } = useAppContext();
+export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
+  const { wrap, web3Session } = useAppContext();
   const [irysData, setIrysData] = useState<IrysData>();
   const [fundAmount, setFundAmount] = useState(0);
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>(infoMessage(`Connecting ${arName}...`));
 
   const refreshIrysData = useCallback(async () => {
-    const address = irysAccess.getAddress();
-    if (address) {
-      return wrap(`Loading Data for ${arName}...`, async () => {
-        setStatusMessage(undefined);
-        const { polygonBalance, loadedBalance, balance, statusMessage, pricePerMega } = await loadIrysData(
-          irysAccess,
-          address
-        );
-        if (statusMessage.status === 'error') {
-          setStatusMessage(statusMessage);
-        } else {
-          setIrysData({ polygonBalance, address, balance, loadedBalance, pricePerMega });
-        }
-      });
-    } else {
-      console.error('IrysAccess has no address! Serious error!');
-    }
+    return wrap(`Loading Data for ${arName}...`, async () => {
+      setStatusMessage(undefined);
+      const { address, polygonBalance, loadedBalance, balance, statusMessage, pricePerMega, uploadableMegabytes } =
+        await loadIrysData(irysAccess);
+      if (statusMessage.status === 'error') {
+        setStatusMessage(statusMessage);
+      } else {
+        setIrysData({ polygonBalance, address, balance, loadedBalance, pricePerMega, uploadableMegabytes });
+      }
+    });
   }, [wrap, irysAccess]);
+
+  const symbol = getNetworkInfo(web3Session?.networkId).currencySymbol;
+  const usdPrice = useUsdPrice(symbol);
 
   useEffect(() => {
     refreshIrysData().catch(console.error);
@@ -71,7 +62,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
         <TableBody>
           <TableRowComp
             key={'connection'}
-            elements={[<Header2 key={'header'}>Connection and Network Info</Header2>]}
+            elements={[<Header2 key={'header'}>Irys Upload Funding </Header2>]}
             colspan={[3]}
           />
           <TableRowComp
@@ -98,7 +89,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>
                 Price per MB
               </Box>,
-              +irysData.pricePerMega / 1e18
+              displayUsdPrice({ amount: +irysData.pricePerMega / 1e18, symbol, usdPrice })
             ]}
             colspan={[1, 2]}
           />
@@ -109,7 +100,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Your balance on ${displayAddress(
                 irysAccess.getAddress()
               )}`}</Box>,
-              +irysData.polygonBalance / 1e18
+              displayUsdPrice({ amount: +irysData.polygonBalance / 1e18, symbol, usdPrice })
             ]}
             colspan={[1, 2]}
           />
@@ -117,7 +108,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
             key={'loaded-balance'}
             elements={[
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys loaded balance (${irysAccess.getToken()})`}</Box>,
-              +irysData.loadedBalance / 1e18
+              displayUsdPrice({ amount: +irysData.loadedBalance / 1e18, symbol, usdPrice })
             ]}
             colspan={[1, 2]}
           />
@@ -125,7 +116,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
             key={'balance'}
             elements={[
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys balance (${irysAccess.getToken()})`}</Box>,
-              +irysData.balance / 1e18
+              displayUsdPrice({ amount: +irysData.balance / 1e18, usdPrice, symbol })
             ]}
             colspan={[1, 2]}
           />
@@ -135,7 +126,7 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>
                 Upload allowance in MB
               </Box>,
-              Math.floor((100 * +irysData.loadedBalance) / +irysData.pricePerMega) / 100
+              irysData.uploadableMegabytes
             ]}
             colspan={[1, 2]}
           />
@@ -240,38 +231,4 @@ export function IrysManageUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }
       </Stack>
     </Stack>
   );
-}
-
-async function loadIrysData(
-  irysAccess: IrysAccess,
-  address: string
-): Promise<
-  IrysData & {
-    statusMessage: StatusMessage;
-  }
-> {
-  try {
-    let statusMessage: StatusMessage = infoMessage('Ok');
-    const loadedBalance = (await irysAccess.getLoadedBalance()).toString();
-    const balance = (await irysAccess.getBalance(address)).toString();
-    const pricePerMega = (await irysAccess.getPrice(1024 * 1024)).toString();
-    let polygonBalance = '0';
-    console.log('getPolygonBalance', polygonBalance);
-    polygonBalance = (await irysAccess.web3Session.web3.eth.getBalance(address)).toString();
-
-    if (isStatusMessage(polygonBalance)) {
-      statusMessage = polygonBalance;
-      polygonBalance = '0';
-    }
-    return { polygonBalance, loadedBalance, balance, statusMessage, address, pricePerMega };
-  } catch (e) {
-    return {
-      statusMessage: errorMessage('Irys Data loading failed', e),
-      polygonBalance: '0',
-      balance: '0',
-      loadedBalance: '0',
-      address,
-      pricePerMega: '0'
-    };
-  }
 }

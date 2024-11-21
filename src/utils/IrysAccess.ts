@@ -1,17 +1,22 @@
-import { ethers } from 'ethersv5';
-import { NodeIrys, WebIrys } from '@irys/sdk';
-import { getNetworkInfo } from '../network-info';
+import { ethers } from 'ethers';
+import { UploadBuilder, WebUploader } from '@irys/web-upload';
+import { WebAvalanche, WebEthereum, WebMatic } from '@irys/web-upload-ethereum';
+import { EthersV6Adapter } from '@irys/web-upload-ethereum-ethers-v6';
 import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../types';
+import { getNetworkInfo } from '../network-info';
 import { Buffer } from 'buffer';
-import { UploadResponse } from '@irys/sdk/build/esm/common/types';
 import type { Readable } from 'stream';
+import BaseWebIrys from '@irys/web-upload/dist/types/base';
 
-export type IrysType = WebIrys | NodeIrys;
-const localstore_not_supported = true;
+export type Tags = {
+  name: string;
+  value: string;
+}[];
+const w = window as any;
 
 export class IrysAccess {
   public readonly web3Session: Web3Session;
-  private irys: IrysType | undefined;
+  private irys: BaseWebIrys | undefined;
 
   constructor(web3Session: Web3Session) {
     this.web3Session = web3Session;
@@ -57,7 +62,7 @@ export class IrysAccess {
     return this.irys?.withdrawBalance(amount);
   }
 
-  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<UploadResponse | StatusMessage> {
+  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<any | StatusMessage> {
     if (!this.irys) {
       return errorMessage('Irys not initialized!');
     }
@@ -65,60 +70,28 @@ export class IrysAccess {
   }
 }
 
-const getWebIrys = async (web3Session: Web3Session): Promise<IrysType | StatusMessage> => {
-  const { networkId, mode } = web3Session;
-  // if (mode === 'localstore') {
-  //   return localIrysAccess(web3Session);
-  //   //return errorMessage(`Currently session mode ${mode} is not yet supported!`);
-  // }
+const getWebIrys = async (web3Session: Web3Session): Promise<UploadBuilder | StatusMessage> => {
+  const { networkId } = web3Session;
 
-  const { irysTokenname, currencySymbol, isMainnet } = getNetworkInfo(networkId);
-  const url = process.env.REACT_APP_IRYS_URL ?? '';
-
-  const token = irysTokenname ?? currencySymbol;
-  // if (!token) {
-  //   return errorMessage(`No Irys Token defined for ${name}!`);
-  // }
-  if (!url) {
-    return errorMessage('Irys URL is not set (REACT_APP_IRYS_URL)!');
+  const { currencySymbol, isMainnet } = getNetworkInfo(networkId);
+  const provider = new ethers.BrowserProvider(w.ethereum);
+  let uploader;
+  switch (currencySymbol) {
+    case 'ETH':
+      uploader = WebUploader(WebEthereum).withAdapter(EthersV6Adapter(provider));
+      break;
+    case 'MATIC':
+      uploader = WebUploader(WebMatic).withAdapter(EthersV6Adapter(provider));
+      break;
+    case 'AVAX':
+      uploader = WebUploader(WebAvalanche).withAdapter(EthersV6Adapter(provider));
+      break;
+    default:
+      return errorMessage(`Blockchain with token ${currencySymbol} not supported`);
   }
-
-  // const provider = new BrowserProvider(w.ethereum);
-  let rpcUrl: string | undefined = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
-  let provider;
-  if (mode === 'localstore') {
-    if (localstore_not_supported) {
-      return errorMessage('Local Storage wallet not supported yet!');
-    }
-    if (!web3Session.secret) {
-      return errorMessage('Missing secret for JsonRpcProvider');
-    }
-    provider = new ethers.providers.JsonRpcProvider(rpcUrl);
-    const walletX = new ethers.Wallet(web3Session.secret, provider);
-    provider = walletX.provider;
-  } else {
-    const w: any = window;
-    await w.ethereum.enable();
-    provider = new ethers.providers.Web3Provider(w.ethereum);
+  const rpcUrl: string | undefined = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
+  if (!isMainnet && rpcUrl) {
+    uploader.withRpc(rpcUrl).devnet();
   }
-  let network = 'devnet';
-  if (isMainnet) {
-    network = 'mainnet';
-    rpcUrl = undefined;
-  }
-  // Devnet RPC URLs change often, use a recent one from https://chainlist.org
-  // const rpcUrl = networkInfo.rpcUrl;
-  console.log('irys:', { token, url, rpcUrl, isMainnet });
-
-  const wallet = { rpcUrl, name: 'ethersv5', provider };
-  // Use the wallet object
-  const webIrys = new WebIrys({ network, token, wallet });
-  await webIrys.ready();
-
-  return webIrys;
+  return uploader;
 };
-
-export type Tags = {
-  name: string;
-  value: string;
-}[];
