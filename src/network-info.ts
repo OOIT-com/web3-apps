@@ -179,5 +179,4 @@ export const networks: NetworkInfo[] = [
   }
 ];
 
-export const getNetworkInfo = (chainId: number): NetworkInfo =>
-  networks.find((n) => n.chainId === chainId) ?? networks[0];
+export const getNetworkInfo = (chainId = 0): NetworkInfo => networks.find((n) => n.chainId === chainId) ?? networks[0];

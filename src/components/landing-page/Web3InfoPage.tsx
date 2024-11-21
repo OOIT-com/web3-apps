@@ -13,6 +13,7 @@ import Web3 from 'web3';
 import { ContractName, getContractAddress } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { TableRowInfo } from '../common/TableRowInfo';
+import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
 
 export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: NotifyFun }>) {
   const app = useAppContext();
@@ -23,6 +24,9 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
   const [balanceWei, setBalanceWei] = useState('');
   const [chainId, setChainId] = useState(-1);
   const [gasPriceWei, setGasPriceWei] = useState(-1);
+
+  const symbol = getNetworkInfo(web3Session?.networkId).currencySymbol;
+  const usdPrice = useUsdPrice(symbol);
 
   useEffect(() => {
     const load = async () => {
@@ -70,7 +74,15 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
                 <TableRowInfo
                   key={'balance-ether'}
                   label={`Your Balance in: ${currencySymbol}`}
-                  value={loading || !web3 ? 'loading' : web3.utils.fromWei(balanceWei, 'ether').toString()}
+                  value={
+                    loading || !web3
+                      ? 'loading'
+                      : displayUsdPrice({
+                          amount: web3.utils.fromWei(balanceWei, 'ether').toString(),
+                          symbol,
+                          usdPrice
+                        })
+                  }
                 />
                 <TableRowInfo
                   key={'publicKeyFromStore'}
