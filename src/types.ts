@@ -1,6 +1,6 @@
-import Web3 from 'web3';
 import { DecryptFun } from './components/login/connect-with-localstore';
 import { AddressData } from './contracts/address-book/AddressBook-support';
+import Web3 from 'web3';
 
 export function isError(e: any): e is Error {
   return e?.message;
@@ -96,7 +96,7 @@ export interface PublicKeyHolderV2 {
 }
 
 export type SnackbarMessage = StatusMessage & { duration: number; counter: number };
-export type CurrencySymbol = 'ETH' | 'MATIC' | 'BNB' | 'FTM' | 'S' | 'tFIL' | 'AVAX' | 'FIL' | 'MOVR' | 'n/a';
+export type CurrencySymbol = 'ETH' | 'MATIC' | 'BNB' | 'FTM' | 'S' | 'tFIL' | 'AVAX' | 'FIL' | 'MOVR' | 'ONE' | 'n/a';
 
 export type NetworkInfo = {
   name: string;

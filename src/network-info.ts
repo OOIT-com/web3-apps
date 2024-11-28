@@ -176,6 +176,26 @@ export const networks: NetworkInfo[] = [
     isMainnet: true,
     irysTokenname: 'avalanche',
     isEVM: true
+  },
+  {
+    name: 'Harmony Testnet Shard 0',
+    chainId: 1666700000,
+    PostFix: 'HARMONY_TESTNET',
+    currencySymbol: 'ONE',
+    rpcUrl: 'https://api.s0.b.hmny.io',
+    blockExplorerUrl: 'https://explorer.testnet.harmony.one/',
+    isMainnet: false,
+    isEVM: true
+  },
+  {
+    name: 'Harmony Mainnet',
+    PostFix: 'HARMONY',
+    chainId: 1666600000,
+    currencySymbol: 'ONE',
+    rpcUrl: 'https://api.harmony.one',
+    blockExplorerUrl: 'https://explorer.harmony.one/',
+    isMainnet: true,
+    isEVM: true
   }
 ];
 
