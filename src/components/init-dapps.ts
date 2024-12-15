@@ -11,7 +11,7 @@ import {
 import { initKeyBlock } from '../contracts/key-block/KeyBlock-support';
 import { loadDefaultPublicKeyStoreV2 } from '../contracts/public-key-store/PublicKeyStoreV2-support';
 import { initArtworkTimeProof } from '../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { getPublicKeyFromMetamask } from './login/connect-with-metamask';
+import { getPublicKeyFromMetamask } from './web3-mm-connect/connect-with-metamask';
 import { AppContextData, SetAddressData } from './AppContextProvider';
 
 export const reloadAddressData = async (setAddressData: SetAddressData): Promise<StatusMessage | undefined> => {

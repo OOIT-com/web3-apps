@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { DecryptFun } from '../components/login/connect-with-localstore';
+import { DecryptFun } from '../components/web3-local-wallet/connect-with-secret';
 import { errorMessage, StatusMessage, Web3Session } from '../types';
 import { encryptBuffer } from './metamask-util';
 import { newBoxKeyPair } from './nacl-util';
@@ -99,7 +99,7 @@ export async function newEncSecret(web3Session: Web3Session): Promise<string | S
   const { publicAddress, mode, publicKeyHolder } = web3Session;
 
   let publicKey: string | undefined = '';
-  if (mode === 'localstore') {
+  if (mode === 'localwallet') {
     publicKey = publicKeyHolder?.publicKey;
   } else {
     publicKey = await getPublicEncryptionKey(publicAddress);

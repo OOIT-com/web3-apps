@@ -5,7 +5,7 @@ import { errorMessage, infoMessage, PublicKeyHolder, Web3Session } from '../../t
 import { useNavigate } from 'react-router-dom';
 
 import { displayAddress } from '../../utils/misc-util';
-import { DecryptFun } from './connect-with-localstore';
+import { DecryptFun } from '../web3-local-wallet/connect-with-secret';
 import { initDapps } from '../init-dapps';
 import { getCurrentAddress, getCurrentNetworkId } from '../../utils/web3-utils';
 import { decryptFunMetamask } from './connect-with-metamask';

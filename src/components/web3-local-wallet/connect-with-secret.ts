@@ -9,7 +9,7 @@ import { AppContextData } from '../AppContextProvider';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | null>;
 
-export async function connectWithLocalstore(
+export async function connectWithSecret(
   app: AppContextData,
   networkId: number,
   secret: string
@@ -45,7 +45,7 @@ export async function connectWithLocalstore(
   };
 
   return {
-    mode: 'localstore',
+    mode: 'localwallet',
     networkId,
     web3,
     publicAddress,

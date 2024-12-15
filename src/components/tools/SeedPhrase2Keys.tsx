@@ -25,9 +25,21 @@ export function SeedPhrase2Keys() {
     setPublicAddress('');
     setPublicKey('');
     setSeedPhrase('');
+    setStatusMessage(undefined);
   }, []);
 
   const convertToKeys = useCallback((seedPhrase: string) => {
+    try {
+      setStatusMessage(undefined);
+      const wallet = new Wallet(seedPhrase);
+      setPrivateKey(wallet.privateKey);
+      setPublicAddress(wallet.address);
+      setPublicKey(wallet.publicKey);
+      return;
+    } catch (e) {
+      //setStatusMessage(errorMessage('Did you provide 12 words from the Seed Phrase?', e));
+    }
+
     try {
       setStatusMessage(undefined);
       const wallet = Wallet.fromMnemonic(seedPhrase);
@@ -35,7 +47,7 @@ export function SeedPhrase2Keys() {
       setPublicAddress(wallet.address);
       setPublicKey(wallet.publicKey);
     } catch (e) {
-      setStatusMessage(errorMessage('Did you provide 12 words from the Seed Phrase?', e));
+      setStatusMessage(errorMessage('Did you provide 12 words from the Seed Phrase or a correct Private Key?', e));
     }
   }, []);
 
@@ -74,7 +86,7 @@ export function SeedPhrase2Keys() {
             </Button>
           </Tooltip>
           <Tooltip title={'Clear entries...'}>
-            <Button key={'random'} disabled={!seedPhrase} onClick={clear}>
+            <Button key={'random'} disabled={!(seedPhrase || statusMessage)} onClick={clear}>
               Clear
             </Button>
           </Tooltip>
@@ -83,10 +95,10 @@ export function SeedPhrase2Keys() {
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
       <Stack key={'seed-phrase'} direction={'row'}>
         <TextFieldWithCopy
-          placeholder={'provide seed phrase or click <Random>'}
+          placeholder={'Provide seed phrase or private key or click <Random>'}
           fullWidth={true}
           size={'small'}
-          label={'Seed Phrase'}
+          label={'Seed Phrase or Private Key'}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setSeedPhrase(e.target.value)}
           value={seedPhrase}
         />

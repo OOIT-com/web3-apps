@@ -1,4 +1,4 @@
-import { DecryptFun } from './components/login/connect-with-localstore';
+import { DecryptFun } from './components/web3-local-wallet/connect-with-secret';
 import { AddressData } from './contracts/address-book/AddressBook-support';
 import Web3 from 'web3';
 
@@ -6,7 +6,7 @@ export function isError(e: any): e is Error {
   return e?.message;
 }
 
-export type Web3SessionMode = 'metamask' | 'localstore';
+export type Web3SessionMode = 'metamask' | 'localwallet';
 
 export type Web3Session = {
   publicAddress: string;

@@ -23,6 +23,7 @@
     "browserify-zlib": "^0.2.0",
     "crypto-js": "^4.1.1",
     "dompurify": "^3.1.7",
+    "eth-crypto": "^2.7.0",
     "ethereumjs-util": "^7.1.5",
     "ethereumjs-wallet": "^1.0.2",
     "ethers": "^6.13.4",
@@ -55,8 +56,8 @@
     "vm-browserify": "^1.1.2",
     "web-vitals": "^2.1.4",
     "web3": "4.8.0",
-    "xlsx": "^0.18.5",
-    "ws": ">=8.18.0"
+    "ws": ">=8.18.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -73,12 +74,15 @@
     "@types/pdfmake": "^0.2.9",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
+    "assert": "^2.1.0",
+    "buffer": "^6.0.3",
     "chai": "^4.3.7",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "https-browserify": "^1.0.0",
     "mocha": "^10.2.0",
+    "node-polyfill-webpack-plugin": "^4.0.0",
     "os-browserify": "^0.3.0",
     "prettier": "^2.7.1",
     "process": "^0.11.10",
@@ -88,13 +92,10 @@
     "stream-http": "^3.2.0",
     "ts-mocha": "^10.0.0",
     "ts-mockito": "^2.6.1",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.5",
-    "url": "^0.11.4",
-    "assert": "^2.1.0",
-    "buffer": "^6.0.3",
-    "node-polyfill-webpack-plugin": "^4.0.0"
+    "url": "^0.11.4"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -102,6 +103,7 @@
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",
     "test": "mocha --config ./test/runners/mocha/.mocharc.jsonc ",
+    "test2": "mocha --config ./test/runners/mocha/.mocharc2.jsonc ",
     "deploy-ContractRegistry": "ts-node --project tsconfig.scripts.json src/scripts/deploy-ContractRegistry.ts",
     "get-main-balance": "ts-node --project tsconfig.scripts.json src/scripts/get-main-balance.ts",
     "change-owner": "ts-node --project tsconfig.scripts.json src/scripts/change-owner.ts",
