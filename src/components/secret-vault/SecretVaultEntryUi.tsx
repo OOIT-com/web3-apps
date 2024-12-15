@@ -12,9 +12,8 @@ import { Box, Stack, Tooltip } from '@mui/material';
 import moment from 'moment';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
 import { orange } from '@mui/material/colors';
-import { encryptContent } from '../../utils/metamask-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { decryptKeyBlockValue } from './secret-vault-utils';
+import { decryptKeyBlockValue2, encryptKeyBlockValue2 } from './secret-vault-utils';
 import { useAppContext } from '../AppContextProvider';
 import { PasswordTextField } from '../common/PasswordTextField';
 
@@ -54,7 +53,7 @@ export function SecretVaultEntryUi({
     return <></>;
   }
 
-  const { publicAddress, decryptFun, publicKeyHolder, mode } = web3Session;
+  const { publicAddress, publicKeyHolder, mode } = web3Session;
 
   const keyBlock = getKeyBlock();
   if (!keyBlock) {
@@ -130,8 +129,8 @@ export function SecretVaultEntryUi({
                     if (mode === 'metamask') {
                       dispatchSnackbarMessage(warningMessage('Please confirm/reject MetaMask dialog!'));
                     }
-                    s1 = await decryptKeyBlockValue(entry.value, decryptFun);
-                    setEntry((i) => ({ ...i, enc: false, value: s1.value }));
+                    s1 = await decryptKeyBlockValue2(web3Session, entry.value);
+                    setEntry((i) => ({ ...i, enc: false, value: s1 }));
                     dispatchSnackbarMessage(infoMessage('Decryption done successfully'));
                     clearStatusMessageIn(2000);
                   } catch (e) {
@@ -145,12 +144,18 @@ export function SecretVaultEntryUi({
             </Button>
             <Button
               disabled={entry.enc || !entry.value}
-              onClick={() => {
+              onClick={async () => {
+                setStatusMessage(undefined);
                 if (publicKeyHolder) {
-                  const s0 = encryptContent(publicKeyHolder.publicKey, {
-                    value: entry.value,
-                    nonce: 'n' + Math.random()
-                  });
+                  const s0 = await encryptKeyBlockValue2(web3Session, entry.value);
+                  if (!s0) {
+                    setStatusMessage(errorMessage('Could not encrypt message!'));
+                    return;
+                  }
+                  // const s0 = encryptContent(publicKeyHolder.publicKey, {
+                  //   value: entry.value,
+                  //   nonce: 'n' + Math.random()
+                  // });
                   setEntry((i) => ({ ...i, enc: true, value: s0 }));
                   setStatusMessage(infoMessage('Encryption done successfully'));
                   clearStatusMessageIn(1000);
