@@ -1,5 +1,5 @@
 import { errorMessage, StatusMessage, successMessage, warningMessage } from '../../types';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { PasswordTextField } from '../common/PasswordTextField';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import walletHelpFile from './LocalWalletPasswordHelp.md';
@@ -13,17 +13,24 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { removeAllLocalWalletFromLocalStorage } from './local-wallet-utils';
 
 const localStorageWalletPasswordHash = '__EVM_WALLET_PASSWORD_HASH_OOIT__';
+const sessionStorageWalletPassword = '__EVM_WALLET_PASSWORD_HASH_OOIT__';
 const w: any = window;
 export const LocalWalletPasswordDialog: FC<{
   returnWalletPassword: (s: string) => void;
 }> = ({ returnWalletPassword }) => {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
 
-  const [walletPassword, setWalletPassword] = useState('');
+  const [walletPassword, setWalletPassword] = useState(sessionStorage.getItem(sessionStorageWalletPassword) || '');
 
   const walletPasswordHash = localStorage.getItem(localStorageWalletPasswordHash);
   const walletPasswordIsCorrect =
     walletPasswordHash && walletPassword && walletPasswordHash === keccakFromString(walletPassword ?? '');
+
+  useEffect(() => {
+    if (walletPasswordIsCorrect) {
+      sessionStorage.setItem(sessionStorageWalletPassword, walletPassword);
+    }
+  }, [walletPassword, walletPasswordIsCorrect]);
 
   return (
     <Dialog open={true} fullWidth={true} maxWidth={'lg'} onClose={() => w?.location?.reload()}>
@@ -39,6 +46,7 @@ export const LocalWalletPasswordDialog: FC<{
           help={walletHelpFile}
         >
           <PasswordTextField
+            name={'web3-app-local-wallet-password'}
             label={walletPasswordHash ? 'Local Wallet Password' : 'Set New Local Wallet Password'}
             key={'wallet-password-input'}
             size={'small'}
@@ -48,18 +56,20 @@ export const LocalWalletPasswordDialog: FC<{
           <StatusMessageElement statusMessage={statusMessage} />
           <ButtonPanel key={'button-panel'}>
             {walletPasswordHash && (
-              <Button
-                key={'wallet-login'}
-                onClick={() => {
-                  if (walletPasswordIsCorrect) {
-                    returnWalletPassword(walletPassword);
-                  } else {
-                    setStatusMessage(errorMessage('Password is not correct!'));
-                  }
-                }}
-              >
-                Local Wallet Login
-              </Button>
+              <ButtonPanel key={'walletPasswordHash-section'}>
+                <Button
+                  key={'wallet-login'}
+                  onClick={() => {
+                    if (walletPasswordIsCorrect) {
+                      returnWalletPassword(walletPassword);
+                    } else {
+                      setStatusMessage(errorMessage('Password is not correct!'));
+                    }
+                  }}
+                >
+                  Local Wallet Login
+                </Button>
+              </ButtonPanel>
             )}
             {!walletPasswordHash && (
               <Button

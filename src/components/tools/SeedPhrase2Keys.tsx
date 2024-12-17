@@ -82,7 +82,7 @@ export function SeedPhrase2Keys() {
                 }
               }}
             >
-              New
+              New Random Key
             </Button>
           </Tooltip>
           <Tooltip title={'Clear entries...'}>
@@ -95,7 +95,7 @@ export function SeedPhrase2Keys() {
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
       <Stack key={'seed-phrase'} direction={'row'}>
         <TextFieldWithCopy
-          placeholder={'Provide seed phrase or private key or click <Random>'}
+          placeholder={'Provide seed phrase or private key or click <New Random Key>'}
           fullWidth={true}
           size={'small'}
           label={'Seed Phrase or Private Key'}

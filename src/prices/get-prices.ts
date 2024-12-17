@@ -162,8 +162,11 @@ export const useUsdPrice = (symbol: string): number | undefined => {
     getUsdPriceCoinApi(symbol).then((p) => {
       if (!isStatusMessage(p)) {
         setPrice(+p.price);
+      } else {
+        console.warn(`getUsdPriceCoinApi -> status message`, p);
       }
     });
-  }, [symbol]);
+  });
+
   return price;
 };

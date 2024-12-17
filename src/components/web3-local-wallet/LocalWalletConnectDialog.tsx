@@ -115,7 +115,7 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
             <PasswordTextField
               key={'version'}
               value={secret}
-              label={'Secret (passphrase or private key)'}
+              label={'Secret (seed phrase or private key)'}
               onChange={(e) => setSecret(e.target.value)}
             />
             <ButtonPanel
@@ -138,23 +138,27 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
                 >
                   Add
                 </Button>,
-                <Button
+                <Tooltip
                   key={'create-account'}
-                  onClick={() => {
-                    setStatusMessage(undefined);
-                    const wallet = Wallet.createRandom();
-                    const phrase = wallet.mnemonic?.phrase;
-                    if (phrase) {
-                      const first = phrase.split(' ')[0];
-                      setSecret(wallet.mnemonic.phrase);
-                      setName(`key-starts-with-${first}`);
-                    } else {
-                      setStatusMessage(errorMessage('Creating a random wallet failed!'));
-                    }
-                  }}
+                  title={"Create a random account! DON'T FORGET to write down the seed phrase"}
                 >
-                  Create Random Account
-                </Button>
+                  <Button
+                    onClick={() => {
+                      setStatusMessage(undefined);
+                      const wallet = Wallet.createRandom();
+                      const phrase = wallet.mnemonic?.phrase;
+                      if (phrase) {
+                        const first = phrase.split(' ')[0];
+                        setSecret(wallet.mnemonic.phrase);
+                        setName(`key-starts-with-${first}`);
+                      } else {
+                        setStatusMessage(errorMessage('Creating a random wallet failed!'));
+                      }
+                    }}
+                  >
+                    Create Random Account
+                  </Button>
+                </Tooltip>
               ]}
             />
           </Stack>
@@ -173,16 +177,35 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
   );
 
   return (
-    <Dialog open={true} onClose={() => w?.location?.reload()}>
-      <DialogTitle>Connect to Network with Local Wallet</DialogTitle>
+    <Dialog fullWidth={true} maxWidth={'lg'} open={true}>
+      <DialogTitle>
+        <ButtonPanel key={'dialog-title'} mode={'space-between'}>
+          <LDBox
+            key={'blockchain-selection'}
+            sx={{
+              fontSize: '1.2em',
+              fontWeight: 'bold'
+            }}
+          >
+            Connect to Network with Local Wallet
+          </LDBox>
+          <Button variant={'contained'} onClick={() => w?.location?.reload()}>
+            Close
+          </Button>
+        </ButtonPanel>
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <StatusMessageElement statusMessage={warningMessage} />
-
-          <LDBox key={'blockchain-selection'} sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>
+          <LDBox
+            key={'blockchain-selection'}
+            sx={{
+              fontSize: '1.2em',
+              fontWeight: 'bold'
+            }}
+          >
             Network (Blockchain)
           </LDBox>
-
           <FormControl fullWidth={true}>
             <InputLabel id={'network'}>{selectLabel}</InputLabel>
             <Select

@@ -103,7 +103,7 @@
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",
     "test": "mocha --config ./test/runners/mocha/.mocharc.jsonc ",
-    "test2": "mocha --config ./test/runners/mocha/.mocharc2.jsonc ",
+    "test2": "dotenv -f .env.development run mocha --config ./test/runners/mocha/.mocharc2.jsonc ",
     "deploy-ContractRegistry": "ts-node --project tsconfig.scripts.json src/scripts/deploy-ContractRegistry.ts",
     "get-main-balance": "ts-node --project tsconfig.scripts.json src/scripts/get-main-balance.ts",
     "change-owner": "ts-node --project tsconfig.scripts.json src/scripts/change-owner.ts",

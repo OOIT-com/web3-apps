@@ -4,12 +4,15 @@ import { AppHeader } from './landing-page/AppHeader';
 import { createHashRouter, Outlet, RouterProvider, useNavigate } from 'react-router-dom';
 import { AppMenu } from './landing-page/AppMenu';
 import { useEffect } from 'react';
-import { menuColumns, MenuEntry } from './landing-page/menu-defs';
+import { AppMenuEntry, appMenuColumns } from './landing-page/app-menu-columns';
 import { useAppContext } from './AppContextProvider';
 import { ErrorPage } from './login/ErrorPage';
 import Loader2 from './common/Loader2';
 
-const menuEntries: MenuEntry[] = menuColumns.reduce<MenuEntry[]>((acc, col) => [...acc, ...col.entries], []);
+const menuEntries: AppMenuEntry[] = appMenuColumns.reduce<AppMenuEntry[]>(
+  (acc, col) => [...acc, ...col.appMenuEntries],
+  []
+);
 
 const router = () =>
   createHashRouter(

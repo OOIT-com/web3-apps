@@ -30,29 +30,32 @@ import { AddressBookUi } from '../address-book/AddressBookUi';
 import { PrivateMessageStoreV2Ui } from '../private-message-store-v2/PrivateMessageStoreV2Ui';
 import { AppIcon } from '../common/AppIcon';
 import { PaymentsUi } from '../payments/PaymentsUi';
+import { Web3SessionMode } from '../../types';
 
 const visibleApps: string[] = (process.env.REACT_APP_VISIBLE_APPS ?? '').split(/\s*,\s*/).filter((e) => !!e);
 
-export type MenuEntry = {
+export type AppMenuEntry = {
   path: string;
   name: string;
   icon?: ReactNode;
   description: string;
   element: JSX.Element;
   hidden?: boolean;
+  webSessionModes?: Web3SessionMode[];
 };
-export type MenuColumn = { name: string; description: string; entries: MenuEntry[] };
-const menuColumnsAll: MenuColumn[] = [
+export type AppMenuColumn = { name: string; description: string; appMenuEntries: AppMenuEntry[] };
+const menuColumnsAll: AppMenuColumn[] = [
   {
-    name: ' User DApps',
+    name: 'User DApps',
     description: '',
-    entries: [
+    appMenuEntries: [
       {
         path: 'secret-vault',
         name: 'My Secret Vault',
         icon: <AppIcon src={keyBlock} alt={'secret-vault'} />,
         description: 'Save your secrets, password etc. in a safe and secure way.',
-        element: <SecretVaultUi />
+        element: <SecretVaultUi />,
+        webSessionModes: ['localwallet']
       },
       {
         path: 'private-message-store',
@@ -81,7 +84,7 @@ const menuColumnsAll: MenuColumn[] = [
   {
     name: 'Key Management',
     description: '',
-    entries: [
+    appMenuEntries: [
       {
         path: 'public-key-store',
         name: 'Public Key Store',
@@ -109,7 +112,7 @@ const menuColumnsAll: MenuColumn[] = [
   {
     name: 'Namings',
     description: '',
-    entries: [
+    appMenuEntries: [
       {
         path: 'universal-name-store',
         name: 'Universal Name Store',
@@ -145,7 +148,7 @@ const menuColumnsAll: MenuColumn[] = [
   {
     name: 'Tools and More',
     description: '',
-    entries: [
+    appMenuEntries: [
       {
         path: 'payments',
         name: 'Payments',
@@ -180,11 +183,11 @@ const menuColumnsAll: MenuColumn[] = [
   }
 ];
 
-export const menuColumns: MenuColumn[] = menuColumnsAll
+export const appMenuColumns: AppMenuColumn[] = menuColumnsAll
   .map((menuColumn) => {
     return {
       ...menuColumn,
-      entries: menuColumn.entries.filter((entry) => visibleApps.length === 0 || visibleApps.includes(entry.path))
+      entries: menuColumn.appMenuEntries.filter((entry) => visibleApps.length === 0 || visibleApps.includes(entry.path))
     };
   })
   .filter((menuColumn) => menuColumn.entries.length > 0);
