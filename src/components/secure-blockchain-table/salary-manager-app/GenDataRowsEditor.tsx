@@ -88,7 +88,6 @@ export function GenDataRowsEditor({
       switch (cmd) {
         case 'update':
           console.debug('update', field, value);
-          //setDataRows((dataRows) => genApplyUpdateCellEvent(dataRows, { userId, field, value }));
           break;
         case 'reset':
           setDataRows((dataRows0) =>

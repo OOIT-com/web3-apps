@@ -8,9 +8,9 @@ import { displayAddress } from '../../utils/misc-util';
 import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 
 import { useAppContext } from '../AppContextProvider';
-import { encryptText } from '../../utils/enc-dec-utils';
 import { AddressEntryField } from '../address-book/AddressEntryField';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
+import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
 
 export function EncryptionWithUserAddress() {
   const { wrap, web3Session } = useAppContext();
@@ -56,9 +56,9 @@ export function EncryptionWithUserAddress() {
                 setStatusMessage(userPublicKey);
                 return;
               }
-              const res = encryptText(inText, userPublicKey);
-              if (isStatusMessage(res)) {
-                setStatusMessage(res);
+              const res = await encryptEthCrypto(userPublicKey, inText);
+              if (!res) {
+                setStatusMessage(errorMessage('Could not encrypt test!'));
               } else {
                 setEncText(res);
               }

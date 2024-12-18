@@ -6,8 +6,9 @@ import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import { decryptText, encryptText } from '../../utils/enc-dec-utils';
+import { decryptText } from '../../utils/enc-dec-utils';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
+import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
 
 export function EncryptionAndDecryption() {
   const { wrap, web3Session } = useAppContext();
@@ -41,15 +42,15 @@ export function EncryptionAndDecryption() {
           <Button
             disabled={!inText}
             key={'encrypt'}
-            onClick={() => {
+            onClick={async () => {
               setStatusMessage(undefined);
               if (!publicKeyHolder?.publicKey) {
                 setStatusMessage(errorMessage('No public key available! Can not encrypt!'));
                 return;
               }
-              const res = encryptText(inText, publicKeyHolder.publicKey);
-              if (isStatusMessage(res)) {
-                setStatusMessage(res);
+              const res = await encryptEthCrypto(publicKeyHolder.publicKey, inText);
+              if (!res) {
+                setStatusMessage(errorMessage('Could not encrypt text!'));
               } else {
                 setEncText(res);
               }

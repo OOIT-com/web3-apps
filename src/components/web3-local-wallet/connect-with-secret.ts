@@ -6,8 +6,9 @@ import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { Buffer } from 'buffer';
 import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
+import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 
-export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | null>;
+export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
 
 export async function connectWithSecret(
   app: AppContextData,
@@ -41,7 +42,10 @@ export async function connectWithSecret(
       const decMessageBuff = Buffer.from(decMessageUtf8, 'base64');
       return new Uint8Array(decMessageBuff);
     }
-    return null;
+
+    // try eth-crypot
+
+    return await decryptEthCryptoBinary(secret, message);
   };
 
   return {

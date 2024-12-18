@@ -4,9 +4,6 @@ import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../..
 
 import { sharedSecretStoreAbi, sharedSecretStoreBytecode } from './SharedSecretStore-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
-import nacl from 'tweetnacl';
-import { Buffer } from 'buffer';
-import { decryptBuffer, encryptBuffer } from '../../utils/metamask-util';
 import { deployContract } from '../deploy-contract';
 import { newEncSecretByPublicKey } from '../../utils/enc-dec-utils';
 
@@ -98,7 +95,10 @@ export async function deployShareSecretStoreContract(
 > {
   const tag = '<DeployShareSecretStoreContract>';
   try {
-    const encryptedSecret = newEncSecretByPublicKey(publicKey);
+    const encryptedSecret = await newEncSecretByPublicKey(publicKey);
+    if (!encryptedSecret) {
+      return errorMessage('Error in newEncSecretByPublicKey!');
+    }
 
     const contractAddress = await deployContract({
       web3,
@@ -111,36 +111,6 @@ export async function deployShareSecretStoreContract(
       return contractAddress;
     }
     return { contractAddress, encryptedSecret };
-  } catch (e) {
-    return resolveAsStatusMessage(tag, e);
-  }
-}
-
-export async function encryptionTest({
-  publicKey,
-  publicAddress
-}: {
-  publicKey: string;
-  publicAddress: string;
-}): Promise<StatusMessage> {
-  const tag = '<Encryption Test>';
-  try {
-    const keyPair = nacl.box.keyPair();
-
-    const secretKeyBuffer1 = new Buffer(keyPair.secretKey);
-    const s1 = Buffer.from(secretKeyBuffer1).toString('base64');
-
-    const buf = encryptBuffer(publicKey, secretKeyBuffer1); //buffer.toString(base64)
-    const encryptedSecret = buf.toString('base64');
-
-    const secretKeyBuffer2 = await decryptBuffer(publicAddress, Buffer.from(encryptedSecret, 'base64')); // buffer.toString()
-
-    const s2 = secretKeyBuffer2.toString('base64');
-
-    if (s1 === s2) {
-      return infoMessage(`${tag} successfull!`);
-    }
-    return errorMessage('Encryption Test: Error on encryption/decryption!');
   } catch (e) {
     return resolveAsStatusMessage(tag, e);
   }

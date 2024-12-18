@@ -111,7 +111,7 @@ export function UserManagement({
                   setStatusMessage(encryptedSecret4User);
                   return;
                 }
-                const encBase64 = encryptedSecret4User.toString('base64');
+                const encBase64 = Buffer.from(encryptedSecret4User).toString('base64');
                 const res = await sbtManager.setEncSecret(newUser, encBase64);
                 if (isStatusMessage(res)) {
                   setStatusMessage(res);

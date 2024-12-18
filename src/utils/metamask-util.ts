@@ -4,7 +4,6 @@ import { encrypt } from '@metamask/eth-sig-util';
 import { Buffer } from 'buffer';
 import * as nacl from 'tweetnacl';
 import * as naclUtil from 'tweetnacl-util';
-import { base64ToJson, jsonToBase64 } from './enc-dec-utils';
 
 export function encryptBuffer(publicKey: string, data: Buffer): Buffer {
   // Returned object contains 4 properties: version, ephemPublicKey, nonce, ciphertext
@@ -48,21 +47,6 @@ export async function decryptBuffer(publicAddress: string, data: Buffer): Promis
   });
   // Decode the base85 to final bytes
   return Buffer.from(decrypt, 'base64');
-}
-
-export async function decryptData(publicAddress: string, data: Buffer): Promise<string> {
-  const buf = await decryptBuffer(publicAddress, data);
-  return buf.toString();
-}
-
-export async function decryptContent<Content>(publicAddress: string, content64Enc: string): Promise<Content> {
-  const content64 = await decryptData(publicAddress, Buffer.from(content64Enc, 'base64'));
-  return base64ToJson(content64) as Content;
-}
-
-export function encryptContent(publicKey: string, content: unknown): string {
-  const content64 = jsonToBase64(content);
-  return encryptData(publicKey, Buffer.from(content64));
 }
 
 export function encryptStandalone(publicKey: Uint8Array, data: Uint8Array): Uint8Array {

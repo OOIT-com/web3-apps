@@ -6,10 +6,10 @@ import { getContractRegistry } from '../contract-registry/ContractRegistry-suppo
 
 import { ContractName } from '../contract-utils';
 import { newBoxKeyPair } from '../../utils/nacl-util';
-import { encryptBuffer } from '../../utils/metamask-util';
 import { Buffer } from 'buffer';
 import { web3NotInitialized } from '../../components/common/Web3NotInitialized';
 import { displayKey } from '../../utils/enc-dec-utils';
+import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 
 type PublicKeyStoreV2AbiType = typeof publicKeyStoreV2Abi;
 type PublicKeyStoreV2ContractType = Contract<PublicKeyStoreV2AbiType>;
@@ -74,7 +74,6 @@ export class PublicKeyStoreV2 {
 
   public async getSecretKey(): Promise<StatusMessage | Uint8Array> {
     const encPrivateKey = await this.getEncSecretKey(this.web3Session.publicAddress);
-    debugger;
     if (isStatusMessage(encPrivateKey)) {
       return encPrivateKey;
     }
@@ -107,8 +106,12 @@ export class PublicKeyStoreV2 {
     }
     const { publicKey, secretKey } = newBoxKeyPair();
     this.secretKey = secretKey;
-    const encSecretKey = encryptBuffer(pk, Buffer.from(secretKey));
-    const encSecretKey64 = encSecretKey.toString('base64');
+    const encSecretKey2 = await encryptEthCryptoBinary(pk, Buffer.from(secretKey));
+    if (!encSecretKey2) {
+      return errorMessage('Could not encrypt secretKey (initMyKeys)!');
+    }
+
+    const encSecretKey64 = Buffer.from(encSecretKey2).toString('base64');
     const publicKey64 = Buffer.from(publicKey).toString('base64');
 
     const res = await this.setKeys({ publicKey: publicKey64, encSecretKey: encSecretKey64 });

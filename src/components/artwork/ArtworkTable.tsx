@@ -44,7 +44,6 @@ export const ArtworkTable: FC<{
                     variant={'text'}
                     onClick={() => {
                       const ui: UploadInfo = JSON.parse(row.locationUri?.toString() ?? '{}');
-                      console.debug('ui', ui);
                       const filename = ui.encryptionKeyLocation ? ui.filename + 'enc' : ui.filename;
                       saveAs(downloadLink(ui.uploadId), filename);
                     }}

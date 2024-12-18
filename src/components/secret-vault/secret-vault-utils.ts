@@ -2,7 +2,6 @@ import { Buffer } from 'buffer';
 
 import { base64ToJson } from '../../utils/enc-dec-utils';
 import { Web3Session } from '../../types';
-import { encryptContent } from '../../utils/metamask-util';
 import { Wallet } from 'alchemy-sdk';
 import { decryptEthCrypto, encryptEthCrypto } from '../../utils/eth-crypto-utils';
 
@@ -50,10 +49,5 @@ export const encryptKeyBlockValue2 = async (web3Session: Web3Session, message: s
         return encrypted;
       }
     }
-    console.log('use: mm-encryptContent');
-    return encryptContent(publicKeyHolder.publicKey, {
-      value: message,
-      nonce: 'n' + Math.random()
-    });
   }
 };

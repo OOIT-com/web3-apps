@@ -258,15 +258,6 @@ export class PrivateMessageStoreV2 {
   public async getSecretKey(): Promise<StatusMessage | Uint8Array> {
     const pks = await this.getPublicKeyStore();
     return pks.getSecretKey();
-    // const encPrivateKey = await pks.getEncSecretKey(this.web3Session.publicAddress);
-    // if (isStatusMessage(encPrivateKey)) {
-    //   return encPrivateKey;
-    // }
-    // const secretKey = await this.web3Session.decryptFun(Buffer.from(encPrivateKey, 'base64'));
-    // if (!secretKey) {
-    //   return errorMessage('Could not decrypt private key!');
-    // }
-    // return secretKey;
   }
 
   public async decryptEncMessage(encData: string, sender = this.web3Session.publicAddress) {

@@ -47,7 +47,6 @@ export const ArtworkDetailUi: FC<{ artwork: ArtworkEntry; editable?: boolean }> 
         data = { ...data, ...JSON.parse(data.locationUri?.toString() ?? '{}') };
       } catch (e) {}
     }
-    console.debug('data', data);
     setData(data);
   }, [artwork]);
 

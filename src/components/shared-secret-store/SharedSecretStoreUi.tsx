@@ -20,7 +20,7 @@ import {
   SharedSecretStore
 } from '../../contracts/shared-secret-store/SharedSecretStore-support';
 import { LDBox } from '../common/StyledBoxes';
-import { decryptBuffer, encryptBuffer } from '../../utils/metamask-util';
+import { decryptBuffer } from '../../utils/metamask-util';
 import { getPublicKeyStore, PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
@@ -29,6 +29,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
+import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 
 type User = {
   user: string;
@@ -276,7 +277,7 @@ export const SharedSecretStoreUi: FC = () => {
             disabled={!newUser}
             sx={{ whiteSpace: 'nowrap' }}
             onClick={async () => {
-              if (sharedSecretStore) {
+              if (sharedSecretStore && web3Session) {
                 const encryptedSecret = await sharedSecretStore.getUserEncryptedSecret(publicAddress, publicAddress);
 
                 if (isStatusMessage(encryptedSecret)) {
@@ -284,7 +285,11 @@ export const SharedSecretStoreUi: FC = () => {
                   return;
                 }
 
-                const secret = await decryptBuffer(publicAddress, Buffer.from(encryptedSecret, 'base64'));
+                const secret = await web3Session.decryptFun(new Uint8Array(Buffer.from(encryptedSecret, 'base64')));
+
+                if (!secret) {
+                  return;
+                }
 
                 const encryptedSecret4User = await encryptForUser(wrap, newUser, secret, publicKeyStore);
                 if (isStatusMessage(encryptedSecret4User)) {
@@ -295,7 +300,7 @@ export const SharedSecretStoreUi: FC = () => {
                   return;
                 }
 
-                const encBase64 = encryptedSecret4User.toString('base64');
+                const encBase64 = Buffer.from(encryptedSecret4User).toString('base64');
 
                 await wrap(`Share Secret to ${displayAddress(newUser)}`, () =>
                   sharedSecretStore.setEncryptedSecret(newUser, encBase64, publicAddress)
@@ -317,9 +322,9 @@ export const SharedSecretStoreUi: FC = () => {
 export async function encryptForUser(
   wrap: WrapFun,
   userAddress: string,
-  secret: Buffer,
+  secret: Uint8Array,
   publicKeyStore: PublicKeyStore
-): Promise<StatusMessage | Buffer> {
+): Promise<StatusMessage | Uint8Array> {
   const publicKey = await wrap(`Reading Public Key for ${userAddress} from PublicKeyStore...`, () =>
     publicKeyStore.get(userAddress)
   );
@@ -336,7 +341,11 @@ export async function encryptForUser(
       )} to publish the Public Key to the Public Key Store!`
     );
   }
-  return encryptBuffer(publicKey, secret);
+  const res = await encryptEthCryptoBinary(publicKey, secret);
+  if (!res) {
+    return errorMessage('Error occurred in: encryptEthCryptoBinary');
+  }
+  return res;
 }
 
 function SecretDialog({ secret, close }: { secret: string; close: NotifyFun }) {

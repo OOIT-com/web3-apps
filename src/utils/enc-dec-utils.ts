@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
 import { DecryptFun } from '../components/web3-local-wallet/connect-with-secret';
 import { errorMessage, StatusMessage, Web3Session } from '../types';
-import { encryptBuffer } from './metamask-util';
 import { newBoxKeyPair } from './nacl-util';
+import { encryptEthCryptoBinary } from './eth-crypto-utils';
 
 export function hex2Uint8Array(hexString: string): Uint8Array {
   if (hexString.length % 2 !== 0) {
@@ -42,15 +42,6 @@ export function jsonToBase64(obj: unknown): string {
 
 export function base64ToJson(s: string): unknown {
   return JSON.parse(Buffer.from(s, 'base64').toString());
-}
-
-export function encryptText(text: string, publicKey: string): string | StatusMessage {
-  try {
-    const buff = encryptBuffer(publicKey, Buffer.from(text));
-    return buff.toString('base64');
-  } catch (e) {
-    return errorMessage('Text Encryption Error!', e);
-  }
 }
 
 export async function decryptText(text: string, decryptFun: DecryptFun): Promise<string | StatusMessage> {
@@ -107,11 +98,18 @@ export async function newEncSecret(web3Session: Web3Session): Promise<string | S
   if (!publicKey) {
     return errorMessage('No Public Encryption Key available!');
   }
-  return newEncSecretByPublicKey(publicKey);
+  const res = await newEncSecretByPublicKey(publicKey);
+  if (!res) {
+    return errorMessage('No Public Encryption Key available!');
+  }
+
+  return res;
 }
 
-export function newEncSecretByPublicKey(publicKey: string): string {
+export const newEncSecretByPublicKey = async (publicKey: string): Promise<string | undefined> => {
   const { secretKey } = newBoxKeyPair();
-  const buff = encryptBuffer(publicKey, Buffer.from(secretKey));
-  return buff.toString('base64');
-}
+  const res = await encryptEthCryptoBinary(publicKey, secretKey);
+  if (res) {
+    return Buffer.from(res).toString('base64');
+  }
+};
