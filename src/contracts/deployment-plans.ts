@@ -37,7 +37,7 @@ export const deploymentPlans: DeploymentPlan[] = [
     constructorArgDefs: []
   },
   {
-    label: 'Private Message Store V2',
+    label: 'Private Message Store',
     contractName: 'PrivateMessageStoreV2',
     defaultRegistryName: ContractName.PRIVATE_MESSAGE_STORE_V2,
     contractType: 'PrivateMessageStoreV2',

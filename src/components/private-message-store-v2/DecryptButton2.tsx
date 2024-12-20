@@ -3,8 +3,8 @@ import { useState } from 'react';
 import { isStatusMessage, StatusMessage } from '../../types';
 import { Button, Stack } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { OutMessage, SetOutMessages } from './PrivateMessageOutBoxV2Ui';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
+import { OutMessage, SetOutMessages } from './private-message-store2-types';
 
 export type DecryptButtonProps = {
   address?: string;

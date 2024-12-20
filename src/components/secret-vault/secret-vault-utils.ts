@@ -36,18 +36,13 @@ export const decryptKeyBlockValue2 = async (web3Session: Web3Session, encMessage
 };
 
 export const encryptKeyBlockValue2 = async (web3Session: Web3Session, message: string) => {
-  const { publicKeyHolder, secret } = web3Session;
-
-  if (publicKeyHolder) {
-    if (secret) {
-      console.log('use: EthCrypto.encryptWithPublicKey');
-      const w = new Wallet(secret);
-      const publicKey = w.publicKey.substring(2);
-
-      const encrypted = await encryptEthCrypto(publicKey, message);
-      if (encrypted !== null) {
-        return encrypted;
-      }
+  const { secret } = web3Session;
+  if (secret) {
+    console.log('use: EthCrypto.encryptWithPublicKey');
+    const w = new Wallet(secret);
+    const encrypted = await encryptEthCrypto(w.publicKey, message);
+    if (encrypted !== null) {
+      return encrypted;
     }
   }
 };

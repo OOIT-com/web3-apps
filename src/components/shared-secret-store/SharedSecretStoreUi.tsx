@@ -11,6 +11,7 @@ import {
   TextField,
   useTheme
 } from '@mui/material';
+import * as React from 'react';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { errorMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
@@ -30,6 +31,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 type User = {
   user: string;
@@ -60,7 +62,7 @@ async function getUsers(store: SharedSecretStore, publicAddress: string): Promis
 export const SharedSecretStoreUi: FC = () => {
   const theme = useTheme();
   const { wrap, web3Session } = useAppContext();
-  const { web3, publicAddress, publicKeyHolder } = web3Session || {};
+  const { web3, publicAddress, publicKey = '' } = web3Session || {};
   const [users, setUsers] = useState<User[]>([]);
   const [owner, setOwner] = useState('');
   const [encryptedSecret, setEncryptedSecret] = useState('');
@@ -110,8 +112,8 @@ export const SharedSecretStoreUi: FC = () => {
   if (!publicAddress || !web3 || !publicKeyStore) {
     return <Stack>Loading...</Stack>;
   }
-  if (!publicKeyHolder?.publicKey) {
-    return <Stack>Loading public key...</Stack>;
+  if (!web3Session) {
+    return <Web3NotInitialized />;
   }
 
   return (
@@ -147,7 +149,7 @@ export const SharedSecretStoreUi: FC = () => {
           disabled={!!contractAddress}
           onClick={async () => {
             const deplResult = await wrap('Deploy SharedSecretStore Contract', () =>
-              deployShareSecretStoreContract(web3, publicKeyHolder.publicKey, publicAddress)
+              deployShareSecretStoreContract(web3, publicKey, publicAddress)
             );
             if (isStatusMessage(deplResult)) {
               setStatusMessage(deplResult);

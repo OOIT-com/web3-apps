@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Paper,
   Stack,
@@ -22,7 +21,7 @@ import moment from 'moment';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import CheckIcon from '@mui/icons-material/Check';
 import { PrivateMessageReply2Ui } from './PrivateMessageReply2Ui';
-import { Message } from './private-message-store2-types';
+import { DecryptedDataList } from './private-message-store2-types';
 import { getNetworkInfo } from '../../network-info';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
@@ -31,8 +30,8 @@ import {
   GetInBoxResult,
   PrivateMessageStoreV2
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
-
-type SetMessages = (setMessage: (messages: Message[]) => Message[]) => void;
+import { MessageDisplay } from './MessageDisplay';
+import { OpenInboxMessageButton } from './OpenInboxMessageButton';
 
 export function PrivateMessageInBoxV2Ui({
   privateMessageStoreV2
@@ -40,7 +39,8 @@ export function PrivateMessageInBoxV2Ui({
   const { wrap, web3Session } = useAppContext();
   const { publicAddress, networkId = 0 } = web3Session || {};
   const theme = useTheme();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<GetInBoxResult[]>([]);
+  const [decryptedDataList, setDecryptedDataList] = useState<DecryptedDataList>([]);
   const [selectedMessage, setSelectedMessage] = useState<GetInBoxResult | 'new'>();
   const [messageToReply, setMessageToReply] = useState<GetInBoxResult | undefined>(undefined);
   const [filterValue, setFilterValue] = useState('');
@@ -112,18 +112,19 @@ export function PrivateMessageInBoxV2Ui({
                 <TableCell key={'subject'}>Subject</TableCell>
                 <TableCell key={'inserted'}>Date</TableCell>
                 <TableCell key={'confirmed'}>Confirmed</TableCell>
-                <TableCell key={'actions'}>Actions</TableCell>
+                <TableCell key={'actions'}></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {messages
-                .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
+                .filter((row) => !filterValue || row.subjectInBox?.toLowerCase().includes(filterValue.toLowerCase()))
                 .reverse()
                 .map((message) => {
-                  const { subject, text, displayText, sender, inserted, confirmed, index, replyIndex, subjectInBox } =
-                    message;
-                  const active = displayText && publicAddress && subject && !confirmed;
+                  const { sender, inserted, confirmed, index, replyIndex, subjectInBox } = message;
 
+                  const dd = decryptedDataList[index];
+                  const { text, displayText } = dd || {};
+                  const active = displayText && publicAddress && subjectInBox && !confirmed;
                   return (
                     <Fragment key={'frag-' + index}>
                       <TableRow key={'row-detail' + index}>
@@ -137,43 +138,41 @@ export function PrivateMessageInBoxV2Ui({
                         <TableCell key={'confirmed'}>{confirmed ? <CheckIcon /> : ''}</TableCell>
                         <TableCell key={'actions'}>
                           <Stack direction={'row'}>
-                            <DecryptButton
+                            <OpenInboxMessageButton
                               sender={sender}
                               message={message}
-                              setMessages={setMessages}
+                              setDecryptedDataList={setDecryptedDataList}
                               privateMessageStoreV2={privateMessageStoreV2}
+                              decryptedDataList={decryptedDataList}
                             />
-                            <ToggleButton message={message} setMessages={setMessages} />
-                            <Button
-                              disabled={!active}
-                              key={'confirm'}
-                              onClick={async () => {
-                                if (active) {
-                                  const res = await privateMessageStoreV2.confirm(message.index);
-                                  if (isStatusMessage(res)) {
-                                    setStatusMessage(res);
-                                    return;
-                                  }
-                                  const res2 = await refreshMessages();
-                                  if (isStatusMessage(res2)) {
-                                    setStatusMessage(res2);
-                                  }
-                                }
-                              }}
-                            >
-                              confirm
-                            </Button>
-
-                            <Button disabled={!subject} onClick={() => setMessageToReply(message)}>
-                              reply
-                            </Button>
                           </Stack>
                         </TableCell>
                       </TableRow>
                       {text && displayText ? (
                         <TableRow key={'row-text-' + index}>
-                          <TableCell colSpan={6}>
-                            <Box>{text}</Box>
+                          <TableCell colSpan={7} sx={{ backgroundColor: '#5294d524' }}>
+                            <MessageDisplay
+                              message={message}
+                              text={text}
+                              confirm={
+                                active
+                                  ? async () => {
+                                      if (active) {
+                                        const res = await privateMessageStoreV2.confirm(message.index);
+                                        if (isStatusMessage(res)) {
+                                          setStatusMessage(res);
+                                          return;
+                                        }
+                                        const res2 = await refreshMessages();
+                                        if (isStatusMessage(res2)) {
+                                          setStatusMessage(res2);
+                                        }
+                                      }
+                                    }
+                                  : undefined
+                              }
+                              reply={() => setMessageToReply(message)}
+                            />
                           </TableCell>
                         </TableRow>
                       ) : (
@@ -206,10 +205,10 @@ export function PrivateMessageInBoxV2Ui({
   );
 }
 
-async function refreshInboxMessages(
+export async function refreshInboxMessages(
   wrap: WrapFun,
   privateMessageStoreV2: PrivateMessageStoreV2
-): Promise<Message[] | StatusMessage> {
+): Promise<GetInBoxResult[] | StatusMessage> {
   return await wrap('Reading in box entries...', async () => {
     const len = await privateMessageStoreV2.getInBoxCount();
     if (isStatusMessage(len)) {
@@ -226,57 +225,4 @@ async function refreshInboxMessages(
     }
     return messages;
   });
-}
-
-type DecryptButtonProps = {
-  sender: string;
-  message: Message;
-  setMessages: SetMessages;
-  privateMessageStoreV2: PrivateMessageStoreV2;
-};
-
-function DecryptButton({ sender, message, setMessages, privateMessageStoreV2 }: Readonly<DecryptButtonProps>) {
-  const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  return (
-    <Stack>
-      <Button
-        key={'decrypt'}
-        onClick={async () => {
-          const text = await privateMessageStoreV2.decryptEncMessage(message.textInBox, sender);
-          if (isStatusMessage(text)) {
-            setStatusMessage(text);
-            return;
-          }
-          setMessages((messages: Message[]) => {
-            const m: Message[] = [...messages];
-            m[message.index] = { ...message, text, displayText: true };
-            return m;
-          });
-        }}
-      >
-        decrypt
-      </Button>
-      <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
-    </Stack>
-  );
-}
-
-type ToggleButtonProps = { message: Message; setMessages: SetMessages };
-
-function ToggleButton({ message, setMessages }: Readonly<ToggleButtonProps>) {
-  return (
-    <Button
-      disabled={!message.subject}
-      key={'toggle'}
-      onClick={() =>
-        setMessages((messages: Message[]) => {
-          const d = [...messages];
-          messages[message.index].displayText = !messages[message.index].displayText;
-          return d;
-        })
-      }
-    >
-      toggle
-    </Button>
-  );
 }

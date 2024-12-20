@@ -75,7 +75,7 @@ export function PrivateMessageStoreV2Ui() {
             onClick={async () => {
               if (privateMessageStoreV2) {
                 const publicKeyStoreV2 = await privateMessageStoreV2.getPublicKeyStore();
-                const res = await wrap('Create and register a Key Pair...', async () => publicKeyStoreV2.initMyKeys());
+                const res = await wrap('Create and register a Key Pair...', async () => publicKeyStoreV2.initKeys());
                 if (isStatusMessage(res)) {
                   setStatusMessage(res);
                 } else {
@@ -113,7 +113,7 @@ export function PrivateMessageStoreV2Ui() {
   return (
     <CollapsiblePanel
       collapsible={false}
-      title={<AppTopTitle title={'Private Message Store (V2)'} avatar={privateMessageStorePng} />}
+      title={<AppTopTitle title={'Private Message Store'} avatar={privateMessageStorePng} />}
       content={content}
     />
   );

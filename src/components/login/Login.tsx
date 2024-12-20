@@ -11,8 +11,8 @@ export const Login: React.FC = () => {
       content={
         <Stack key={'login-buttons'} spacing={1}>
           {!!title && <DivBox sx={{ margin: '1em' }}>{title}</DivBox>}
-          <ConnectWithMetamaskButton key={'connect-with-metamask'} />
           <LocalWalletLogin key={'local-wallet-login'} />
+          <ConnectWithMetamaskButton key={'connect-with-metamask'} />
         </Stack>
       }
     />

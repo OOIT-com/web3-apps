@@ -13,7 +13,7 @@ import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeySto
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
-import { AddressEntryField } from '../address-book/AddressEntryField';
+import { AddressEntryField } from '../address-book/AddressEntryField'; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
 //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
@@ -25,8 +25,7 @@ export function PrivateMessageNew2Ui({
   privateMessageStoreV2: PrivateMessageStoreV2;
 }>) {
   const { wrap, web3Session } = useAppContext();
-  const { web3, publicAddress, publicKeyHolder } = web3Session || {};
-  const { publicKey } = publicKeyHolder || {};
+  const { web3, publicAddress, publicKey = '' } = web3Session || {};
   const [receiver, setReceiver] = useState('');
   const [subject, setSubject] = useState('');
   const [text, setText] = useState('');

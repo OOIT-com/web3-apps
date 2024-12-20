@@ -99,14 +99,14 @@ export class PublicKeyStoreV2 {
     }
   }
 
-  public async initMyKeys(): Promise<{ secretKey: Uint8Array; publicKey: Uint8Array } | StatusMessage> {
-    const pk = this.web3Session.publicKeyHolder?.publicKey;
-    if (!pk) {
+  public async initKeys(): Promise<{ secretKey: Uint8Array; publicKey: Uint8Array } | StatusMessage> {
+    const pkHex = this.web3Session.publicKey;
+    if (!pkHex) {
       return errorMessage('No Public Key available!');
     }
     const { publicKey, secretKey } = newBoxKeyPair();
     this.secretKey = secretKey;
-    const encSecretKey2 = await encryptEthCryptoBinary(pk, Buffer.from(secretKey));
+    const encSecretKey2 = await encryptEthCryptoBinary(pkHex, secretKey);
     if (!encSecretKey2) {
       return errorMessage('Could not encrypt secretKey (initMyKeys)!');
     }

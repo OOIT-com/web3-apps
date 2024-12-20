@@ -18,7 +18,7 @@ import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
 export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: NotifyFun }>) {
   const app = useAppContext();
   const { web3Session, publicKeyFromStore } = app || {};
-  const { publicAddress, web3, networkId = 0 } = web3Session || {};
+  const { publicAddress, web3, networkId = 0, publicKey = '' } = web3Session || {};
 
   const [loading, setLoading] = useState(false);
   const [balanceWei, setBalanceWei] = useState('');
@@ -89,11 +89,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
                   label={'Your Public Key (from Store)'}
                   value={publicKeyFromStore}
                 />
-                <TableRowInfo
-                  key={'web3Session?.publicKeyHolder?.publicKey'}
-                  label={'Your Public Key (Session)'}
-                  value={web3Session?.publicKeyHolder?.publicKey}
-                />
+                <TableRowInfo key={'web3Session.publicKey'} label={'Your Public Key (Session)'} value={publicKey} />
                 <TableRowInfo
                   key={'contract-registry'}
                   label={'Contract Registry'}

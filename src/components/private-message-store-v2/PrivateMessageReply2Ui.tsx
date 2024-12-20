@@ -26,8 +26,7 @@ export function PrivateMessageReply2Ui({
   privateMessageStoreV2: PrivateMessageStoreV2;
 }>) {
   const { wrap, web3Session } = useAppContext();
-  const { web3, publicAddress, publicKeyHolder } = web3Session || {};
-  const { publicKey } = publicKeyHolder || {};
+  const { web3, publicAddress, publicKey } = web3Session || {};
   const [subject, setSubject] = useState('Re:' + messageToReply.subject);
   const [text, setText] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();

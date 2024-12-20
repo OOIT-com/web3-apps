@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Paper,
   Stack,
@@ -27,9 +26,8 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { DecryptButton2 } from './DecryptButton2';
-
-export type OutMessage = GetOutBoxResult & { subject?: string; text?: string; displayText?: boolean };
-export type SetOutMessages = (setMessage: (messages: OutMessage[]) => OutMessage[]) => void;
+import { OutMessage, SetOutMessages } from './private-message-store2-types';
+import { OutMessageDisplay } from './OutMessageDisplay';
 
 export function PrivateMessageOutBoxV2Ui({
   privateMessageStoreV2
@@ -98,32 +96,34 @@ export function PrivateMessageOutBoxV2Ui({
               {outMessages
                 .filter((row) => !filterValue || row.subject?.toLowerCase().includes(filterValue.toLowerCase()))
                 .reverse()
-                .map((row, index) => (
+                .map((message, index) => (
                   <Fragment key={'frag-' + index}>
-                    <TableRow key={'row-detail' + row.index}>
+                    <TableRow key={'row-detail' + message.index}>
                       <TableCell key={'index'}>{1 + index}</TableCell>
                       <TableCell key={'receiver'}>
-                        <AddressDisplayWithAddressBook address={row.receiver}></AddressDisplayWithAddressBook>
+                        <AddressDisplayWithAddressBook address={message.receiver}></AddressDisplayWithAddressBook>
                       </TableCell>
-                      <TableCell key={'subject'}>{row.subjectOutBox}</TableCell>
-                      <TableCell key={'inserted'}>{moment(row.inserted * 1000).format('YYYY-MM-DD HH:mm')}</TableCell>
-                      <TableCell key={'confirmed'}>{row.confirmed ? <CheckIcon /> : ''}</TableCell>
+                      <TableCell key={'subject'}>{message.subjectOutBox}</TableCell>
+                      <TableCell key={'inserted'}>
+                        {moment(message.inserted * 1000).format('YYYY-MM-DD HH:mm')}
+                      </TableCell>
+                      <TableCell key={'confirmed'}>{message.confirmed ? <CheckIcon /> : ''}</TableCell>
                       <TableCell key={'actions'}>
                         <Stack direction={'row'}>
                           <DecryptButton2
                             address={publicAddress}
-                            message={row}
+                            message={message}
                             setMessages={setOutMessages}
                             privateMessageStoreV2={privateMessageStoreV2}
                           />
-                          <ToggleButton message={row} setMessages={setOutMessages} />
+                          <ToggleButton message={message} setMessages={setOutMessages} />
                         </Stack>
                       </TableCell>
                     </TableRow>
-                    {row.text && row.displayText ? (
-                      <TableRow key={'row-text' + row.index}>
+                    {message.text && message.displayText ? (
+                      <TableRow key={'row-text' + message.index}>
                         <TableCell colSpan={6}>
-                          <Box>{row.text}</Box>
+                          <OutMessageDisplay message={message} text={message.text} />
                         </TableCell>
                       </TableRow>
                     ) : (

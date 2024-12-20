@@ -12,6 +12,10 @@ export const decryptEthCrypto = async (privateKey: string, value: string): Promi
 };
 
 export const encryptEthCrypto = async (publicKey: string, message: string): Promise<string | undefined> => {
+  if (publicKey.startsWith('0x')) {
+    publicKey = publicKey.substring(2);
+  }
+
   try {
     const deflatedMessage64 = Buffer.from(deflate(Buffer.from(message))).toString('base64');
     const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, deflatedMessage64);

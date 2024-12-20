@@ -12,9 +12,11 @@ export type Web3Session = {
   publicAddress: string;
   web3: Web3;
   networkId: number;
+  // Deprecated
   publicKeyHolder?: PublicKeyHolder;
   decryptFun: DecryptFun;
   mode: Web3SessionMode;
+  publicKey?:string;
   secret?: string;
 };
 

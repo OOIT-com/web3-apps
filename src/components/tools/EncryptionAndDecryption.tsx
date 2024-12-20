@@ -26,7 +26,7 @@ export function EncryptionAndDecryption() {
   if (!web3Session) {
     return <StatusMessageElement statusMessage={errorMessage('Web3 not initialized!')} />;
   }
-  const { decryptFun, publicKeyHolder } = web3Session;
+  const { decryptFun } = web3Session;
   return (
     <Stack spacing={2}>
       <Stack
@@ -44,11 +44,11 @@ export function EncryptionAndDecryption() {
             key={'encrypt'}
             onClick={async () => {
               setStatusMessage(undefined);
-              if (!publicKeyHolder?.publicKey) {
+              if (!web3Session.publicKey) {
                 setStatusMessage(errorMessage('No public key available! Can not encrypt!'));
                 return;
               }
-              const res = await encryptEthCrypto(publicKeyHolder.publicKey, inText);
+              const res = await encryptEthCrypto(web3Session.publicKey, inText);
               if (!res) {
                 setStatusMessage(errorMessage('Could not encrypt text!'));
               } else {
@@ -81,12 +81,7 @@ export function EncryptionAndDecryption() {
         </Stack>
       </Stack>
 
-      <AddressBoxWithCopy
-        key={'public-key'}
-        value={publicKeyHolder?.publicKey ?? ''}
-        label={'Public Key'}
-        reduced={false}
-      />
+      <AddressBoxWithCopy key={'public-key'} value={web3Session.publicKey ?? ''} label={'Public Key'} reduced={false} />
       <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
 
       <Stack key={'in-text'} direction={'row'}>

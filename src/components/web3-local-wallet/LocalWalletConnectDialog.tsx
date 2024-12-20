@@ -53,11 +53,11 @@ reviewing our source code is recommended. We assure you
 
 const w: any = window;
 const networkSelection = networks.filter((e) => e.PostFix && e.rpcUrl);
-
+export const local_wallet_default_network_id = '__LOCAL_WALLET_DEFAULT_NETWORK_ID_OOIT__';
 export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walletPassword }) => {
   const app = useAppContext();
   const navigate = useNavigate();
-  const [networkId, setNetworkId] = useState('64165');
+  const [networkId, setNetworkId] = useState(localStorage.getItem(local_wallet_default_network_id) || '64165');
   const [name, setName] = useState('');
   const [secret, setSecret] = useState('');
   const [localWalletList, setLocalWalletList] = useState<LocalWalletData[]>([]);
@@ -213,7 +213,11 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
               labelId={'network'}
               label={selectLabel}
               value={networkId}
-              onChange={(e) => setNetworkId(e.target.value)}
+              onChange={(e) => {
+                const networkId = e.target.value;
+                localStorage.setItem(local_wallet_default_network_id, networkId);
+                setNetworkId(networkId);
+              }}
             >
               {networkSelection.map((e) => (
                 <MenuItem key={e.chainId} value={e.chainId}>

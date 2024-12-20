@@ -53,11 +53,8 @@ export async function connectWithSecret(
     networkId,
     web3,
     publicAddress,
-    publicKeyHolder: {
-      publicKey,
-      origin: 'wallet'
-    },
     decryptFun,
-    secret: privateKey
+    secret: privateKey,
+    publicKey
   };
 }

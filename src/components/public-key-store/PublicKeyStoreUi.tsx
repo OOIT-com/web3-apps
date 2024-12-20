@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
+import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
@@ -17,12 +17,13 @@ import { TableComp } from '../common/TableComp';
 import { TableRowInfo } from '../common/TableRowInfo';
 import { AppTopTitle } from '../common/AppTopTitle';
 import publicKeyPng from '../images/public-key.png';
+import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export function PublicKeyStoreUi() {
   const app = useAppContext();
   const { wrap, web3Session, publicKeyFromStore, setPublicKeyFromStore } = app;
 
-  const { publicKeyHolder, publicAddress, networkId = 0 } = web3Session || {};
+  const { publicKey = '', publicAddress, networkId = 0 } = web3Session || {};
 
   const [address0, setAddress0] = useState('');
   const [publicKey0, setPublicKey0] = useState('');
@@ -71,11 +72,11 @@ export function PublicKeyStoreUi() {
   );
 
   const saveMine = useCallback(async () => {
-    if (!publicAddress || !publicKeyHolder || !publicKeyStore) {
+    if (!publicAddress || !publicKeyStore) {
       return;
     }
     const myPub = await wrap('Save Public Key. (Checkout Meta Mask!)', () =>
-      publicKeyStore.set({ from: publicAddress, publicKey: publicKeyHolder.publicKey })
+      publicKeyStore.set({ from: publicAddress, publicKey })
     );
     if (isStatusMessage(myPub)) {
       setStatusMessage(myPub);
@@ -83,7 +84,7 @@ export function PublicKeyStoreUi() {
       setStatusMessage(successMessage('Your Public Key saved in store!'));
       setPublicKeyFromStore(myPub);
     }
-  }, [setPublicKeyFromStore, wrap, publicAddress, publicKeyHolder, publicKeyStore]);
+  }, [setPublicKeyFromStore, wrap, publicAddress, publicKey, publicKeyStore]);
 
   const unpublishMine = useCallback(async () => {
     if (!publicAddress || !publicKeyStore) {
@@ -107,18 +108,13 @@ export function PublicKeyStoreUi() {
     }
   }, [refreshMyPublicKey, publicAddress]);
 
-  if (!publicKeyHolder) {
-    return (
-      <StatusMessageElement
-        statusMessage={errorMessage('Your Public Key is not available. Please try to login again!')}
-      />
-    );
+  if (!publicKey) {
+    return <Web3NotInitialized />;
   }
 
   if (!publicKeyStore) {
     return <NoContractFound name={ContractName.PUBLIC_KEY_STORE} />;
   }
-  const published = publicKeyHolder?.origin === 'public-key-store';
   return (
     <CollapsiblePanel
       level={'top'}
@@ -144,7 +140,7 @@ export function PublicKeyStoreUi() {
                 <TableRowInfo
                   key={'web3'}
                   label={'Your Public Key from the Web3 session'}
-                  value={<AddressBoxWithCopy key={'from-session'} value={publicKeyHolder.publicKey} reduced={false} />}
+                  value={<AddressBoxWithCopy key={'from-session'} value={publicKey} reduced={false} />}
                 />
               ]}
             />,
@@ -154,10 +150,10 @@ export function PublicKeyStoreUi() {
                 <Button key={'refresh'} onClick={() => refreshMyPublicKey()}>
                   Refresh
                 </Button>,
-                <Button key={'publish'} disabled={published} onClick={saveMine}>
+                <Button key={'publish'} onClick={saveMine}>
                   Publish my public key
                 </Button>,
-                <Button key={'unpublish'} disabled={!published} onClick={unpublishMine}>
+                <Button key={'unpublish'} onClick={unpublishMine}>
                   Un-publish
                 </Button>
               ]}

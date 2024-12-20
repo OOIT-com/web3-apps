@@ -164,7 +164,7 @@ export function PublicKeyStoreV2Ui() {
 }
 
 async function saveNewKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: PublicKeyStoreV2) {
-  return await wrap('Save Public Key and Encrypted Secret Key.', () => publicKeyStoreV2.initMyKeys());
+  return await wrap('Save Public Key and Encrypted Secret Key.', () => publicKeyStoreV2.initKeys());
 }
 
 async function loadKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: PublicKeyStoreV2) {

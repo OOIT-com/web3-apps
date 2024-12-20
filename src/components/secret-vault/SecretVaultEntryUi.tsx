@@ -53,7 +53,7 @@ export function SecretVaultEntryUi({
     return <></>;
   }
 
-  const { publicAddress, publicKeyHolder, mode } = web3Session;
+  const { publicAddress, mode } = web3Session;
 
   const keyBlock = getKeyBlock();
   if (!keyBlock) {
@@ -146,22 +146,14 @@ export function SecretVaultEntryUi({
               disabled={entry.enc || !entry.value}
               onClick={async () => {
                 setStatusMessage(undefined);
-                if (publicKeyHolder) {
-                  const s0 = await encryptKeyBlockValue2(web3Session, entry.value);
-                  if (!s0) {
-                    setStatusMessage(errorMessage('Could not encrypt message!'));
-                    return;
-                  }
-                  // const s0 = encryptContent(publicKeyHolder.publicKey, {
-                  //   value: entry.value,
-                  //   nonce: 'n' + Math.random()
-                  // });
-                  setEntry((i) => ({ ...i, enc: true, value: s0 }));
-                  setStatusMessage(infoMessage('Encryption done successfully'));
-                  clearStatusMessageIn(1000);
-                } else {
-                  setStatusMessage(errorMessage('No public key available! Can not encrypt!'));
+                const s0 = await encryptKeyBlockValue2(web3Session, entry.value);
+                if (!s0) {
+                  setStatusMessage(errorMessage('Could not encrypt message!'));
+                  return;
                 }
+                setEntry((i) => ({ ...i, enc: true, value: s0 }));
+                setStatusMessage(infoMessage('Encryption done successfully'));
+                clearStatusMessageIn(1000);
               }}
             >
               Encrypt
