@@ -197,11 +197,13 @@ export function ContractDataEditDialog({
 }
 
 const AttributeRow: FC<TextFieldProps & { minRows?: number; change: (value: string) => void }> = ({
+  label,
   change,
   minRows = 1,
   value
 }) => (
   <TextField
+    label={label}
     fullWidth={true}
     value={value}
     onChange={(e) => change(e.target.value)}

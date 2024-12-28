@@ -30,7 +30,6 @@ import { AddressBookUi } from '../address-book/AddressBookUi';
 import { PrivateMessageStoreV2Ui } from '../private-message-store-v2/PrivateMessageStoreV2Ui';
 import { AppIcon } from '../common/AppIcon';
 import { PaymentsUi } from '../payments/PaymentsUi';
-import { Web3SessionMode } from '../../types';
 
 const visibleApps: string[] = (process.env.REACT_APP_VISIBLE_APPS ?? '').split(/\s*,\s*/).filter((e) => !!e);
 
@@ -41,7 +40,6 @@ export type AppMenuEntry = {
   description: string;
   element: JSX.Element;
   hidden?: boolean;
-  webSessionModes?: Web3SessionMode[];
 };
 export type AppMenuColumn = { name: string; description: string; appMenuEntries: AppMenuEntry[] };
 const menuColumnsAll: AppMenuColumn[] = [
@@ -54,8 +52,7 @@ const menuColumnsAll: AppMenuColumn[] = [
         name: 'My Secret Vault',
         icon: <AppIcon src={keyBlock} alt={'secret-vault'} />,
         description: 'Save your secrets, password etc. in a safe and secure way.',
-        element: <SecretVaultUi />,
-        webSessionModes: ['localwallet']
+        element: <SecretVaultUi />
       },
       {
         path: 'private-message-store',

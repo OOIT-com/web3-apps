@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { errorMessage, infoMessage, PublicKeyHolderV2, SnackbarMessage, StatusMessage, Web3Session } from '../types';
+import { errorMessage, infoMessage, SnackbarMessage, StatusMessage, Web3Session } from '../types';
 import { AddressData, AddressDataWithIndex } from '../contracts/address-book/AddressBook-support';
 
 let SnackbarMessageCounter = 0;
@@ -20,12 +20,6 @@ export type AppContextData = {
   web3Session?: Web3Session;
   setWeb3Session: SetWeb3Session;
   //
-  publicKeyFromStore?: string;
-  setPublicKeyFromStore: (publicKey: string) => void;
-  //
-  publicKeyHolderV2?: PublicKeyHolderV2;
-  setPublicKeyHolderV2: (a?: PublicKeyHolderV2) => void;
-  //
   addressData?: AddressDataWithIndex[];
   setAddressData: SetAddressData;
 };
@@ -37,9 +31,7 @@ const defaultValue: AppContextData = {
   setSnackbarMessage: noop as never,
   dispatchSnackbarMessage: noop as never,
   setWeb3Session: noop as never,
-  setPublicKeyFromStore: noop as never,
-  setAddressData: noop as never,
-  setPublicKeyHolderV2: noop as never
+  setAddressData: noop as never
 };
 
 export const AppContext = createContext<AppContextData | undefined>(undefined);
@@ -48,8 +40,6 @@ export function AppContextProvider({ children }: Readonly<{ children: ReactNode 
   const [loading, setLoading] = useState('');
   const [web3Session, setWeb3Session] = useState<Web3Session>();
   const [snackbarMessage, setSnackbarMessage] = useState<SnackbarMessage>();
-  const [publicKeyFromStore, setPublicKeyFromStore] = useState<string>('');
-  const [publicKeyHolderV2, setPublicKeyHolderV2] = useState<PublicKeyHolderV2>();
   const [addressData, setAddressData] = useState<AddressData[]>();
 
   const wrap = useCallback(
@@ -95,12 +85,6 @@ export function AppContextProvider({ children }: Readonly<{ children: ReactNode 
       web3Session,
       setWeb3Session,
       //
-      publicKeyFromStore,
-      setPublicKeyFromStore,
-      //
-      publicKeyHolderV2,
-      setPublicKeyHolderV2,
-      //
       addressData,
       setAddressData
     }),
@@ -113,10 +97,6 @@ export function AppContextProvider({ children }: Readonly<{ children: ReactNode 
       dispatchSnackbarMessage,
       web3Session,
       setWeb3Session,
-      publicKeyFromStore,
-      setPublicKeyFromStore,
-      publicKeyHolderV2,
-      setPublicKeyHolderV2,
       addressData,
       setAddressData
     ]

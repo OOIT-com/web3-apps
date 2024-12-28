@@ -23,7 +23,7 @@ After that you have to set a new password and add all accounts.
 
 ## Important to know
 
-Sharing your secret, while necessary for our service, always carries a degree of risk. For absolute certainty, reviewing
-our source code is recommended. We assure you that we prioritize the confidentiality of your secret and implement robust
+Sharing your privateKey, while necessary for our service, always carries a degree of risk. For absolute certainty, reviewing
+our source code is recommended. We assure you that we prioritize the confidentiality of your privateKey and implement robust
 security measures. Your private keys remain exclusively within your local browser storage, ensuring their utmost
 protection.

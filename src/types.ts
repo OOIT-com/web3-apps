@@ -1,37 +1,19 @@
 import { DecryptFun } from './components/web3-local-wallet/connect-with-secret';
-import { AddressData } from './contracts/address-book/AddressBook-support';
 import Web3 from 'web3';
 
 export function isError(e: any): e is Error {
   return e?.message;
 }
 
-export type Web3SessionMode = 'metamask' | 'localwallet';
-
 export type Web3Session = {
-  publicAddress: string;
   web3: Web3;
   networkId: number;
   // Deprecated
-  publicKeyHolder?: PublicKeyHolder;
   decryptFun: DecryptFun;
-  mode: Web3SessionMode;
-  publicKey?:string;
-  secret?: string;
+  publicAddress: string;
+  publicKey: string;
+  privateKey: string;
 };
-
-export interface KeyBlockReduxState {
-  statusMessage?: StatusMessage;
-  snackbarMessage?: SnackbarMessage;
-  loading?: string;
-
-  // session data
-  web3Session?: Web3Session;
-
-  // key app data
-  publicKeyHolderV2?: PublicKeyHolderV2;
-  addressData?: AddressData[];
-}
 
 export declare type StatusMessageStatus = 'success' | 'info' | 'warning' | 'error';
 
@@ -82,20 +64,6 @@ export type NotifyCommandFun<T = string> = (command: T) => void;
 
 export type NotifyRefresh = (refreshNeeded: boolean) => void;
 export type NotifyStatusMessage = (statusMessage: StatusMessage) => void;
-
-// APP TYPES
-
-export type HolderType = 'wallet' | 'public-key-store';
-
-export interface PublicKeyHolder {
-  publicKey: string;
-  origin: HolderType;
-}
-
-export interface PublicKeyHolderV2 {
-  publicKey: Uint8Array;
-  secretKey: Uint8Array;
-}
 
 export type SnackbarMessage = StatusMessage & { duration: number; counter: number };
 export type CurrencySymbol = 'ETH' | 'MATIC' | 'BNB' | 'FTM' | 'S' | 'tFIL' | 'AVAX' | 'FIL' | 'MOVR' | 'ONE' | 'n/a';

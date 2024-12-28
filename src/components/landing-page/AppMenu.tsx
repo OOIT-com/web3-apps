@@ -5,22 +5,12 @@ import { appMenuColumns } from './app-menu-columns';
 import Grid from '@mui/material/Grid2';
 import { DivBox } from '../common/DivBox';
 import { MenuTooltip } from '../common/StyledTooltips';
-import { Fragment, useCallback } from 'react';
-import { useAppContext } from '../AppContextProvider';
-import { Web3SessionMode } from '../../types';
+import { Fragment } from 'react';
 
 const showDescription = false;
 
 export function AppMenu() {
   const navigate = useNavigate();
-
-  const { web3Session } = useAppContext();
-
-  const checkMode = useCallback(
-    (webSessionModes?: Web3SessionMode[]): boolean =>
-      webSessionModes && web3Session ? webSessionModes.includes(web3Session.mode) : true,
-    [web3Session]
-  );
 
   return (
     <Stack sx={{ width: '100%' }}>
@@ -32,31 +22,27 @@ export function AppMenu() {
                 {menuColumn.name}
               </DivBox>
             </Grid>
-            {menuColumn.appMenuEntries.map(({ path, name, description, icon, webSessionModes }) =>
-              checkMode(webSessionModes) ? (
-                <Grid key={path} size={3}>
-                  <MenuTooltip title={description}>
-                    <ListItemButton onClick={() => navigate('/' + path)}>
-                      {icon && <ListItemIcon>{icon}</ListItemIcon>}
+            {menuColumn.appMenuEntries.map(({ path, name, description, icon }) => (
+              <Grid key={path} size={3}>
+                <MenuTooltip title={description}>
+                  <ListItemButton onClick={() => navigate('/' + path)}>
+                    {icon && <ListItemIcon>{icon}</ListItemIcon>}
 
-                      <StyledListItemText
-                        primary={name}
-                        secondary={
-                          <span key={'icon'}>
-                            {
-                              // icon ||
-                              showDescription ? description : ''
-                            }
-                          </span>
-                        }
-                      />
-                    </ListItemButton>
-                  </MenuTooltip>
-                </Grid>
-              ) : (
-                ''
-              )
-            )}
+                    <StyledListItemText
+                      primary={name}
+                      secondary={
+                        <span key={'icon'}>
+                          {
+                            // icon ||
+                            showDescription ? description : ''
+                          }
+                        </span>
+                      }
+                    />
+                  </ListItemButton>
+                </MenuTooltip>
+              </Grid>
+            ))}
           </Fragment>
         ))}
       </Grid>

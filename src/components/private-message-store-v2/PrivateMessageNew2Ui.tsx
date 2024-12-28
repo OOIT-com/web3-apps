@@ -15,8 +15,6 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { AddressEntryField } from '../address-book/AddressEntryField'; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
-//const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
-
 export function PrivateMessageNew2Ui({
   done,
   privateMessageStoreV2
@@ -31,10 +29,6 @@ export function PrivateMessageNew2Ui({
   const [text, setText] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>();
 
-  // useEffect(() => {
-  //   const index = addressData.findIndex((e) => receiverDisplay(e) === receiverContent);
-  //   setReceiver(index === -1 ? receiverContent : addressData[index].userAddress);
-  // }, [receiverContent, addressData]);
   const publicKeyStore = getPublicKeyStore();
 
   if (!web3 || !publicAddress || !publicKey || !publicKeyStore) {

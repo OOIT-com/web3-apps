@@ -81,8 +81,8 @@ export function DApp() {
         <CssBaseline>
           <AppContextProvider>
             <AppRouter />
-            <Loader2 />
             <Snackbar />
+            <Loader2 />
           </AppContextProvider>
         </CssBaseline>
       </ThemeProvider>

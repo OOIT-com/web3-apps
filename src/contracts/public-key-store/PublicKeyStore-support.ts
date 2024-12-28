@@ -39,7 +39,11 @@ export class PublicKeyStore {
     const tag = '<GetPublicKey>';
     try {
       const res = await this.contract.methods.get(address).call();
-      return res.toString();
+      if (res.startsWith('0x')) {
+        return res;
+      } else {
+        return '0x' + Buffer.from(res, 'base64').toString('hex');
+      }
     } catch (e) {
       return resolveAsStatusMessage(tag, e);
     }
@@ -47,7 +51,13 @@ export class PublicKeyStore {
 
   public async set({ publicKey, from }: { publicKey: string; from: string }): Promise<string | StatusMessage> {
     const tag = '<SetPublicKey>';
+    if (publicKey.startsWith('0x')) {
+      publicKey = Buffer.from(publicKey.substring(2), 'hex').toString('base64');
+    }
     try {
+      await this.contract.methods.set(publicKey).call({
+        from
+      });
       await this.contract.methods.set(publicKey).send({ from });
       return this.get(from);
     } catch (e) {

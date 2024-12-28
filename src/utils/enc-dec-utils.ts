@@ -4,29 +4,8 @@ import { errorMessage, StatusMessage, Web3Session } from '../types';
 import { newBoxKeyPair } from './nacl-util';
 import { encryptEthCryptoBinary } from './eth-crypto-utils';
 
-export function hex2Uint8Array(hexString: string): Uint8Array {
-  if (hexString.length % 2 !== 0) {
-    console.error('Invalid hexString');
-    return new Uint8Array();
-  }
-  const arrayBuffer = new Uint8Array(hexString.length / 2);
-  for (let i = 0; i < hexString.length; i += 2) {
-    const byteValue = parseInt(hexString.substring(i, 2), 16);
-    if (isNaN(byteValue)) {
-      console.error('Invalid hexString');
-      return new Uint8Array();
-    }
-    arrayBuffer[i / 2] = byteValue;
-  }
-  return arrayBuffer;
-}
-
 export function uint8Array2Hex(u: Uint8Array): string {
   return Buffer.from(u).toString('hex');
-}
-
-export function uint8Array2Base64(u: Uint8Array): string {
-  return Buffer.from(u).toString('base64');
 }
 
 export function displayKey(s: string): string {
@@ -34,10 +13,6 @@ export function displayKey(s: string): string {
     return s;
   }
   return `${s.substring(0, 6)}...${s.substring(s.length - 4)}`;
-}
-
-export function jsonToBase64(obj: unknown): string {
-  return Buffer.from(JSON.stringify(obj)).toString('base64');
 }
 
 export function base64ToJson(s: string): unknown {
@@ -78,26 +53,9 @@ export async function decryptBase64(base64: string, decryptFun: DecryptFun): Pro
   }
 }
 
-export async function getPublicEncryptionKey(from: string) {
-  const w = window as any;
-  return (await w?.ethereum?.request({
-    method: 'eth_getEncryptionPublicKey',
-    params: [from]
-  })) as string;
-}
-
 export async function newEncSecret(web3Session: Web3Session): Promise<string | StatusMessage> {
-  const { publicAddress, mode, publicKeyHolder } = web3Session;
+  const { publicKey } = web3Session;
 
-  let publicKey: string | undefined = '';
-  if (mode === 'localwallet') {
-    publicKey = publicKeyHolder?.publicKey;
-  } else {
-    publicKey = await getPublicEncryptionKey(publicAddress);
-  }
-  if (!publicKey) {
-    return errorMessage('No Public Encryption Key available!');
-  }
   const res = await newEncSecretByPublicKey(publicKey);
   if (!res) {
     return errorMessage('No Public Encryption Key available!');

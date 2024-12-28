@@ -14,10 +14,11 @@ import { ContractName, getContractAddress } from '../../contracts/contract-utils
 import { useAppContext } from '../AppContextProvider';
 import { TableRowInfo } from '../common/TableRowInfo';
 import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
+import { AddressBoxWithCopy } from '../common/KeyBoxWithCopy';
 
 export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: NotifyFun }>) {
   const app = useAppContext();
-  const { web3Session, publicKeyFromStore } = app || {};
+  const { web3Session } = app || {};
   const { publicAddress, web3, networkId = 0, publicKey = '' } = web3Session || {};
 
   const [loading, setLoading] = useState(false);
@@ -84,12 +85,12 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
                         })
                   }
                 />
+
                 <TableRowInfo
-                  key={'publicKeyFromStore'}
-                  label={'Your Public Key (from Store)'}
-                  value={publicKeyFromStore}
+                  key={'web3Session.publicKey'}
+                  label={'Your Public Key (Session)'}
+                  value={<AddressBoxWithCopy value={publicKey} reduced={true} />}
                 />
-                <TableRowInfo key={'web3Session.publicKey'} label={'Your Public Key (Session)'} value={publicKey} />
                 <TableRowInfo
                   key={'contract-registry'}
                   label={'Contract Registry'}

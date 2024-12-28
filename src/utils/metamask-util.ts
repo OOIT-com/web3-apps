@@ -23,32 +23,6 @@ export function encryptBuffer(publicKey: string, data: Buffer): Buffer {
   ]);
 }
 
-export function encryptData(publicKey: string, data: Buffer): string {
-  return encryptBuffer(publicKey, data).toString('base64');
-}
-
-export async function decryptBuffer(publicAddress: string, data: Buffer): Promise<Buffer> {
-  // Reconstructing the original object outputed by encryption
-  const structuredData = {
-    version: 'x25519-xsalsa20-poly1305',
-    ephemPublicKey: data.subarray(0, 32).toString('base64'),
-    nonce: data.subarray(32, 56).toString('base64'),
-    ciphertext: data.subarray(56).toString('base64')
-  };
-  // Convert data to hex string required by MetaMask
-  const ct = `0x${Buffer.from(JSON.stringify(structuredData), 'utf8').toString('hex')}`;
-  // Send request to MetaMask to decrypt the ciphertext
-  // Once again application must have access to the publicAddress
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const w = window as any;
-  const decrypt = await w?.ethereum?.request({
-    method: 'eth_decrypt',
-    params: [ct, publicAddress]
-  });
-  // Decode the base85 to final bytes
-  return Buffer.from(decrypt, 'base64');
-}
-
 export function encryptStandalone(publicKey: Uint8Array, data: Uint8Array): Uint8Array {
   // generate ephemeral keypair
   const ephemeralKeyPair = nacl.box.keyPair();

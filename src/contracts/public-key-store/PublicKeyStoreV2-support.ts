@@ -73,17 +73,19 @@ export class PublicKeyStoreV2 {
   }
 
   public async getSecretKey(): Promise<StatusMessage | Uint8Array> {
-    const encPrivateKey = await this.getEncSecretKey(this.web3Session.publicAddress);
-    if (isStatusMessage(encPrivateKey)) {
-      return encPrivateKey;
+    const encSecretKey64 = await this.getEncSecretKey(this.web3Session.publicAddress);
+
+    if (isStatusMessage(encSecretKey64)) {
+      return encSecretKey64;
     }
 
-    if (!encPrivateKey) {
+    if (!encSecretKey64) {
       return errorMessage(
         `Please register a Key Pair in 'Key Pair Store' (${displayKey(this.web3Session.publicAddress)}).`
       );
     }
-    const secretKey = await this.web3Session.decryptFun(Buffer.from(encPrivateKey, 'base64'));
+    console.debug('encSecretKey64 (get)', encSecretKey64);
+    const secretKey = await this.web3Session.decryptFun(Buffer.from(encSecretKey64, 'base64'));
     if (!secretKey) {
       return errorMessage('Could not decrypt private key!');
     }
@@ -101,23 +103,38 @@ export class PublicKeyStoreV2 {
 
   public async initKeys(): Promise<{ secretKey: Uint8Array; publicKey: Uint8Array } | StatusMessage> {
     const pkHex = this.web3Session.publicKey;
+    console.debug('pkHex', pkHex);
     if (!pkHex) {
       return errorMessage('No Public Key available!');
     }
     const { publicKey, secretKey } = newBoxKeyPair();
+    console.debug('secretKey', secretKey);
+
     this.secretKey = secretKey;
     const encSecretKey2 = await encryptEthCryptoBinary(pkHex, secretKey);
+
     if (!encSecretKey2) {
       return errorMessage('Could not encrypt secretKey (initMyKeys)!');
     }
 
     const encSecretKey64 = Buffer.from(encSecretKey2).toString('base64');
     const publicKey64 = Buffer.from(publicKey).toString('base64');
+    console.debug('encSecretKey64', encSecretKey64);
+    console.debug('publicKey64', publicKey64);
 
     const res = await this.setKeys({ publicKey: publicKey64, encSecretKey: encSecretKey64 });
     if (isStatusMessage(res)) {
       return res;
     }
+    // testing start
+
+    const r = await this.getSecretKey();
+    if (isStatusMessage(r)) {
+      // ignore
+    } else {
+      console.log('r', r);
+    }
+    // testing end
     return { secretKey, publicKey };
   }
 

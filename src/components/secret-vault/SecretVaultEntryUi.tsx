@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
+import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
 import { Box, Stack, Tooltip } from '@mui/material';
 import moment from 'moment';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
@@ -53,7 +53,7 @@ export function SecretVaultEntryUi({
     return <></>;
   }
 
-  const { publicAddress, mode } = web3Session;
+  const { publicAddress } = web3Session;
 
   const keyBlock = getKeyBlock();
   if (!keyBlock) {
@@ -126,9 +126,6 @@ export function SecretVaultEntryUi({
                 wrap('Decryption processing...', async () => {
                   try {
                     let s1: any = '';
-                    if (mode === 'metamask') {
-                      dispatchSnackbarMessage(warningMessage('Please confirm/reject MetaMask dialog!'));
-                    }
                     s1 = await decryptKeyBlockValue2(web3Session, entry.value);
                     setEntry((i) => ({ ...i, enc: false, value: s1 }));
                     dispatchSnackbarMessage(infoMessage('Decryption done successfully'));
@@ -162,9 +159,6 @@ export function SecretVaultEntryUi({
               disabled={!(entry.enc && entry.value && dirty)}
               onClick={async () =>
                 wrap('Saving Secret Vault Entry...', async () => {
-                  if (mode === 'metamask') {
-                    setStatusMessage(infoMessage('Saving... Please confirm/reject MetaMask dialog!'));
-                  }
                   try {
                     if (item0.index === -1) {
                       const res = await keyBlock.add(publicAddress, entry.name, entry.value);

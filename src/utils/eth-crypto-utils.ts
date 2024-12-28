@@ -26,7 +26,7 @@ export const encryptEthCrypto = async (publicKey: string, message: string): Prom
 };
 
 export const encryptEthCryptoBinary = async (publicKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
-  const res = await encryptEthCrypto(publicKey, Buffer.from(data).toString());
+  const res = await encryptEthCrypto(publicKey, Buffer.from(data).toString('base64'));
   if (res) {
     return new Uint8Array(Buffer.from(res));
   }
@@ -35,6 +35,6 @@ export const encryptEthCryptoBinary = async (publicKey: string, data: Uint8Array
 export const decryptEthCryptoBinary = async (privateKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
   const res = await decryptEthCrypto(privateKey, Buffer.from(data).toString());
   if (res) {
-    return new Uint8Array(Buffer.from(res));
+    return new Uint8Array(Buffer.from(res, 'base64'));
   }
 };

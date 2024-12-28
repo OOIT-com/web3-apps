@@ -6,11 +6,11 @@ import { Wallet } from 'alchemy-sdk';
 import { decryptEthCrypto, encryptEthCrypto } from '../../utils/eth-crypto-utils';
 
 export const decryptKeyBlockValue2 = async (web3Session: Web3Session, encMessage: string) => {
-  const { decryptFun, secret } = web3Session;
+  const { decryptFun, privateKey } = web3Session;
 
   // eth-crypto
-  if (secret) {
-    const message = await decryptEthCrypto(secret, encMessage);
+  if (privateKey) {
+    const message = await decryptEthCrypto(privateKey, encMessage);
     if (message !== undefined) {
       return message;
     }
@@ -36,10 +36,10 @@ export const decryptKeyBlockValue2 = async (web3Session: Web3Session, encMessage
 };
 
 export const encryptKeyBlockValue2 = async (web3Session: Web3Session, message: string) => {
-  const { secret } = web3Session;
-  if (secret) {
+  const { privateKey } = web3Session;
+  if (privateKey) {
     console.log('use: EthCrypto.encryptWithPublicKey');
-    const w = new Wallet(secret);
+    const w = new Wallet(privateKey);
     const encrypted = await encryptEthCrypto(w.publicKey, message);
     if (encrypted !== null) {
       return encrypted;

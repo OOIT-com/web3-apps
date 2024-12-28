@@ -21,70 +21,73 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 
 export function PublicKeyStoreUi() {
   const app = useAppContext();
-  const { wrap, web3Session, publicKeyFromStore, setPublicKeyFromStore } = app;
+  const { wrap, web3Session } = app;
 
   const { publicKey = '', publicAddress, networkId = 0 } = web3Session || {};
 
   const [address0, setAddress0] = useState('');
   const [publicKey0, setPublicKey0] = useState('');
+  const [publicKeyFromStore, setPublicKeyFromStore] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
+  const [statusMessage0, setStatusMessage0] = useState<StatusMessage>();
 
   const { name } = getNetworkInfo(networkId);
   const publicKeyStore = getPublicKeyStore();
 
-  const refreshMyPublicKey = useCallback(async () => {
-    if (!publicAddress || !publicKeyStore) {
-      setStatusMessage(infoMessage(`Could not refresh your Public Key!`));
-      return;
-    }
-    const publicKey = await wrap('Reading Public Key...', () => publicKeyStore.get(publicAddress));
-    if (isStatusMessage(publicKey)) {
-      setStatusMessage(publicKey);
-      return;
-    }
-    if (!publicKey) {
-      setStatusMessage(infoMessage(`Your Public Key is not published yet!`));
-      return;
-    }
-    setPublicKeyFromStore(publicKey);
-  }, [wrap, publicKeyStore, publicAddress, setPublicKeyFromStore]);
-
   const getPublicKey = useCallback(
-    async (address: string) => {
+    async (address = ''): Promise<StatusMessage | string> => {
       if (!address || !publicKeyStore) {
-        setStatusMessage(infoMessage(`Could not call getPublicKey!`));
-        return;
+        return '';
       }
-      setPublicKey0('');
-      const publicKey = await wrap('Reading Public Key...', () => publicKeyStore.get(address));
-      if (isStatusMessage(publicKey)) {
-        setStatusMessage(publicKey);
-        return;
-      }
-      if (!publicKey) {
-        setStatusMessage(infoMessage(`Public key not saved for : ${displayAddress(address)}`));
-        return;
-      } else {
-        setPublicKey0(publicKey);
-      }
+      return await wrap(`Reading Public Key for ${displayAddress(address)}...`, () => publicKeyStore.get(address));
     },
     [wrap, publicKeyStore]
   );
 
-  const saveMine = useCallback(async () => {
+  const refreshMyPublicKey = useCallback(async () => {
+    setPublicKeyFromStore('');
+    setStatusMessage(undefined);
+    const publicKey = await getPublicKey(publicAddress);
+    if (isStatusMessage(publicKey)) {
+      setStatusMessage(publicKey);
+    } else if (!publicKey) {
+      setStatusMessage(infoMessage(`Your Public Key is not published yet!`));
+    } else {
+      setPublicKeyFromStore(publicKey);
+    }
+  }, [getPublicKey, publicAddress]);
+
+  const getPublicKey0 = useCallback(
+    async (address: string) => {
+      setPublicKey0('');
+      setStatusMessage0(undefined);
+      const publicKey = await getPublicKey(address);
+      if (isStatusMessage(publicKey)) {
+        setStatusMessage0(publicKey);
+        return;
+      }
+      if (!publicKey) {
+        setStatusMessage0(infoMessage(`No Public key found for : ${displayAddress(address)}!`));
+        return;
+      }
+      setPublicKey0(publicKey);
+    },
+    [getPublicKey]
+  );
+
+  const savePublicKey = useCallback(async () => {
+    setStatusMessage(undefined);
     if (!publicAddress || !publicKeyStore) {
       return;
     }
-    const myPub = await wrap('Save Public Key. (Checkout Meta Mask!)', () =>
-      publicKeyStore.set({ from: publicAddress, publicKey })
-    );
+    const myPub = await wrap('Save Public Key.', () => publicKeyStore.set({ from: publicAddress, publicKey }));
     if (isStatusMessage(myPub)) {
       setStatusMessage(myPub);
     } else {
       setStatusMessage(successMessage('Your Public Key saved in store!'));
-      setPublicKeyFromStore(myPub);
+      await refreshMyPublicKey();
     }
-  }, [setPublicKeyFromStore, wrap, publicAddress, publicKey, publicKeyStore]);
+  }, [publicAddress, publicKeyStore, wrap, publicKey, refreshMyPublicKey]);
 
   const unpublishMine = useCallback(async () => {
     if (!publicAddress || !publicKeyStore) {
@@ -98,9 +101,9 @@ export function PublicKeyStoreUi() {
       setStatusMessage(res);
     } else {
       setStatusMessage(successMessage('Your Public Key un-published in store!'));
-      setPublicKeyFromStore('');
+      await refreshMyPublicKey();
     }
-  }, [setPublicKeyFromStore, wrap, publicAddress, publicKeyStore]);
+  }, [publicAddress, publicKeyStore, wrap, refreshMyPublicKey]);
 
   useEffect(() => {
     if (publicAddress) {
@@ -121,36 +124,38 @@ export function PublicKeyStoreUi() {
       collapsible={false}
       title={<AppTopTitle title={'Public Key Store'} avatar={publicKeyPng} />}
       content={[
-        <StatusMessageElement
-          key={'status-message'}
-          statusMessage={statusMessage}
-          onClose={() => setStatusMessage(undefined)}
-        />,
         <CollapsiblePanel
           key={'my-public-key'}
           title={'My Public Key on the Store'}
           content={[
+            <StatusMessageElement
+              key={'status-message'}
+              statusMessage={statusMessage}
+              onClose={() => setStatusMessage(undefined)}
+            />,
             <TableComp
+              key={'my-public-keys'}
               content={[
-                <TableRowInfo
-                  key={'pub'}
-                  label={'Your Public Key from the store'}
-                  value={<AddressBoxWithCopy key={'from-store'} value={publicKeyFromStore} reduced={false} />}
-                />,
                 <TableRowInfo
                   key={'web3'}
                   label={'Your Public Key from the Web3 session'}
-                  value={<AddressBoxWithCopy key={'from-session'} value={publicKey} reduced={false} />}
+                  value={<AddressBoxWithCopy key={'from-session'} value={publicKey} reduced={true} />}
+                />,
+                <TableRowInfo
+                  key={'pub'}
+                  label={'Your Public Key from the store'}
+                  value={<AddressBoxWithCopy key={'from-store'} value={publicKeyFromStore} reduced={true} />}
                 />
               ]}
             />,
             <ButtonPanel
+              key={'my-public-keys-actions'}
               mode={'left'}
               content={[
                 <Button key={'refresh'} onClick={() => refreshMyPublicKey()}>
                   Refresh
                 </Button>,
-                <Button key={'publish'} onClick={saveMine}>
+                <Button key={'publish'} onClick={savePublicKey}>
                   Publish my public key
                 </Button>,
                 <Button key={'unpublish'} onClick={unpublishMine}>
@@ -162,11 +167,16 @@ export function PublicKeyStoreUi() {
         />,
 
         <CollapsiblePanel
-          collapsed={true}
+          collapsible={false}
           key={'public-key'}
           level={'second'}
           title={`Read a Public Key from ${name}`}
           content={[
+            <StatusMessageElement
+              key={'status-message'}
+              statusMessage={statusMessage0}
+              onClose={() => setStatusMessage(undefined)}
+            />,
             <TextField
               key={'address'}
               autoFocus
@@ -179,15 +189,12 @@ export function PublicKeyStoreUi() {
               fullWidth
               variant="standard"
             />,
-            <ButtonPanel
-              mode={'left'}
-              content={[
-                <Button disabled={!address0} onClick={() => getPublicKey(address0)}>
-                  Get Public Key
-                </Button>
-              ]}
-            />,
-            <AddressBoxWithCopy value={publicKey0} reduced={false} label={'Public Key'} />
+            <ButtonPanel key={'get-public-key-button'} mode={'left'}>
+              <Button disabled={!address0} onClick={() => getPublicKey0(address0)}>
+                Get Public Key
+              </Button>
+            </ButtonPanel>,
+            <AddressBoxWithCopy key={'public-key-display'} value={publicKey0} reduced={true} label={'Public Key'} />
           ]}
         />
       ]}

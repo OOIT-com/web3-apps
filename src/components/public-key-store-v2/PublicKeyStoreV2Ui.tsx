@@ -8,7 +8,6 @@ import {
 } from '../../contracts/public-key-store/PublicKeyStoreV2-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import nacl from 'tweetnacl';
-import { decryptBuffer } from '../../utils/metamask-util';
 import { Buffer } from 'buffer';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { displayKey } from '../../utils/enc-dec-utils';
@@ -19,7 +18,7 @@ import { AppTopTitle } from '../common/AppTopTitle';
 import { ButtonPanel } from '../common/ButtonPanel';
 
 export function PublicKeyStoreV2Ui() {
-  const { wrap, web3Session, dispatchSnackbarMessage, setPublicKeyHolderV2 } = useAppContext();
+  const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
   const { publicAddress } = web3Session || {};
   const [myPublicKey, setMyPublicKey] = useState('');
   const [address0, setAddress0] = useState('');
@@ -66,10 +65,9 @@ export function PublicKeyStoreV2Ui() {
         setStatusMessage(res);
       } else {
         const { publicKey, secretKey } = res;
-        setPublicKeyHolderV2({ publicKey, secretKey });
       }
     }
-  }, [publicAddress, publicKeyStoreV2, wrap, setPublicKeyHolderV2]);
+  }, [publicAddress, publicKeyStoreV2, wrap]);
 
   const loadAndDispatchKeys = useCallback(async () => {
     if (publicAddress && publicKeyStoreV2) {
@@ -79,10 +77,9 @@ export function PublicKeyStoreV2Ui() {
         return;
       }
       const { publicKey, secretKey } = res;
-      setPublicKeyHolderV2({ publicKey, secretKey });
       setStatusMessage(successMessage(`Key Pair successfully loaded for you (${publicAddress})!`));
     }
-  }, [publicAddress, publicKeyStoreV2, wrap, setPublicKeyHolderV2]);
+  }, [publicAddress, publicKeyStoreV2, wrap]);
 
   useEffect(() => {
     getMine().catch(console.error);
@@ -99,7 +96,7 @@ export function PublicKeyStoreV2Ui() {
     <CollapsiblePanel
       collapsible={false}
       level={'top'}
-      title={<AppTopTitle title={'Key Pair Store'} avatar={keyPairStorePng} />}
+      title={<AppTopTitle title={'Key Pair Store 2'} avatar={keyPairStorePng} />}
       spacing={2}
     >
       <StatusMessageElement
@@ -176,7 +173,8 @@ async function loadKeyPair(wrap: WrapFun, from: string, publicKeyStoreV2: Public
     return infoMessage(`No Keys found for ${displayKey(from)}!`);
   }
   const buff = Buffer.from(res, 'base64');
-  const decSecretKeyBuff = await decryptBuffer(from, buff);
+  alert('missing in loadKeyPair: decryptBuffer(from, buff)');
+  const decSecretKeyBuff = Buffer.from(buff);
   const secretKey = new Uint8Array(decSecretKeyBuff);
   const { publicKey } = nacl.box.keyPair.fromSecretKey(secretKey);
   return { publicKey, secretKey };

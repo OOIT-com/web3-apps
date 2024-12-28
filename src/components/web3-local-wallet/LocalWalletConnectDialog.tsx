@@ -1,5 +1,5 @@
 import Dialog from '@mui/material/Dialog';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
+import { errorMessage, StatusMessage } from '../../types';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { LDBox } from '../common/StyledBoxes';
@@ -17,7 +17,6 @@ import {
   TableContainer,
   Tooltip
 } from '@mui/material';
-import TextField from '@mui/material/TextField';
 import { TableRowComp } from '../common/TableRowComp';
 import { networks } from '../../network-info';
 import { connectWithSecret } from './connect-with-secret';
@@ -25,11 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { initDapps } from '../init-dapps';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
-import { PasswordTextField } from '../common/PasswordTextField';
-import { Wallet } from 'ethers';
 import {
-  addLocalWalletToLocalStorage,
-  createAccountEntry,
   extractPrivateKey,
   getLocalWalletFromLocalStorage,
   getLocalWalletList,
@@ -37,6 +32,7 @@ import {
   removeLocalWalletFromLocalStorage
 } from './local-wallet-utils';
 import { displayAddress } from '../../utils/misc-util';
+import { AddAccountUi } from './AddAccountUi';
 
 const warningMessage: StatusMessage = {
   status: 'warning',
@@ -57,9 +53,7 @@ export const local_wallet_default_network_id = '__LOCAL_WALLET_DEFAULT_NETWORK_I
 export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walletPassword }) => {
   const app = useAppContext();
   const navigate = useNavigate();
-  const [networkId, setNetworkId] = useState(localStorage.getItem(local_wallet_default_network_id) || '64165');
-  const [name, setName] = useState('');
-  const [secret, setSecret] = useState('');
+  const [networkId, setNetworkId] = useState(localStorage.getItem(local_wallet_default_network_id) ?? '64165');
   const [localWalletList, setLocalWalletList] = useState<LocalWalletData[]>([]);
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [showAdd, setShowAdd] = useState(false);
@@ -95,86 +89,6 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
   );
 
   const selectLabel = 'Select Blockchain';
-
-  const AddPanel = useCallback(
-    () => (
-      <>
-        {' '}
-        {showAdd && (
-          <Stack spacing={1}>
-            <LDBox key={'secrets-title'} sx={{ fontSize: '1.2em', fontWeight: 'bold' }}>
-              Add Account
-            </LDBox>
-
-            <TextField
-              key={'name'}
-              label={'Name of your secret'}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <PasswordTextField
-              key={'version'}
-              value={secret}
-              label={'Secret (seed phrase or private key)'}
-              onChange={(e) => setSecret(e.target.value)}
-            />
-            <ButtonPanel
-              key={'buttons'}
-              content={[
-                <Button
-                  key={'add-and-connect'}
-                  disabled={!secret || !name || !networkId}
-                  onClick={async () => {
-                    setStatusMessage(undefined);
-                    const localWallet = await createAccountEntry({ name, secret, walletPassword });
-                    if (isStatusMessage(localWallet)) {
-                      setStatusMessage(localWallet);
-                      return;
-                    }
-                    addLocalWalletToLocalStorage(localWallet);
-                    setLocalWalletList(getLocalWalletList());
-                    //connectWeb3(getLocalWalletList().length - 1);
-                  }}
-                >
-                  Add
-                </Button>,
-                <Tooltip
-                  key={'create-account'}
-                  title={"Create a random account! DON'T FORGET to write down the seed phrase"}
-                >
-                  <Button
-                    onClick={() => {
-                      setStatusMessage(undefined);
-                      const wallet = Wallet.createRandom();
-                      const phrase = wallet.mnemonic?.phrase;
-                      if (phrase) {
-                        const first = phrase.split(' ')[0];
-                        setSecret(wallet.mnemonic.phrase);
-                        setName(`key-starts-with-${first}`);
-                      } else {
-                        setStatusMessage(errorMessage('Creating a random wallet failed!'));
-                      }
-                    }}
-                  >
-                    Create Random Account
-                  </Button>
-                </Tooltip>
-              ]}
-            />
-          </Stack>
-        )}
-        <ButtonPanel>
-          <Button
-            onClick={() => setShowAdd((b) => !b)}
-            sx={{ fontSize: '80%', fontStyle: 'italic', fontWeight: 'bold' }}
-          >
-            {showAdd ? 'Hide Add' : 'Add Account...'}
-          </Button>
-        </ButtonPanel>
-      </>
-    ),
-    [name, networkId, secret, showAdd, walletPassword]
-  );
 
   return (
     <Dialog fullWidth={true} maxWidth={'lg'} open={true}>
@@ -261,7 +175,23 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
               </TableContainer>
             </Stack>
           )}
-          <AddPanel />
+          {showAdd ? (
+            <AddAccountUi
+              key={'show-add-true'}
+              walletPassword={walletPassword}
+              refreshLocalWalletList={() => setLocalWalletList(getLocalWalletList)}
+            />
+          ) : (
+            <ButtonPanel key={'show-add-false'}>
+              <Button
+                onClick={() => setShowAdd((b) => !b)}
+                sx={{ fontSize: '80%', fontStyle: 'italic', fontWeight: 'bold' }}
+              >
+                {showAdd ? 'Hide Add' : 'Add Account...'}
+              </Button>
+            </ButtonPanel>
+          )}
+
           <StatusMessageElement statusMessage={statusMessage} />
         </Stack>
       </DialogContent>

@@ -21,7 +21,6 @@ import {
   SharedSecretStore
 } from '../../contracts/shared-secret-store/SharedSecretStore-support';
 import { LDBox } from '../common/StyledBoxes';
-import { decryptBuffer } from '../../utils/metamask-util';
 import { getPublicKeyStore, PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
@@ -184,17 +183,7 @@ export const SharedSecretStoreUi: FC = () => {
           {!!sharedSecretStore && <AddressBoxWithCopy value={contractAddress} label={'Contract Address'} />}
           {!!owner && <AddressBoxWithCopy value={owner} label={'Owner'} />}
           {!!encryptedSecret && <Base64Display value={encryptedSecret} label={'My Encrypted Secret'} max={16} />}
-          {!!encryptedSecret && (
-            <Button
-              onClick={() =>
-                decryptBuffer(publicAddress, Buffer.from(encryptedSecret, 'base64'))
-                  .then((s) => setSecret(s.toString('base64')))
-                  .catch((er) => setStatusMessage(errorMessage('Could not open secret!', er)))
-              }
-            >
-              Show Secret
-            </Button>
-          )}
+          {!!encryptedSecret && <Button onClick={() => alert('missing decrypt function...')}>Show Secret</Button>}
         </Stack>
         <Stack
           direction="row"
