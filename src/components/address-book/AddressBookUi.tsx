@@ -83,7 +83,7 @@ export function AddressBookUi() {
     <Fragment>
       <CollapsiblePanel
         level={'top'}
-        collapsible={true}
+        collapsible={false}
         collapsed={false}
         title={<AppTopTitle title={'Address Book'} avatar={addressBookImg} />}
         toolbar={toolbar}

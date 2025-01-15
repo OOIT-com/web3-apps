@@ -119,7 +119,7 @@ export const CreateArtworkSaveDialog: FC<{
                   const uploadInfo = {
                     ...metaData,
                     uploadId: ur.id,
-                    timestamp: formatIso(ur.timestamp)
+                    timestamp: formatIso(ur.timestamp ?? 0)
                   };
                   setUploadInfo(uploadInfo);
 

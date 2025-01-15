@@ -3,7 +3,7 @@ import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { NetworkInfo } from '../../types';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
 
-(<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
+// (<any>pdfMake).vfs = pdfFonts.pdfMake.vfs;
 
 export type UNSData = {
   name: string;

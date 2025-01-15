@@ -11,16 +11,18 @@ import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { useAppContext } from '../AppContextProvider';
+import { DownloadLinkWithCopy } from '../common/DownloadLinkWithCopy';
+
+const LINK_URL = 'https://gateway.irys.xyz';
 
 export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
   const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();
   const { publicAddress } = web3Session || {};
 
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  const [uploadResponse, setUploadResponse] = useState<any>();
-  const [contentHash, setContentHash] = useState('');
-
   const [providedFile, setProvidedFile] = useState<File>();
+  const [contentHash, setContentHash] = useState('');
+  const [uploadResponse, setUploadResponse] = useState<any>();
 
   useEffect(() => {
     if (providedFile && !contentHash) {
@@ -34,6 +36,8 @@ export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess
     }
   }, [dispatchSnackbarMessage, wrap, contentHash, providedFile]);
 
+  const downloadLink = `${LINK_URL}/${uploadResponse?.id}/?item=${providedFile?.name}`;
+
   return (
     <Stack spacing={2}>
       <LDBox sx={{ fontSize: '1.6em', margin: '1em 0 0.4em 0' }}>Upload your Artwork to the Arweave Blockchain</LDBox>
@@ -44,8 +48,10 @@ export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess
           <Button
             disabled={!providedFile}
             onClick={() => {
+              setStatusMessage(undefined);
               setProvidedFile(undefined);
               setContentHash('');
+              setUploadResponse(undefined);
             }}
           >
             Clear
@@ -76,50 +82,53 @@ export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess
             </Stack>
           )}
         </Stack>
-        <Stack key={'toolbar-upload'} direction={'row'} justifyContent="space-between" alignItems="baseline">
-          <Button
-            key={'irys-upload'}
-            disabled={!providedFile || !publicAddress}
-            onClick={async () => {
-              if (providedFile && publicAddress && contentHash) {
-                const res = await wrap('Irys (Arweave) Upload processing...', async () => {
-                  try {
-                    const res = await irysAccess.upload(Buffer.from(await providedFile.arrayBuffer()), [
-                      {
-                        name: 'contentHash',
-                        value: contentHash
+        {providedFile && (
+          <Stack key={'toolbar-upload'} direction={'row'} justifyContent="space-between" alignItems="baseline">
+            <Button
+              variant={'contained'}
+              key={'irys-upload'}
+              disabled={!providedFile || !publicAddress}
+              onClick={async () => {
+                if (providedFile && publicAddress && contentHash) {
+                  const res = await wrap('Irys (Arweave) Upload processing...', async () => {
+                    try {
+                      const res = await irysAccess.upload(Buffer.from(await providedFile.arrayBuffer()), [
+                        {
+                          name: 'contentHash',
+                          value: contentHash
+                        }
+                      ]);
+                      if (isStatusMessage(res)) {
+                        setStatusMessage(res);
+                      } else {
+                        setUploadResponse(res);
                       }
-                    ]);
-                    if (isStatusMessage(res)) {
-                      setStatusMessage(res);
-                    } else {
-                      setUploadResponse(res);
+                    } catch (e) {
+                      return resolveAsStatusMessage('Irys Upload failed', e);
                     }
-                  } catch (e) {
-                    return resolveAsStatusMessage('Irys Upload failed', e);
+                  });
+                  if (isStatusMessage(res)) {
+                    setStatusMessage(res);
                   }
-                });
-                if (isStatusMessage(res)) {
-                  setStatusMessage(res);
                 }
-              }
-            }}
-          >
-            {`Upload ${providedFile?.name ?? '-???-'} to Arweave`}
-          </Button>
-        </Stack>
-        {!!uploadResponse && (
+              }}
+            >
+              {`Upload ${providedFile?.name ?? '-???-'} to Arweave`}
+            </Button>
+          </Stack>
+        )}
+        {uploadResponse && (
           <>
-            <Box>
+            <Box sx={{ fontSize: '80%' }}>
               <pre>{JSON.stringify(uploadResponse, null, ' ')}</pre>
+              <Box>{downloadLink}</Box>{' '}
             </Box>
             <Box>
-              <a
-                href={`https://gateway.irys.xyz/${uploadResponse.id}/${providedFile?.name}`}
-              >{`Downloadlink for ${providedFile?.name}`}</a>
-            </Box>
-            <Box>
-              `https://gateway.irys.xyz/${uploadResponse.id}/${providedFile?.name}`
+              <DownloadLinkWithCopy
+                variant={'outlined'}
+                downloadLink={downloadLink}
+                label={`Download ${providedFile?.name}`}
+              ></DownloadLinkWithCopy>
             </Box>
           </>
         )}

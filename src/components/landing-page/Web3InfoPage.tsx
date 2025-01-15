@@ -89,7 +89,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
                 <TableRowInfo
                   key={'web3Session.publicKey'}
                   label={'Your Public Key (Session)'}
-                  value={<AddressBoxWithCopy value={publicKey} reduced={true} />}
+                  value={<AddressBoxWithCopy key={'address-box'} value={publicKey} reduced={true} />}
                 />
                 <TableRowInfo
                   key={'contract-registry'}

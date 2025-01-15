@@ -145,12 +145,6 @@ export function SMTable({
               updateRow('update', data.userId, field as SMDataRowUpdateableKeys, newValue);
             }
           }}
-          // onCellClicked={(event: CellClickedEvent<SMDataRow>) => {
-          //   const { column, data } = event;
-          //   if ('dirty' === column.getColId()) {
-          //     setOpenAction(data);
-          //   }
-          // }}
         />
       </div>
       {!!openAction && (

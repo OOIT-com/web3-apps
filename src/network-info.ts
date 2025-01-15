@@ -1,4 +1,5 @@
 import { NetworkInfo } from './types';
+
 export const networks: NetworkInfo[] = [
   {
     name: 'n/a',
@@ -164,7 +165,11 @@ export const networks: NetworkInfo[] = [
     PostFix: 'AVAX_FUJI_TESTNET',
     irysTokenname: 'avalanche',
     isMainnet: false,
-    isEVM: true
+    isEVM: true,
+    faucetUrls: [
+      'https://core.app/tools/testnet-faucet/?subnet=c&token=c',
+      'https://faucet.quicknode.com/avalanche/fuji'
+    ]
   },
   {
     name: 'Avalanche C-Chain',

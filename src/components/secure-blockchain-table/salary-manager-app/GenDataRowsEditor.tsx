@@ -168,7 +168,6 @@ export function GenDataRowsEditor({
         def={def}
         dataRows={genDataRows}
         height={40}
-        mode={mode}
         owner={owner}
         updateRow={genUpdateRow}
         saveRowDataToContract={saveRowDataToContract}

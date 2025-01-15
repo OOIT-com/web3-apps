@@ -38,11 +38,11 @@ export async function resolveAddress(addr: string): Promise<string | StatusMessa
       eoaResolved[addr] = res.name;
       return res.name;
     }
-    const constractRegistry = getContractRegistry();
-    if (!constractRegistry) {
+    const contractRegistry = getContractRegistry();
+    if (!contractRegistry) {
       return warningMessage('ContractRegistry found!');
     }
-    res = await constractRegistry.getByAddress(addr);
+    res = await contractRegistry.getByAddress(addr);
     if (isStatusMessage(res)) {
       return res;
     } else if (res.name) {

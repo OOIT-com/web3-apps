@@ -7,12 +7,23 @@ import { getNetworkInfo } from '../network-info';
 import { Buffer } from 'buffer';
 import type { Readable } from 'stream';
 import BaseWebIrys from '@irys/web-upload/dist/types/base';
+import { UploadResponse } from '@bundlr-network/client/build/esm/common/types';
+import { Web3BaseProvider } from 'web3';
 
 export type Tags = {
   name: string;
   value: string;
 }[];
-const w = window as any;
+
+export const newIrysAccess = async (web3Session: Web3Session): Promise<IrysAccess | StatusMessage> => {
+  const irys = new IrysAccess(web3Session);
+  const r = await irys.init();
+  if (isStatusMessage(r)) {
+    console.debug(r.userMessage);
+    return r;
+  }
+  return irys;
+};
 
 export class IrysAccess {
   public readonly web3Session: Web3Session;
@@ -22,12 +33,12 @@ export class IrysAccess {
     this.web3Session = web3Session;
   }
 
-  public async init(): Promise<StatusMessage | undefined> {
+  public async init(): Promise<StatusMessage | UploadBuilder> {
     const irys = await getWebIrys(this.web3Session);
-    if (isStatusMessage(irys)) {
-      return irys;
+    if (!isStatusMessage(irys)) {
+      this.irys = irys;
     }
-    this.irys = irys;
+    return irys;
   }
 
   public getToken(): string {
@@ -38,12 +49,15 @@ export class IrysAccess {
     return this.irys?.address ?? '';
   }
 
-  public async getBalance(address: string) {
-    return this.irys?.getBalance(address) || Promise.resolve('');
+  public async getBalance(address: string): Promise<string> {
+    if (this.irys) {
+      return (await this.irys.getBalance(address)).toString();
+    }
+    return '';
   }
 
-  public async getLoadedBalance() {
-    return this.irys?.getLoadedBalance() || Promise.resolve('');
+  public async getLoadedBalance(): Promise<string> {
+    return this.getBalance(this.web3Session.publicAddress);
   }
 
   public getPrice(bytes: number) {
@@ -62,7 +76,7 @@ export class IrysAccess {
     return this.irys?.withdrawBalance(amount);
   }
 
-  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<any | StatusMessage> {
+  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<StatusMessage | UploadResponse> {
     if (!this.irys) {
       return errorMessage('Irys not initialized!');
     }
@@ -70,28 +84,45 @@ export class IrysAccess {
   }
 }
 
+// funding does not work but file upload is working!
 const getWebIrys = async (web3Session: Web3Session): Promise<UploadBuilder | StatusMessage> => {
-  const { networkId } = web3Session;
+  const { networkId, web3 } = web3Session;
 
   const { currencySymbol, isMainnet } = getNetworkInfo(networkId);
-  const provider = new ethers.BrowserProvider(w.ethereum);
+  //const provider = new ethers.BrowserProvider(w.ethereum);
+  const provider = web3.currentProvider as Web3BaseProvider;
+  // const provider = new ethers.JsonRpcProvider(rpcUrl); // Replace with your provider URL
+  const ethersProvider = new ethers.BrowserProvider(provider);
+
+  const signer = new ethers.Wallet(web3Session.privateKey, ethersProvider);
+
+  ethersProvider.estimateGas = signer.estimateGas.bind(signer);
+
+  (ethersProvider as any).getSigner = () => signer;
+
+  //const signer2 = await ethersProvider.getSigner();
   let uploader;
   switch (currencySymbol) {
     case 'ETH':
-      uploader = WebUploader(WebEthereum).withAdapter(EthersV6Adapter(provider));
+      uploader = WebUploader(WebEthereum).withAdapter(EthersV6Adapter(signer));
       break;
     case 'MATIC':
-      uploader = WebUploader(WebMatic).withAdapter(EthersV6Adapter(provider));
+      uploader = WebUploader(WebMatic).withAdapter(EthersV6Adapter(signer));
       break;
     case 'AVAX':
-      uploader = WebUploader(WebAvalanche).withAdapter(EthersV6Adapter(provider));
+      uploader = WebUploader(WebAvalanche).withAdapter(
+        EthersV6Adapter(
+          //{ ...provider, getSigner: () => signer, estimateGas: signer.estimateGas }
+          ethersProvider
+        )
+      );
       break;
     default:
       return errorMessage(`Blockchain with token ${currencySymbol} not supported`);
   }
-  const rpcUrl: string | undefined = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
-  if (!isMainnet && rpcUrl) {
-    uploader.withRpc(rpcUrl).devnet();
+  const rpcUrl4Irys: string | undefined = process.env.REACT_APP_IRYS_RPC_URL_DEV ?? '';
+  if (!isMainnet && rpcUrl4Irys) {
+    uploader.withRpc(rpcUrl4Irys).devnet();
   }
   return uploader;
 };

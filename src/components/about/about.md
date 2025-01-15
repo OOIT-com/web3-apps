@@ -13,7 +13,7 @@ All Apps share the following properties
 
 - **Cloud-agnostic:** Liberated from the constraints of a single provider
 
-- **Transactionally secure:**  Safeguarded by the immutability of the blockchain
+- **Transactional secure:**  Safeguarded by the immutability of the blockchain
 
 - **End-to-end encrypted:** All sensitive data is encrypted
 
@@ -23,7 +23,7 @@ All Apps share the following properties
 
 # Which blockchains are supported?
 
-All appliation shown here are EVM compatible.
+All application shown here are EVM compatible.
 On the following blockchains the following contracts are available
 - My Secret Vault
 - Private Messages

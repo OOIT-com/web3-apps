@@ -90,12 +90,12 @@ export const CollapsiblePanel: FC<PropsWithChildren<CollapsiblePanelProps>> = ({
             direction={'row'}
             justifyContent="space-between"
             alignItems="center"
-            spacing={styles[level].outerSpacing || 4}
+            spacing={styles[level].outerSpacing ?? 4}
           >
             <LDBox sx={styles[level].title} direction="row" justifyContent="flex-start" alignItems="center" spacing={1}>
               {titleElement}
             </LDBox>
-            {exp && (
+            {(!collapsible || exp) && (
               <Stack
                 key={'title-row'}
                 direction={'row'}

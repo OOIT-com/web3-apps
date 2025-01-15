@@ -1,10 +1,9 @@
 import { Box, Stack, Table, TableBody } from '@mui/material';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../types';
+import { infoMessage, StatusMessage } from '../../types';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import TextField from '@mui/material/TextField';
 import { TableRowComp } from '../common/TableRowComp';
 import { Header2 } from '../common/StyledBoxes';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
@@ -20,19 +19,20 @@ const arName = 'Irys (Arweave)';
 export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
   const { wrap, web3Session } = useAppContext();
   const [irysData, setIrysData] = useState<IrysData>();
-  const [fundAmount, setFundAmount] = useState(0);
-  const [withdrawAmount, setWithdrawAmount] = useState(0);
+  //const [fundAmount, setFundAmount] = useState(0);
+  // const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>(infoMessage(`Connecting ${arName}...`));
 
   const refreshIrysData = useCallback(async () => {
     return wrap(`Loading Data for ${arName}...`, async () => {
       setStatusMessage(undefined);
-      const { address, polygonBalance, loadedBalance, balance, statusMessage, pricePerMega, uploadableMegabytes } =
-        await loadIrysData(irysAccess);
+      const { address, polygonBalance, balance, statusMessage, pricePerMega, uploadableMegabytes } = await loadIrysData(
+        irysAccess
+      );
       if (statusMessage.status === 'error') {
         setStatusMessage(statusMessage);
       } else {
-        setIrysData({ polygonBalance, address, balance, loadedBalance, pricePerMega, uploadableMegabytes });
+        setIrysData({ polygonBalance, address, balance, pricePerMega, uploadableMegabytes });
       }
     });
   }, [wrap, irysAccess]);
@@ -52,9 +52,9 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
     return <StatusMessageElement statusMessage={infoMessage('No Irys Data available!')} />;
   }
 
-  const fundStatus = fundAmount <= +(irysData.polygonBalance || '0') / 1e18 && fundAmount > 0;
+  // const fundStatus = fundAmount <= +(irysData.polygonBalance || '0') / 1e18 && fundAmount > 0;
 
-  const withdrawAmountStatus = withdrawAmount <= +(irysData?.loadedBalance || '0') / 1e18 && withdrawAmount > 0;
+  // const withdrawAmountStatus = withdrawAmount <= +(irysData?.loadedBalance || '0') / 1e18 && withdrawAmount > 0;
 
   return (
     <Stack justifyContent="flex-start" alignItems="start" spacing={0.6}>
@@ -105,14 +105,6 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
             colspan={[1, 2]}
           />
           <TableRowComp
-            key={'loaded-balance'}
-            elements={[
-              <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys loaded balance (${irysAccess.getToken()})`}</Box>,
-              displayUsdPrice({ amount: +irysData.loadedBalance / 1e18, symbol, usdPrice })
-            ]}
-            colspan={[1, 2]}
-          />
-          <TableRowComp
             key={'balance'}
             elements={[
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Irys balance (${irysAccess.getToken()})`}</Box>,
@@ -130,12 +122,13 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
             ]}
             colspan={[1, 2]}
           />
+          {/*
           <TableRowComp
             key={'fund-withdraw'}
             elements={[<Header2 key={'title'}>Fund and Withdraw Actions</Header2>]}
             colspan={[3]}
-          />
-          {/* FUND AMOUNT */}
+          /> */}
+          {/* FUND AMOUNT :: Disable as funding does not work yet
           <TableRowComp
             key={'funding'}
             elements={[
@@ -181,7 +174,8 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
               </Button>
             ]}
           />
-          {/* WITHDRAW AMOUNT */}
+            */}
+          {/* WITHDRAW AMOUNT
           <TableRowComp
             key={'withdraw'}
             elements={[
@@ -223,7 +217,7 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
                 Withdraw {withdrawAmount}
               </Button>
             ]}
-          />
+          />*/}
         </TableBody>
       </Table>
       <Stack direction={'row'} spacing={1}>

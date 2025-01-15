@@ -2,7 +2,6 @@ import { errorMessage, infoMessage, Web3Session } from '../../types';
 import { getNetworkInfo } from '../../network-info';
 import { HDNodeWallet, Mnemonic } from 'ethers';
 import Web3 from 'web3';
-import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { Buffer } from 'buffer';
 import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
@@ -32,6 +31,7 @@ export async function connectWithSecret(
   }
   const web3 = new Web3(network.rpcUrl);
   web3.eth.accounts.wallet.add(privateKey);
+
   const publicAddress = web3.eth.accounts.wallet[0].address.toLowerCase();
   const publicKey = new Wallet(privateKey).publicKey;
   const privateKeyUint8Array = new Uint8Array(Buffer.from(privateKey.substring(2), 'hex'));

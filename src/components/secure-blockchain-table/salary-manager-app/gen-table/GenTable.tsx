@@ -10,7 +10,7 @@ import { StatusMessageElement } from '../../../common/StatusMessageElement';
 import { errorMessage } from '../../../../types';
 
 import '../gen-table/gen-table.css';
-import { GenDataRow, GenTableDef, GenTableMode, GenUpdateRowFun, ResizeMode, SaveDataRowFun } from './gen-types';
+import { GenDataRow, GenTableDef, GenUpdateRowFun, ResizeMode, SaveDataRowFun } from './gen-types';
 import { applyColCollection, calcSumRows } from './sum-row-utils';
 import { getResizeMode, getToggleState, resolveId, saveResizeMode } from './gen-utils';
 import { getGenColDef } from './gen-table-col-def';
@@ -21,7 +21,6 @@ type GenTableProps = {
   def: GenTableDef;
   dataRows: GenDataRow[];
   owner?: string;
-  mode?: GenTableMode;
   height?: number;
   updateRow?: GenUpdateRowFun;
   saveRowDataToContract?: SaveDataRowFun;
@@ -43,7 +42,7 @@ export const GenTable: FC<GenTableProps> = ({
 
   const [gridApi, setGridApi] = useState<GridApi<GenDataRow>>();
 
-  const getRowId = useCallback(({ data }: GetRowIdParams<GenDataRow>) => resolveId(def, data)?.toString() || '', [def]);
+  const getRowId = useCallback(({ data }: GetRowIdParams<GenDataRow>) => resolveId(def, data)?.toString() ?? '', [def]);
 
   useEffect(() => {
     if (gridApi && toggleState) {
@@ -130,7 +129,7 @@ export const GenTable: FC<GenTableProps> = ({
             if (updateRow && field && typeof rowIndex === 'number') {
               const idValue = resolveId(def, data);
               if (idValue) {
-                updateRow('update', idValue, field as string, newValue);
+                updateRow('update', idValue, field, newValue);
               }
             }
           }}
