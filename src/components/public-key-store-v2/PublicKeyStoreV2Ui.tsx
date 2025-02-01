@@ -64,7 +64,7 @@ export function PublicKeyStoreV2Ui() {
       if (isStatusMessage(res)) {
         setStatusMessage(res);
       } else {
-        const { publicKey, secretKey } = res;
+        //const { publicKey, secretKey } = res;
       }
     }
   }, [publicAddress, publicKeyStoreV2, wrap]);
@@ -76,7 +76,7 @@ export function PublicKeyStoreV2Ui() {
         setStatusMessage(res);
         return;
       }
-      const { publicKey, secretKey } = res;
+      //const { publicKey, secretKey } = res;
       setStatusMessage(successMessage(`Key Pair successfully loaded for you (${publicAddress})!`));
     }
   }, [publicAddress, publicKeyStoreV2, wrap]);
