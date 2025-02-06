@@ -134,7 +134,6 @@ export function RowDataWithVersionsPart({
               value={newRow}
               onChange={(e) => setNewRow(e.target.value as number)}
             >
-              {' '}
               <MenuItem key={'new'} value={-1}>
                 New
               </MenuItem>

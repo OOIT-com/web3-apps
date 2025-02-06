@@ -57,6 +57,24 @@ export class KeyBlock {
     }
   }
 
+  public async getAllEntries(address: string): Promise<StatusMessage | SecretVaultEntry[]> {
+    const len = await this.len(address);
+    if (isStatusMessage(len)) {
+      return len;
+    }
+    const items: SecretVaultEntry[] = [];
+    for (let index = 0; index < len; index++) {
+      const entry = await this.get(address, index);
+      if (isStatusMessage(entry)) {
+        return entry;
+      } else {
+        const item: SecretVaultEntry = { index, name: entry[0], secret: entry[1], inserted: entry[2] };
+        items.push(item);
+      }
+    }
+    return items;
+  }
+
   public async add(from: string, name: string, secretContent: string): Promise<string | StatusMessage> {
     const inserted = moment().format('YYYY-MM-DD HH:mm');
     try {

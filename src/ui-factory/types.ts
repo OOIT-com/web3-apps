@@ -37,11 +37,8 @@ export interface AttributeDef<NAMES = string> {
 }
 
 export interface SelectValue {
-  name?: string;
-  value?: string;
-  code?: string;
-  label?: string;
-  labelId?: string;
+  value: PValue;
+  label: string;
 }
 
 export interface UiTypeOptions {

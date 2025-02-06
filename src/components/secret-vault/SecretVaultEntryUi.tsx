@@ -65,9 +65,11 @@ export function SecretVaultEntryUi({
     <Dialog open={open} onClose={done} fullWidth={true} maxWidth={'md'}>
       <DialogTitle>
         <Stack direction="row" justifyContent="space-between" alignItems="baseline" spacing={2}>
-          <Box>Edit Secret Entry{dirty ? '*' : ''}</Box>
-          <Box>{item0.index === -1 ? '' : `Inserted: ${item0.inserted}`}</Box>
-          <Box sx={{ color: orange.A400 }}>{item0.index === -1 ? 'New' : `Index: ${item0.index}`}</Box>
+          <Box key={'p1'}>Edit Secret Entry{dirty ? '*' : ''}</Box>
+          <Box key={'p2'}>{item0.index === -1 ? '' : `Inserted: ${item0.inserted}`}</Box>
+          <Box key={'p3'} sx={{ color: orange.A400 }}>
+            {item0.index === -1 ? 'New' : `Index: ${item0.index}`}
+          </Box>
         </Stack>
       </DialogTitle>
       <DialogContent>
@@ -117,10 +119,18 @@ export function SecretVaultEntryUi({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1} sx={{ height: '4em' }}>
+        <Stack
+          key={'outer-stack'}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={1}
+          sx={{ height: '4em' }}
+        >
           <StatusMessageElement statusMessage={statusMessage} onClose={() => setStatusMessage(undefined)} />
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
             <Button
+              key={'decrypt'}
               disabled={!entry.value || !entry.enc}
               onClick={() =>
                 wrap('Decryption processing...', async () => {
@@ -140,6 +150,7 @@ export function SecretVaultEntryUi({
               Decrypt
             </Button>
             <Button
+              key={'encrypt'}
               disabled={entry.enc || !entry.value}
               onClick={async () => {
                 setStatusMessage(undefined);
@@ -156,6 +167,7 @@ export function SecretVaultEntryUi({
               Encrypt
             </Button>
             <Button
+              key={'save'}
               disabled={!(entry.enc && entry.value && dirty)}
               onClick={async () =>
                 wrap('Saving Secret Vault Entry...', async () => {

@@ -10,38 +10,51 @@ import {
   TableRow,
   useTheme
 } from '@mui/material';
-import { ChangeEvent, FC, Fragment, ReactNode, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FC, Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { isStatusMessage, StatusMessage } from '../../types';
 import { SecretVaultEntryUi } from './SecretVaultEntryUi';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
-import Web3 from 'web3';
 import { getNetworkInfo } from '../../network-info';
 import { display64 } from '../../utils/misc-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { NoContract } from '../common/NoContract';
-import { useAppContext, WrapFun } from '../AppContextProvider';
+import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import TextField from '@mui/material/TextField';
 import { grey } from '@mui/material/colors';
 import secretVaultPng from '../images/secret-vault.png';
 import { AppTopTitle } from '../common/AppTopTitle';
+import { ButtonPanel } from '../common/ButtonPanel';
+import { SecretVaultDownloadDialog } from './SecretVaultDownloadDialog';
 
 const SecretVaultUi: FC = () => {
   const { wrap, web3Session } = useAppContext();
   const { publicAddress, networkId = 0, web3 } = web3Session || {};
   const theme = useTheme();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
-  const [rows, setRows] = useState<SecretVaultEntry[]>([]);
+  const [secretVaultEntries, setSecretVaultEntries] = useState<SecretVaultEntry[]>([]);
   const [editItem, setEditItem] = useState(EmptyItem);
   const [filterValue, setFilterValue] = useState('');
   const [openEditor, setOpenEditor] = useState(false);
+  const [openDownloadDialog, setOpenDownloadDialog] = useState(false);
+
+  const refreshData = useCallback(async () => {
+    const keyBlock = getKeyBlock();
+    if (!publicAddress || !web3 || !networkId || !keyBlock) {
+      return;
+    }
+    setStatusMessage(undefined);
+    const items = await wrap('Loading Secret Vault Entries...', () => keyBlock.getAllEntries(publicAddress));
+    if (isStatusMessage(items)) {
+      setStatusMessage(items);
+    } else {
+      setSecretVaultEntries(items);
+    }
+  }, [networkId, publicAddress, web3, wrap]);
 
   useEffect(() => {
-    const load = async () => {
-      setStatusMessage(await refreshFromBlockchain(wrap, publicAddress, networkId, web3, setRows));
-    };
-    load().catch(console.error);
-  }, [wrap, web3, publicAddress, networkId]);
+    refreshData().catch(console.error);
+  }, [refreshData]);
 
   const content = useMemo(() => {
     const content: ReactNode[] = [
@@ -60,19 +73,31 @@ const SecretVaultUi: FC = () => {
         sx={{ backgroundColor: theme.palette.mode === 'dark' ? grey['900'] : grey.A100 }}
       >
         <TextField
+          key={'name-filter'}
           size={'small'}
           label={'Name filter'}
           onChange={(e: ChangeEvent<HTMLInputElement>) => setFilterValue(e.target.value)}
           value={filterValue}
         />
-        <Button
-          onClick={() => {
-            setEditItem({ ...EmptyItem });
-            setOpenEditor(true);
-          }}
-        >
-          New Entry
-        </Button>
+        <ButtonPanel key={'button-panel'}>
+          <Button
+            key={'new-entry'}
+            onClick={() => {
+              setEditItem({ ...EmptyItem });
+              setOpenEditor(true);
+            }}
+          >
+            New Entry
+          </Button>
+
+          <Button key={'download'} onClick={() => setOpenDownloadDialog(true)}>
+            Download Entries...
+          </Button>
+
+          <Button key={'refresh'} onClick={refreshData}>
+            Refresh
+          </Button>
+        </ButtonPanel>
       </Stack>,
       <TableContainer key={'table'} component={Paper} elevation={0}>
         <Table sx={{ minWidth: 800 }}>
@@ -85,7 +110,7 @@ const SecretVaultUi: FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {secretVaultEntries
               .filter((row) => row.name.includes(filterValue))
               .map((row) => (
                 <TableRow
@@ -105,20 +130,11 @@ const SecretVaultUi: FC = () => {
               ))}
           </TableBody>
         </Table>
-        <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={2}>
-          <Button
-            onClick={async () => {
-              setStatusMessage(await refreshFromBlockchain(wrap, publicAddress, networkId, web3, setRows));
-            }}
-          >
-            Refresh
-          </Button>
-        </Stack>
       </TableContainer>
     ];
 
     return content;
-  }, [statusMessage, theme.palette.mode, filterValue, rows, wrap, publicAddress, networkId, web3]);
+  }, [statusMessage, theme.palette.mode, filterValue, refreshData, secretVaultEntries]);
 
   const { name } = getNetworkInfo(networkId);
 
@@ -146,42 +162,18 @@ const SecretVaultUi: FC = () => {
         done={() => {
           setOpenEditor(false);
         }}
-        update={async () => {
-          setStatusMessage(await refreshFromBlockchain(wrap, publicAddress, networkId, web3, setRows));
+        update={() => refreshData().catch(console.error)}
+      />
+
+      <SecretVaultDownloadDialog
+        key={'secret-vault-download-dialog'}
+        open={openDownloadDialog}
+        keyBlock={keyBlock}
+        done={() => {
+          setOpenDownloadDialog(false);
         }}
       />
     </Fragment>
   );
 };
 export default SecretVaultUi;
-
-async function refreshFromBlockchain(
-  wrap: WrapFun,
-  publicAddress: string | undefined,
-  networkId: number,
-  web3: Web3 | undefined,
-  setRows: (items: SecretVaultEntry[]) => void
-): Promise<StatusMessage | undefined> {
-  const keyBlockApi = getKeyBlock();
-  if (!publicAddress || !web3 || !networkId || !keyBlockApi) {
-    return;
-  }
-  setRows([]);
-  return await wrap('Reading entries...', async () => {
-    const len = await keyBlockApi.len(publicAddress);
-    if (isStatusMessage(len)) {
-      return len;
-    }
-    const items: SecretVaultEntry[] = [];
-    for (let index = 0; index < len; index++) {
-      const entry = await keyBlockApi.get(publicAddress, index);
-      if (isStatusMessage(entry)) {
-        return entry;
-      } else {
-        const item: SecretVaultEntry = { index, name: entry[0], secret: entry[1], inserted: entry[2] };
-        items.push(item);
-      }
-    }
-    setRows(items);
-  });
-}

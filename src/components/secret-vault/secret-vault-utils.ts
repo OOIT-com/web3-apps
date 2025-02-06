@@ -5,7 +5,10 @@ import { Web3Session } from '../../types';
 import { Wallet } from 'alchemy-sdk';
 import { decryptEthCrypto, encryptEthCrypto } from '../../utils/eth-crypto-utils';
 
-export const decryptKeyBlockValue2 = async (web3Session: Web3Session, encMessage: string) => {
+export const decryptKeyBlockValue2 = async (
+  web3Session: Web3Session,
+  encMessage: string
+): Promise<string | undefined> => {
   const { decryptFun, privateKey } = web3Session;
 
   // eth-crypto

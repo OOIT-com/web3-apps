@@ -58,7 +58,8 @@
     "web-vitals": "^2.1.4",
     "web3": "4.8.0",
     "ws": ">=8.18.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zipcelx": "^1.6.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -75,6 +76,7 @@
     "@types/pdfmake": "^0.2.9",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
+    "@types/zipcelx": "^1.5.2",
     "assert": "^2.1.0",
     "buffer": "^6.0.3",
     "chai": "^4.3.7",

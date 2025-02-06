@@ -19,8 +19,6 @@ const arName = 'Irys (Arweave)';
 export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess }>) {
   const { wrap, web3Session } = useAppContext();
   const [irysData, setIrysData] = useState<IrysData>();
-  //const [fundAmount, setFundAmount] = useState(0);
-  // const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [statusMessage, setStatusMessage] = useState<StatusMessage | undefined>(infoMessage(`Connecting ${arName}...`));
 
   const refreshIrysData = useCallback(async () => {
@@ -51,11 +49,6 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
   if (!irysData) {
     return <StatusMessageElement statusMessage={infoMessage('No Irys Data available!')} />;
   }
-
-  // const fundStatus = fundAmount <= +(irysData.polygonBalance || '0') / 1e18 && fundAmount > 0;
-
-  // const withdrawAmountStatus = withdrawAmount <= +(irysData?.loadedBalance || '0') / 1e18 && withdrawAmount > 0;
-
   return (
     <Stack justifyContent="flex-start" alignItems="start" spacing={0.6}>
       <Table>
@@ -122,102 +115,6 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
             ]}
             colspan={[1, 2]}
           />
-          {/*
-          <TableRowComp
-            key={'fund-withdraw'}
-            elements={[<Header2 key={'title'}>Fund and Withdraw Actions</Header2>]}
-            colspan={[3]}
-          /> */}
-          {/* FUND AMOUNT :: Disable as funding does not work yet
-          <TableRowComp
-            key={'funding'}
-            elements={[
-              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
-                Funding
-              </Box>,
-              <TextField
-                key={'amount-to.fund'}
-                label={'Amount to fund'}
-                size={'small'}
-                type={'number'}
-                value={fundAmount}
-                onChange={(e) => setFundAmount(+e.target.value)}
-              ></TextField>,
-              <Button
-                key={'fund-button'}
-                size={'small'}
-                disabled={!fundStatus}
-                onClick={async () => {
-                  if (fundStatus) {
-                    const res = await wrap(`Processing funding ${fundAmount}`, async () => {
-                      try {
-                        const fa = irysAccess.toAtomic(fundAmount);
-                        if (fa) {
-                          const fundTx = await irysAccess.fund(fa.toString());
-                          console.log('fund tx id:', fundTx?.id);
-                        }
-                      } catch (e) {
-                        return errorMessage(`Funding of ${fundAmount} failed!`, e);
-                      } finally {
-                        setFundAmount(0);
-                      }
-                    });
-                    if (isStatusMessage(res)) {
-                      setStatusMessage(res);
-                    } else {
-                      await refreshIrysData();
-                    }
-                  }
-                }}
-              >
-                Fund {fundAmount}
-              </Button>
-            ]}
-          />
-            */}
-          {/* WITHDRAW AMOUNT
-          <TableRowComp
-            key={'withdraw'}
-            elements={[
-              <Box key={'title'} sx={{ fontWeight: 'bold' }}>
-                Withdraw
-              </Box>,
-              <TextField
-                key={'amount-to-withdraw'}
-                label={'Amount to withdraw'}
-                size={'small'}
-                type={'number'}
-                value={withdrawAmount}
-                onChange={(e) => setWithdrawAmount(+e.target.value)}
-              />,
-              <Button
-                key={'withdraw-button'}
-                size={'small'}
-                disabled={!withdrawAmountStatus}
-                onClick={async () => {
-                  if (withdrawAmountStatus) {
-                    const res = await wrap(`Processing withdraw ${withdrawAmount}`, async () => {
-                      try {
-                        const r = await irysAccess.withdrawBalance(irysAccess.toAtomic(withdrawAmount));
-                        console.log('withdraw tx id:', r?.tx_id);
-                      } catch (e) {
-                        return errorMessage(`Withdraw of ${withdrawAmount} failed!`, e);
-                      } finally {
-                        setWithdrawAmount(0);
-                      }
-                    });
-                    if (isStatusMessage(res)) {
-                      setStatusMessage(res);
-                    } else {
-                      await refreshIrysData();
-                    }
-                  }
-                }}
-              >
-                Withdraw {withdrawAmount}
-              </Button>
-            ]}
-          />*/}
         </TableBody>
       </Table>
       <Stack direction={'row'} spacing={1}>
