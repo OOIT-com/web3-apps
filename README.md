@@ -21,6 +21,6 @@ Explore the future of business applications with Web3 Apps.
 
 ### An OOIT.com Initiative
 
-In other works: Things I like to do :-)
+In other words: Things I like to do :-)
 
 Regards, Toni Bünter
