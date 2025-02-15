@@ -59,7 +59,8 @@
     "web3": "4.8.0",
     "ws": ">=8.18.0",
     "xlsx": "^0.18.5",
-    "zipcelx": "^1.6.2"
+    "zipcelx": "^1.6.2",
+    "elliptic": ">=6.6.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
