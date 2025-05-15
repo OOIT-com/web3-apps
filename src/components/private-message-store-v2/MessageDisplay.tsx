@@ -4,8 +4,9 @@ import { FC, useState } from 'react';
 import { Message } from './private-message-store2-types';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import { ButtonPanel } from '../common/ButtonPanel';
-import { NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
+import {StatusMessage} from "../../utils/status-message";
 
 export const MessageDisplay: FC<{
   message: Message;

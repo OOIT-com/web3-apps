@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { getNetworkInfo } from '../../network-info';
 import { AddressEntryField } from '../address-book/AddressEntryField';
@@ -11,6 +11,7 @@ import { getContractBalance, sendAmount } from '../../utils/web3-utils';
 import { useAppContext } from '../AppContextProvider';
 import { displayAddress } from '../../utils/misc-util';
 import { EthTextField } from '../common/EthTextField';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export const PaymentPanel: FC<{ web3Session: Web3Session }> = ({ web3Session }) => {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();

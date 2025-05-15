@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
@@ -12,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 import { TableRowComp } from '../common/TableRowComp';
 import Button from '@mui/material/Button';
 import { NameRetrievalDialog } from './NameRetrievalDialog';
+import {infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export const NameListUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

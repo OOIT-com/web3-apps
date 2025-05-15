@@ -4,7 +4,7 @@ import { JSX, ReactNode } from 'react';
 import { About } from '../about/About';
 import { ToolsUi } from '../tools/ToolsUi';
 import { UniqueNameStoreUi } from '../unique-name-store/UniqueNameStoreUi';
-import { ArtworkUi } from '../artwork/ArtworkUi';
+import { ArtworkUi } from '../artwork-time-proof/ArtworkUi';
 import { SharedSecretStoreUi } from '../shared-secret-store/SharedSecretStoreUi';
 import { ContractRegistryUi } from '../contract-registry/ContractRegistryUi';
 import { PublicKeyStoreV2Ui } from '../public-key-store-v2/PublicKeyStoreV2Ui';
@@ -63,10 +63,10 @@ const menuColumnsAll: AppMenuColumn[] = [
         element: <PrivateMessageStoreV2Ui />
       },
       {
-        path: 'artwork',
+        path: 'artwork-time-proof',
         name: 'Artwork',
-        icon: <AppIcon src={artworkPng} alt={'Art Work'} />,
-        description: 'Encrypt and create an artwork with a time proof and author proof.',
+        icon: <AppIcon src={artworkPng} alt={'Artwork Time Proof'} />,
+        description: 'Encrypt and create an artwork entry with a time proof and author proof.',
         element: <ArtworkUi />
       },
       {

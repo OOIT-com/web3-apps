@@ -1,7 +1,6 @@
 import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { useAppContext } from '../../AppContextProvider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
@@ -18,6 +17,7 @@ import {
 } from './sm-app-utils';
 import { calcSumRows, updateCompensationComparisons } from './sm-table/sm-table-col-def';
 import { SMInitialData } from './types';
+import {errorMessage, isStatusMessage, StatusMessage, warningMessage} from "../../../utils/status-message";
 
 export function SalaryManagerDataRowsEditor({
   sbtManager,

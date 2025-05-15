@@ -1,20 +1,41 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { artworkTimeProofAbi } from './ArtworkTimeProof';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
+import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
 
 type ArtworkTimeProofType = typeof artworkTimeProofAbi;
+export type UploadInfo = Partial<ArtworkMetaData> & {
+  uploadId?: string;
+  timestamp?: string;
+};
+export type EncryptionKeyLocation = 'external-key-pair' | 'public-key-pair-store';
+export type ArtworkMetaData = {
+  filename: string;
+  artworkName: string;
+  artworkDescription: string;
+  artworkAuthor: string;
+  contentHash: string;
+  filedate: string;
+  filemime: string;
+  filesize: number;
+  dataHash: string;
+  encryptionKey: string;
+  encryptionKeyLocation: EncryptionKeyLocation;
+  encryptionMethod: string;
+  encryptionAlgorithm: string;
+  [key: string]: string | number;
+};
 export type ArtworkEntry = {
   name: string;
   description: string;
   author: string;
   hash: string;
-  locationUri?: string;
   timestamp?: number;
+  uploadInfo?: UploadInfo;
 };
 
 let instance: ArtworkTimeProof | undefined;
@@ -68,7 +89,15 @@ export class ArtworkTimeProof {
   async getArtwork(user: string, index: number): Promise<ArtworkEntry | StatusMessage> {
     const tag = '<GetArtwork>';
     try {
-      return await this.contract.methods.getArtwork(user, index).call();
+      const res = await this.contract.methods.getArtwork(user, index).call();
+      return {
+        name: res.name,
+        description: res.description,
+        author: res.author,
+        hash: res.hash,
+        timestamp: +(res.timestamp?.toString() ?? 0),
+        uploadInfo: JSON.parse(res.locationUri || '{}')
+      };
     } catch (e) {
       return resolveAsStatusMessage(tag, e);
     }
@@ -83,24 +112,26 @@ export class ArtworkTimeProof {
     description,
     author,
     hash,
-    locationUri = ''
+    uploadInfo = {}
   }: ArtworkEntry): Promise<string | StatusMessage> {
     const tag = '<AddArtwork>';
     try {
       const res = await this.contract.methods
-        .addArtwork(name, description, author, hash, locationUri)
+        .addArtwork(name, description, author, hash, JSON.stringify(uploadInfo))
         .send({ from: this.from });
-      return res.toString().toLowerCase();
+      return res.transactionHash;
     } catch (e) {
       return resolveAsStatusMessage(tag, e);
     }
   }
 
-  async setLocationUri(index: number, locationUri = ''): Promise<string | StatusMessage> {
+  async setUploadInfo(index: number, uploadInfo: UploadInfo): Promise<string | StatusMessage> {
     const tag = '<SetLocationUri>';
     try {
-      const res = await this.contract.methods.setLocationUri(index, locationUri).send({ from: this.from });
-      return res.toString().toLowerCase();
+      const res = await this.contract.methods
+        .setLocationUri(index, JSON.stringify(uploadInfo))
+        .send({ from: this.from });
+      return res.transactionHash;
     } catch (e) {
       return resolveAsStatusMessage(tag, e);
     }

@@ -1,4 +1,4 @@
-import { errorMessage, isStatusMessage, NotifyInfoFun, StatusMessage } from '../../types';
+import { NotifyInfoFun } from '../../types';
 import * as React from 'react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
@@ -20,6 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function UserManagement({
   sbtManager,

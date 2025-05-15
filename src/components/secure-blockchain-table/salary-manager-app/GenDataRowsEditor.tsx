@@ -2,7 +2,6 @@ import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-t
 import { useAppContext } from '../../AppContextProvider';
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { GenInitialData } from './types';
-import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
@@ -19,6 +18,7 @@ import {
   saveRowData
 } from './gen-table/gen-utils';
 import { metadata } from './gen-table/metadata/metadata';
+import {errorMessage, isStatusMessage, StatusMessage, warningMessage} from "../../../utils/status-message";
 
 export function GenDataRowsEditor({
   sbtManager,

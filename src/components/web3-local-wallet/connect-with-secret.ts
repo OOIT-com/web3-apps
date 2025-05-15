@@ -1,4 +1,4 @@
-import { errorMessage, infoMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 import { getNetworkInfo } from '../../network-info';
 import { HDNodeWallet, Mnemonic } from 'ethers';
 import Web3 from 'web3';
@@ -7,6 +7,7 @@ import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
 import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 import { Wallet } from 'alchemy-sdk';
+import {errorMessage, infoMessage} from "../../utils/status-message";
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
 

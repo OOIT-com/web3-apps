@@ -42,6 +42,9 @@ export function toPRecord<V extends {}>(obj: V): PRecord {
       case 'boolean':
         pValue = value;
         break;
+      case 'object':
+        pValue = JSON.stringify(value);
+        break;
       default:
         pValue = value?.toString ? value.toString() : undefined;
         break;

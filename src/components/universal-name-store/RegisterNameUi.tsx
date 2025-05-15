@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, Fragment, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import { Box, Stack, Table, TableBody, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -17,6 +16,7 @@ import { Html } from '../common/Html';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import helpFile from './RegisterNameHelp.md';
 import { ButtonPanel } from '../common/ButtonPanel';
+import {errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

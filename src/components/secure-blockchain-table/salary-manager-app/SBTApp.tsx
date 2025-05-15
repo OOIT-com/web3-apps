@@ -4,12 +4,13 @@ import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { SalaryManagerInitialDataPanel } from './SalaryManagerInitialDataPanel';
 import * as React from 'react';
 import { ReactNode, useEffect, useState } from 'react';
-import { isStatusMessage, NotifyFun, StatusMessage } from '../../../types';
+import { NotifyFun } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { SalaryManagerDataRowsEditor } from './SalaryManagerDataRowsEditor';
 import { SMTableMode } from './sm-table/types';
 import Button from '@mui/material/Button';
 import { GenDataRowsEditor } from './GenDataRowsEditor';
+import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
 
 export function SBTApp({ sbtManager, done }: Readonly<{ sbtManager: SBTManager; done: NotifyFun }>) {
   const [isOwner, setIsOwner] = useState(false);

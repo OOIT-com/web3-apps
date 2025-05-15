@@ -1,6 +1,6 @@
-import { StatusMessage } from '../../../types';
 import { SMDataRow } from './sm-table/types';
 import { PRecord } from '../../../ui-factory/types';
+import {StatusMessage} from "../../../utils/status-message";
 
 export interface Year {
   year: number;

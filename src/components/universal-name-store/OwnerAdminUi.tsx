@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, useState } from 'react';
-import { StatusMessage } from '../../types';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
@@ -11,6 +10,7 @@ import { WithdrawUi } from './WithdrawUi';
 import { SetFeeUi } from './SetFeeUi';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { NoContractFound } from '../common/NoContractFound';
+import {StatusMessage} from "../../utils/status-message";
 
 export const OwnerAdminUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

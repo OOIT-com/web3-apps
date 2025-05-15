@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { isValidAddress } from 'ethereumjs-util';
-import { errorMessage, NotifyRefresh, NotifyStatusMessage } from '../../types';
+import { NotifyRefresh, NotifyStatusMessage } from '../../types';
 import { getOwnableWithBackup } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
 import { toUserMessage } from '../../contracts/contract-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
+import {errorMessage} from "../../utils/status-message";
 
 export type BackupOwnerEditProps = {
   contractAddress: string;

@@ -1,4 +1,4 @@
-import { NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import * as React from 'react';
 import { ReactNode, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
@@ -9,6 +9,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
 import { AddressEntryField } from '../address-book/AddressEntryField';
+import {StatusMessage} from "../../utils/status-message";
 
 export function TransferOwnershipDialog({
   done,

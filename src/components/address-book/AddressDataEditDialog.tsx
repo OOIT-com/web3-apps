@@ -1,4 +1,4 @@
-import { NotifyRefresh, StatusMessage, warningMessage } from '../../types';
+import { NotifyRefresh } from '../../types';
 import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -13,6 +13,7 @@ import {
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { useAppContext } from '../AppContextProvider';
+import {StatusMessage, warningMessage} from "../../utils/status-message";
 
 export function AddressDataEditDialog({
   done,

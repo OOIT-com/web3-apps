@@ -1,9 +1,9 @@
 import { AddressData, getAddressBook, newAddressDataTemplate } from './contracts/address-book/AddressBook-support';
-import { isStatusMessage, StatusMessage, warningMessage } from './types';
 import { ContractData, getContractRegistry } from './contracts/contract-registry/ContractRegistry-support';
 import { getUniqueNameStore } from './contracts/unique-name-store/UniqueNameStore-support';
 
 import { ContractName } from './contracts/contract-utils';
+import {isStatusMessage, StatusMessage, warningMessage} from "./utils/status-message";
 
 export const eoaResolved: Record<string, string> = {};
 export const addressesResolved: Record<string, AddressData | ContractData> = {};

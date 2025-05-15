@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { FC, useState } from 'react';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { Button, Stack } from '@mui/material';
 import { DecryptedDataList, Message, SetDecryptedDataList } from './private-message-store2-types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export type OpenInboxMessageButtonProps = {
   sender: string;

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
@@ -18,6 +17,7 @@ import { EventListenerUi } from './EventListenerUi';
 import { NoContractFound } from '../common/NoContractFound';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { UniversalNamePropertiesUi } from './UniversalNamePropertiesUi';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function UniversalNameStoreUi() {
   const app = useAppContext();

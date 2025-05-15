@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { errorMessage, infoMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Box, Stack, Tooltip } from '@mui/material';
 import moment from 'moment';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
@@ -16,6 +16,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { decryptKeyBlockValue2, encryptKeyBlockValue2 } from './secret-vault-utils';
 import { useAppContext } from '../AppContextProvider';
 import { PasswordTextField } from '../common/PasswordTextField';
+import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type EditEntry = { value: string; enc: boolean; name: string };
 

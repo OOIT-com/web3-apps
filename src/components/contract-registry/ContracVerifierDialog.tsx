@@ -1,4 +1,4 @@
-import { errorMessage, infoMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { useState } from 'react';
 import { ContractData, getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 import Dialog from '@mui/material/Dialog';
@@ -10,8 +10,9 @@ import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { getNetworkInfo } from '../../network-info';
-import { getMetaData } from '../artwork/irys-utils';
+import { getMetaData } from '../artwork-time-proof/irys-utils';
 import { useAppContext } from '../AppContextProvider';
+import { errorMessage, infoMessage, StatusMessage } from '../../utils/status-message';
 
 export function ContracVerifierDialog({
   done,

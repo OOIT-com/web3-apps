@@ -6,6 +6,8 @@ import { FC, useEffect, useState } from 'react';
 import rehypeRaw from 'rehype-raw';
 import { NotifyFun } from '../../types';
 import CloseIcon from '@mui/icons-material/Close';
+import { withStyles } from 'tss-react/mui';
+import { grey } from '@mui/material/colors';
 
 export const MDElement: FC<{ mdFile: string; close?: NotifyFun }> = ({ mdFile, close }) => {
   const [mdText, setMdText] = useState('');
@@ -18,9 +20,8 @@ export const MDElement: FC<{ mdFile: string; close?: NotifyFun }> = ({ mdFile, c
   }, [mdFile]);
 
   return (
-    <Container
+    <MDContainer
       sx={{
-        background: 'white',
         margin: '1em',
         borderRadius: '1em',
         position: 'relative'
@@ -53,6 +54,12 @@ export const MDElement: FC<{ mdFile: string; close?: NotifyFun }> = ({ mdFile, c
           {mdText}
         </ReactMarkdown>
       </LDBox>
-    </Container>
+    </MDContainer>
   );
 };
+
+export const MDContainer = withStyles(Container, (theme) => ({
+  root: {
+    background: theme.palette.mode === 'dark' ? grey['800'] : 'white'
+  }
+}));

@@ -6,7 +6,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Box, Paper, Stack } from '@mui/material';
 import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddressBook';
 import { Message } from './private-message-store2-types';
@@ -15,6 +15,7 @@ import { useAppContext } from '../AppContextProvider';
 
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function PrivateMessageReply2Ui({
   messageToReply,

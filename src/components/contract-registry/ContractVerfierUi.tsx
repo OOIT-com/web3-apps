@@ -1,6 +1,5 @@
 import { Button, Table, TableBody, TableHead } from '@mui/material';
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { TableRowComp } from '../common/TableRowComp';
 import {
   ContractData,
@@ -12,6 +11,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContracVerifierDialog } from './ContracVerifierDialog';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export const contractVerifierTitle = 'Contract Verification';
 

@@ -1,5 +1,4 @@
 import Dialog from '@mui/material/Dialog';
-import { errorMessage, StatusMessage } from '../../types';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { LDBox } from '../common/StyledBoxes';
@@ -33,6 +32,7 @@ import {
 } from './local-wallet-utils';
 import { displayAddress } from '../../utils/misc-util';
 import { AddAccountUi } from './AddAccountUi';
+import {errorMessage, StatusMessage} from "../../utils/status-message";
 
 const warningMessage: StatusMessage = {
   status: 'warning',

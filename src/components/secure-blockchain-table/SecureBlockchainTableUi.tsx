@@ -4,7 +4,6 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Paper } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { SecureBlockchainTableListUi } from './sbt/SecureBlockchainTableListUi';
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
@@ -14,6 +13,7 @@ import { ContractRegistry, getContractRegistry } from '../../contracts/contract-
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { AppSwitch } from './AppSwitch';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export type SBTOpenMode = 'edit' | 'app';
 export type SalaryManagerTabConfig = { sbtManager: SBTManager; mode: SBTOpenMode };

@@ -4,13 +4,14 @@ import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, NotifyRefresh, StatusMessage } from '../../../types';
+import { NotifyRefresh } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { RowDataWithVersionsPart } from '../RowDataWithVersionsPart';
 import { SetEditablePart } from '../SetEditablePart';
 import { DataPart } from '../../common/DataPart';
 import { UserManagement } from '../UserManagement';
 import { useAppContext } from '../../AppContextProvider';
+import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
 
 export function SBTEditorUi({
   sbtManager,

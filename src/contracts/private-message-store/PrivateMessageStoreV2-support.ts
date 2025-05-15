@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 
 import { privateMessageStoreV2Abi, privateMessageStoreV2Bytecode } from './PrivateMessageStoreV2-abi';
 import { getContractRegistry } from '../contract-registry/ContractRegistry-support';
@@ -13,6 +13,7 @@ import { displayAddress } from '../../utils/misc-util';
 import { deployContract } from '../deploy-contract';
 import { publicKeyStoreV2Abi, publicKeyStoreV2bytecode } from '../public-key-store/PublicKeyStoreV2-abi';
 import { DeploymentFunction } from '../types';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type PrivateMessageStoreV2AbiType = typeof privateMessageStoreV2Abi;
 type PrivateMessageStoreV2Type = Contract<PrivateMessageStoreV2AbiType>;

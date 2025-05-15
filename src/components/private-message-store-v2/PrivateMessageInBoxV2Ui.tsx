@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { ChangeEvent, Fragment, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
 
 import { PrivateMessageNew2Ui } from './PrivateMessageNew2Ui';
@@ -32,6 +31,7 @@ import {
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { MessageDisplay } from './MessageDisplay';
 import { OpenInboxMessageButton } from './OpenInboxMessageButton';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function PrivateMessageInBoxV2Ui({
   privateMessageStoreV2

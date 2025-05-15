@@ -4,7 +4,7 @@ import { blue, orange } from '@mui/material/colors';
 import { AppRouter } from './components/AppRouter';
 import { Snackbar } from './components/common/Snackbar';
 import { AppContextProvider } from './components/AppContextProvider';
-import Loader2 from './components/common/Loader2';
+import Loader from './components/common/Loader';
 
 export const ColorModeContext = createContext({
   toggleColorMode: () => {}
@@ -82,7 +82,7 @@ export function DApp() {
           <AppContextProvider>
             <AppRouter />
             <Snackbar />
-            <Loader2 />
+            <Loader />
           </AppContextProvider>
         </CssBaseline>
       </ThemeProvider>

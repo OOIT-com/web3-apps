@@ -1,5 +1,4 @@
 import { IconButton, Stack, Tooltip } from '@mui/material';
-import { infoMessage, isStatusMessage } from '../../types';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as React from 'react';
 import { FC, useEffect, useState } from 'react';
@@ -8,6 +7,7 @@ import { isAddress } from 'ethers';
 import { resolveAddress } from '../../address-names';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
+import {infoMessage, isStatusMessage} from "../../utils/status-message";
 
 const defaultSx = {
   fontSize: '80%',

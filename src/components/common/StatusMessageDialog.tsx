@@ -1,9 +1,9 @@
 import React, { FC, ReactNode } from 'react';
 import { Alert, AlertTitle, Box } from '@mui/material';
-import { StatusMessage } from '../../types';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import {StatusMessage} from "../../utils/status-message";
 
 export type StatusMessageProps = {
   title?: JSX.Element | ReactNode;

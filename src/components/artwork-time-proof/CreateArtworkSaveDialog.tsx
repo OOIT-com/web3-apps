@@ -2,14 +2,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { FC, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import { errorMessage, infoMessage, isStatusMessage, NotifyCommandFun, StatusMessage } from '../../types';
-import { ArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
+import { NotifyCommandFun } from '../../types';
+import {
+  ArtworkMetaData,
+  ArtworkTimeProof,
+  UploadInfo
+} from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
 import { Box, Button, Stack } from '@mui/material';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { Buffer } from 'buffer';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { MetaData, UploadInfo } from './types';
+import { isFile, Tag } from './types';
 import { TableComp } from '../common/TableComp';
 import { TableRowInfo } from '../common/TableRowInfo';
 import { useAppContext } from '../AppContextProvider';
@@ -17,12 +21,13 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import moment from 'moment';
 import { downloadLink } from '../../utils/irys-utils';
 import { formatIso } from '../../utils/moment-utils';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 export const CreateArtworkSaveDialog: FC<{
   irysAccess: IrysAccess;
   artworkTimeProof: ArtworkTimeProof;
   data: Uint8Array | File;
-  metaData: MetaData;
+  metaData: ArtworkMetaData;
   done: NotifyCommandFun;
 }> = ({ irysAccess, artworkTimeProof, data, metaData, done }) => {
   const { wrap } = useAppContext();
@@ -92,7 +97,8 @@ export const CreateArtworkSaveDialog: FC<{
                 variant={'contained'}
                 disabled={uploadStatusMessage !== undefined}
                 onClick={async () => {
-                  let dataBuff;
+                  setUploadInfo(undefined);
+                  let dataBuff: Buffer | undefined = undefined;
                   if (isFile(data)) {
                     const arr = await data.arrayBuffer();
                     dataBuff = Buffer.from(arr);
@@ -100,20 +106,18 @@ export const CreateArtworkSaveDialog: FC<{
                     dataBuff = Buffer.from(data);
                   }
 
-                  const metaDataArray: {
-                    name: string;
-                    value: string;
-                  }[] = Object.keys(metaData).map((k) => ({
+                  const tags: Tag[] = Object.keys(metaData).map((k) => ({
                     name: k,
                     value: (metaData[k] ?? '').toString()
                   }));
-                  const ur = await irysAccess.upload(dataBuff, metaDataArray);
+                  const ur = await irysAccess.upload(dataBuff, tags);
                   if (isStatusMessage(ur)) {
                     setStatusMessage(ur);
                     return;
                   }
                   if (!ur) {
-                    setStatusMessage(errorMessage('No Response from upload!'));
+                    setStatusMessage(errorMessage('Empty Response from upload!'));
+                    return;
                   }
 
                   const uploadInfo = {
@@ -176,7 +180,7 @@ const registerArtwork = async ({
   uploadInfo
 }: {
   artworkTimeProof: ArtworkTimeProof;
-  metaData: MetaData;
+  metaData: ArtworkMetaData;
   uploadInfo: UploadInfo;
 }) => {
   const { artworkName, artworkDescription = '', artworkAuthor = '', dataHash } = metaData;
@@ -185,21 +189,6 @@ const registerArtwork = async ({
     description: artworkDescription,
     author: artworkAuthor,
     hash: dataHash,
-    locationUri: JSON.stringify(uploadInfo)
+    uploadInfo
   });
 };
-
-export function isFile(value: unknown): value is File {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'lastModified' in value &&
-    typeof value.lastModified === 'number' &&
-    'name' in value &&
-    typeof value.name === 'string' &&
-    'size' in value &&
-    typeof value.size === 'number' &&
-    'type' in value &&
-    typeof value.type === 'string'
-  );
-}

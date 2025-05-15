@@ -1,4 +1,4 @@
-import { infoMessage, isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { useState } from 'react';
 import { ContractData, getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 import Dialog from '@mui/material/Dialog';
@@ -11,6 +11,7 @@ import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
+import {infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export function ContractDataRetrieveDialog({
   done,

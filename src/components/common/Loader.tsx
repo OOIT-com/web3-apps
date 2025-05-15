@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../AppContextProvider';
 import { DivBox } from './DivBox';
 
-export default function Loader2() {
+export default function Loader() {
   const { loading } = useAppContext();
   const [start, setStart] = useState(false);
   const handleClose = () => {};

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
@@ -14,6 +13,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { TableComp } from '../common/TableComp';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

@@ -1,4 +1,3 @@
-import { isStatusMessage, StatusMessage } from '../../../types';
 import { SMInitialData } from './types';
 import { WrapFun } from '../../AppContextProvider';
 import { DataRowEntry, SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
@@ -11,6 +10,7 @@ import {
   UpdatedFieldsMap
 } from './sm-table/types';
 import { read, WorkBook } from 'xlsx';
+import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
 
 export const getSMInitialDataFromContract = async (
   wrap: WrapFun,

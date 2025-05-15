@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import Button from '@mui/material/Button';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
@@ -13,6 +12,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { TableComp } from '../common/TableComp';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export const WithdrawUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

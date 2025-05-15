@@ -1,9 +1,9 @@
 import { GenDataRow, GenTableDef, ResizeMode } from './gen-types';
 import { WrapFun } from '../../../AppContextProvider';
 import { DataRowEntry, SBTManager } from '../../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
-import { isStatusMessage, StatusMessage } from '../../../../types';
 import { IdValue, PRecord } from '../../../../ui-factory/types';
 import { SMDataRowKeys, SMDataRowUpdateableKeys } from '../sm-table/types';
+import {isStatusMessage, StatusMessage} from "../../../../utils/status-message";
 
 const toggleStatePrefix = '__gen_toggleState_';
 export const getToggleState = (key: string): string[] => {

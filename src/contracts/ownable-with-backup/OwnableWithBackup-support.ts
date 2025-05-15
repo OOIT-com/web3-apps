@@ -1,8 +1,8 @@
-import { infoMessage, StatusMessage, successMessage } from '../../types';
 import Web3 from 'web3';
 import { ownableWithBackupAbi } from './OwnableWithBackup-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
-import { Contract } from 'web3-eth-contract'; // type OwnableWithBackupContractType = typeof registerAbi;
+import { Contract } from 'web3-eth-contract';
+import {infoMessage, StatusMessage, successMessage} from "../../utils/status-message"; // type OwnableWithBackupContractType = typeof registerAbi;
 
 type OwnableWithBackupAbiType = typeof ownableWithBackupAbi;
 type OwnableWithBackupContractType = Contract<OwnableWithBackupAbiType>;

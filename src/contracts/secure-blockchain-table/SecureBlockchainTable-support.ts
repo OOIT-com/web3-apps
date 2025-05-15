@@ -1,5 +1,5 @@
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 
 import { secureBlockchainTableAbi } from './SecureBlockchainTable';
 import {
@@ -13,6 +13,7 @@ import { decryptContent, EncPrefix, encryptContent, secretKey64ToBoxKeyPair } fr
 import { BoxKeyPair } from 'tweetnacl';
 import { toNumber } from '../contract-utils';
 import { decryptBase64 } from '../../utils/enc-dec-utils';
+import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type SecureBlockchainTableAbiType = typeof secureBlockchainTableAbi;
 type SecureBlockchainTableType = Contract<SecureBlockchainTableAbiType>;

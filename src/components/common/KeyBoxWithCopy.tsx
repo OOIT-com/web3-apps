@@ -1,11 +1,11 @@
 import { IconButton, Stack, Tooltip } from '@mui/material';
-import { infoMessage } from '../../types';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as React from 'react';
 import { FC, useState } from 'react';
 import { LDBox, PublicKeyBox } from './StyledBoxes';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
+import {infoMessage} from "../../utils/status-message";
 
 const defaultSx = {
   fontSize: '80%',

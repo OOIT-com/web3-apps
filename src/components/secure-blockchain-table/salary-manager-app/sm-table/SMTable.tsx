@@ -11,11 +11,11 @@ import { ColumnSelectionName, ResizeMode, SMDataRow, SMDataRowUpdateableKeys, SM
 import { SMDataRowDialog } from './SMDataRowDialog';
 import { useAppContext } from '../../../AppContextProvider';
 import { StatusMessageElement } from '../../../common/StatusMessageElement';
-import { errorMessage } from '../../../../types';
 import { getResizeMode, getToggleState, saveResizeMode } from './utils';
 
 import './sm-table.css';
 import { SMColumnSelection } from './SMColumnSelection';
+import {errorMessage} from "../../../../utils/status-message";
 
 export type UpdateRowFun = (
   cmd: 'update' | 'reset' | 'delete',

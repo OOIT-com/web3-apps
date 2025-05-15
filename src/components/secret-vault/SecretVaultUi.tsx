@@ -11,7 +11,6 @@ import {
   useTheme
 } from '@mui/material';
 import { ChangeEvent, FC, Fragment, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { SecretVaultEntryUi } from './SecretVaultEntryUi';
 import { EmptyItem, getKeyBlock, SecretVaultEntry } from '../../contracts/key-block/KeyBlock-support';
 import { getNetworkInfo } from '../../network-info';
@@ -26,6 +25,7 @@ import secretVaultPng from '../images/secret-vault.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { SecretVaultDownloadDialog } from './SecretVaultDownloadDialog';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 const SecretVaultUi: FC = () => {
   const { wrap, web3Session } = useAppContext();

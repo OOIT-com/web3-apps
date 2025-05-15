@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage, warningMessage } from '../../types';
 import { Box, Button, Stack, TextField } from '@mui/material';
 import {
   loadDefaultPublicKeyStoreV2,
@@ -16,6 +15,14 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import keyPairStorePng from '../images/key-pair-store.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { ButtonPanel } from '../common/ButtonPanel';
+import {
+    errorMessage,
+    infoMessage,
+    isStatusMessage,
+    StatusMessage,
+    successMessage,
+    warningMessage
+} from "../../utils/status-message";
 
 export function PublicKeyStoreV2Ui() {
   const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();

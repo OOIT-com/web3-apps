@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 
 import { contractRegistryAbi } from './ContractRegistry-abi';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { Contract } from 'web3-eth-contract';
 import { ContractName, getContractAddress } from '../contract-utils';
+import {errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
 
 type ContractRegistryAbiType = typeof contractRegistryAbi;
 type ContractRegistryContractType = Contract<ContractRegistryAbiType>;

@@ -4,8 +4,8 @@ import * as nacl from 'tweetnacl';
 import { box, BoxKeyPair, randomBytes } from 'tweetnacl';
 import { Buffer } from 'buffer';
 import * as naclUtil from 'tweetnacl-util';
-import { errorMessage } from '../types';
 import { deflate, inflate } from 'pako';
+import {errorMessage} from "./status-message";
 
 export const newNonce = (): Uint8Array => randomBytes(box.nonceLength);
 export const nNonce = (): number => parseInt(Buffer.from(randomBytes(5)).toString('hex'), 16);

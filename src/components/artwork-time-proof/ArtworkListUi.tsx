@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ChangeEvent, FC, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Button, Stack, TextField } from '@mui/material';
 import { ArtworkEntry, ArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { getMyArtworks } from './artwork-api';
@@ -13,9 +12,11 @@ import { ArtworkDetailUi } from './ArtworkDetailUi';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { ArtworkTable } from './ArtworkTable';
+import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { displayAddress } from '../../utils/misc-util';
 
 export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artworkTimeProof }) => {
-  const { wrap } = useAppContext();
+  const { wrap, web3Session } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [artworkList, setArtworkList] = useState<ArtworkEntry[]>([]);
   const [filterValue, setFilterValue] = useState('');
@@ -78,6 +79,15 @@ export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artw
       </Dialog>
     );
   }
+  if (!web3Session) {
+    return <></>;
+  }
 
-  return <CollapsiblePanel title={'My Artworks'} content={content} collapsible={false} />;
+  return (
+    <CollapsiblePanel
+      title={`My Artworks (Proven Author Address: ${displayAddress(web3Session.publicAddress)})`}
+      content={content}
+      collapsible={false}
+    />
+  );
 };

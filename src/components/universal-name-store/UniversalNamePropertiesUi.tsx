@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { FC, useCallback, useState } from 'react';
-import { isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
+import { NotifyFun } from '../../types';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
@@ -20,6 +20,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { AttributeDef, PRecord } from '../../ui-factory/types';
 import { AttributeTableUi } from '../../ui-factory/AttributeTableUi';
+import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 const attDefs: AttributeDef[] = [{ name: 'key' }, { name: 'value' }];
 

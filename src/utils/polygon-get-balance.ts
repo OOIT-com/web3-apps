@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as process from 'process';
-import {errorMessage, StatusMessage} from "../types";
+
+import {errorMessage, StatusMessage} from "./status-message";
 // tutorial
 export const getPolygonBalance = async (address: string, isMainnet = true): Promise<StatusMessage | string> => {
   const prefix = isMainnet ? '' : '-testnet';

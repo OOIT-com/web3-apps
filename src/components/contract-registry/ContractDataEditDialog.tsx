@@ -1,4 +1,4 @@
-import { isStatusMessage, NotifyRefresh, StatusMessage, warningMessage } from '../../types';
+import { NotifyRefresh } from '../../types';
 import { FC, useState } from 'react';
 import {
   ContractDataWithIndex,
@@ -12,6 +12,7 @@ import { Button, Stack, TextField, TextFieldProps } from '@mui/material';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
+import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export function ContractDataEditDialog({
   done,

@@ -3,11 +3,12 @@ import { LDBox } from '../common/StyledBoxes';
 import TextField from '@mui/material/TextField';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { addLocalWalletToLocalStorage, createAccountEntry } from './local-wallet-utils';
-import { errorMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Wallet } from 'ethers';
 import { FC, useState } from 'react';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { PasswordTextField } from '../common/PasswordTextField';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export const AddAccountUi: FC<{ walletPassword: string; refreshLocalWalletList: NotifyFun }> = ({
   walletPassword,

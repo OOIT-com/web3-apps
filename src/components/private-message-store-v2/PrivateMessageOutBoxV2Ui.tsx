@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { ChangeEvent, Fragment, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { grey } from '@mui/material/colors';
 import {
   GetOutBoxResult,
@@ -28,6 +27,7 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { DecryptButton2 } from './DecryptButton2';
 import { OutMessage, SetOutMessages } from './private-message-store2-types';
 import { OutMessageDisplay } from './OutMessageDisplay';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function PrivateMessageOutBoxV2Ui({
   privateMessageStoreV2

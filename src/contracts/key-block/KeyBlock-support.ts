@@ -1,12 +1,12 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import moment from 'moment';
 
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { keyBlockAbi } from './KeyBlock-abi';
 import { ContractName } from '../contract-utils';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
+import {errorMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
 
 type KeyBlockAbiType = typeof keyBlockAbi;
 type KeyBlockContractType = Contract<KeyBlockAbiType>;

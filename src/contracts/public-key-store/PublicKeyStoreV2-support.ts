@@ -1,5 +1,5 @@
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 import { publicKeyStoreV2Abi } from './PublicKeyStoreV2-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { getContractRegistry } from '../contract-registry/ContractRegistry-support';
@@ -10,6 +10,7 @@ import { Buffer } from 'buffer';
 import { web3NotInitialized } from '../../components/common/Web3NotInitialized';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type PublicKeyStoreV2AbiType = typeof publicKeyStoreV2Abi;
 type PublicKeyStoreV2ContractType = Contract<PublicKeyStoreV2AbiType>;

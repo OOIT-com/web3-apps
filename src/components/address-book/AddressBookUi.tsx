@@ -1,7 +1,6 @@
 import { Button, Stack, Table, TableBody, TableHead } from '@mui/material';
 import * as React from 'react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { TableRowComp } from '../common/TableRowComp';
 
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
@@ -17,6 +16,7 @@ import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import addressBookImg from '../images/address-book.png';
 import { AppTopTitle } from '../common/AppTopTitle';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function AddressBookUi() {
   const { wrap, web3Session, addressData = [], setAddressData } = useAppContext();

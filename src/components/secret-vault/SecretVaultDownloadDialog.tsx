@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Stack } from '@mui/material';
 import { KeyBlock } from '../../contracts/key-block/KeyBlock-support';
 import { StatusMessageElement } from '../common/StatusMessageElement';
@@ -16,6 +16,7 @@ import { SelectUi } from '../../ui-factory/widgets/SelectUi';
 import FileSaver from 'file-saver';
 import zipcelx, { ZipCelXCell, ZipCelXDataSet } from 'zipcelx';
 import { decryptKeyBlockValue2 } from './secret-vault-utils';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type DownloadType = 'encrypted' | 'decrypted';
 export const SecretVaultDownloadDialog: FC<{

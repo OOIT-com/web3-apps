@@ -1,5 +1,5 @@
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import { Web3Session } from '../../types';
 
 import { universalNameStoreAbi } from './UniversalNameStore';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
@@ -8,6 +8,7 @@ import { ContractName, getContractAddress } from '../contract-utils';
 import { BigNumber } from '@ethersproject/bignumber';
 import { displayAddress } from '../../utils/misc-util';
 import { isZeroAddress } from '../../utils/constant-utils';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type UniversalNameStoreAbiType = typeof universalNameStoreAbi;
 type UniversalNameStoreType = Contract<UniversalNameStoreAbiType>;

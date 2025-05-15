@@ -2,7 +2,6 @@ import * as React from 'react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button, Stack, TextField } from '@mui/material';
 import { StyledHead } from '../common/StyledHead';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { displayAddress } from '../../utils/misc-util';
 import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
@@ -11,6 +10,7 @@ import { useAppContext } from '../AppContextProvider';
 import { AddressEntryField } from '../address-book/AddressEntryField';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function EncryptionWithUserAddress() {
   const { wrap, web3Session } = useAppContext();

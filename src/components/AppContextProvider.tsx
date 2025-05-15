@@ -1,6 +1,7 @@
 import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
-import { errorMessage, infoMessage, SnackbarMessage, StatusMessage, Web3Session } from '../types';
+import { SnackbarMessage, Web3Session } from '../types';
 import { AddressData, AddressDataWithIndex } from '../contracts/address-book/AddressBook-support';
+import {errorMessage, infoMessage, StatusMessage} from "../utils/status-message";
 
 let SnackbarMessageCounter = 0;
 const noop = () => {};

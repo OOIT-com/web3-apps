@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import * as React from 'react';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
-import { errorMessage, isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { grey } from '@mui/material/colors';
 import { display64, displayAddress } from '../../utils/misc-util';
 import {
@@ -31,6 +31,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext, WrapFun } from '../AppContextProvider';
 import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type User = {
   user: string;

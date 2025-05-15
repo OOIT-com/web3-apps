@@ -2,12 +2,12 @@ import { SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlo
 import { useAppContext } from '../../AppContextProvider';
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Tooltip } from '@mui/material';
-import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../../types';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { InitialDataDisplay } from './sm-table/InitialDataDisplay';
 import { getInitialDataFromContract, saveInitialData } from './sm-app-utils';
 import { InititalDataUploaderButton } from './InititalDataUploaderButton';
+import {infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../../utils/status-message";
 
 export function SalaryManagerInitialDataPanel({
   readonly,

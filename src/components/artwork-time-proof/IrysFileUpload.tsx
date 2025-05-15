@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { Box, Stack } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
@@ -12,6 +11,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { useAppContext } from '../AppContextProvider';
 import { DownloadLinkWithCopy } from '../common/DownloadLinkWithCopy';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 const LINK_URL = 'https://gateway.irys.xyz';
 

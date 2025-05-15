@@ -2,13 +2,14 @@ import { ethers } from 'ethers';
 import { UploadBuilder, WebUploader } from '@irys/web-upload';
 import { WebAvalanche, WebEthereum, WebMatic } from '@irys/web-upload-ethereum';
 import { EthersV6Adapter } from '@irys/web-upload-ethereum-ethers-v6';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../types';
+import { Web3Session } from '../types';
 import { getNetworkInfo } from '../network-info';
 import { Buffer } from 'buffer';
 import type { Readable } from 'stream';
 import BaseWebIrys from '@irys/web-upload/dist/types/base';
 import { UploadResponse } from '@bundlr-network/client/build/esm/common/types';
 import { Web3BaseProvider } from 'web3';
+import {errorMessage, isStatusMessage, StatusMessage} from "./status-message";
 
 export type Tags = {
   name: string;

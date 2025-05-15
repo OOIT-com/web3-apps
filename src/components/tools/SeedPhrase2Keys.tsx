@@ -3,11 +3,11 @@ import { ChangeEvent, useCallback, useState } from 'react';
 import { Button, Stack, Tooltip } from '@mui/material';
 import { Wallet } from 'alchemy-sdk';
 import { StyledHead } from '../common/StyledHead';
-import { errorMessage, StatusMessage, warningMessage } from '../../types';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
+import {errorMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export function SeedPhrase2Keys() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();

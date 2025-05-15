@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
@@ -18,6 +17,7 @@ import { TableRowInfo } from '../common/TableRowInfo';
 import { AppTopTitle } from '../common/AppTopTitle';
 import publicKeyPng from '../images/public-key.png';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
 
 export function PublicKeyStoreUi() {
   const app = useAppContext();

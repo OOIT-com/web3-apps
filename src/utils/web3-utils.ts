@@ -1,9 +1,10 @@
 import Web3 from 'web3';
 import { BigNumber } from '@ethersproject/bignumber';
 import { ethers } from 'ethersv5';
-import { errorMessage, StatusMessage, successMessage, Web3Session } from '../types';
+import { Web3Session } from '../types';
 import { displayAddress } from './misc-util';
 import { resolveAsStatusMessage } from './status-message-utils';
+import {errorMessage, StatusMessage, successMessage} from "./status-message";
 
 export async function getCurrentAddress(web3: Web3) {
   const coinbase = await web3.eth.getCoinbase();

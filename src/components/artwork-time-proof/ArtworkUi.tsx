@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { Box, Paper } from '@mui/material';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -14,12 +13,13 @@ import { getArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkT
 import { ArtworkListUi } from './ArtworkListUi';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
-import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import { web3NotInitialized, Web3NotInitialized } from '../common/Web3NotInitialized';
 import { AppTopTitle } from '../common/AppTopTitle';
 import artworkPng from '../images/artwork.png';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
 import help from './ArtworkHelp.md';
+import { isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 export function ArtworkUi() {
   const { wrap, web3Session } = useAppContext();
@@ -28,25 +28,23 @@ export function ArtworkUi() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [irysAccess, setIrysAccess] = useState<IrysAccess>();
 
-  const [value, setValue] = React.useState(0);
-  const handleChange = useCallback((_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  const [tabIndex, setTabIndex] = React.useState(0);
+  const handleChange = useCallback((_event: React.SyntheticEvent, newTabIndex: number) => {
+    setTabIndex(newTabIndex);
   }, []);
 
   const initIrys = useCallback(async () => {
     setStatusMessage(undefined);
-    const r = await wrap('Initializing Irys Access...', async () => {
+    const irysAccess = await wrap('Initializing Irys Access...', async () => {
       if (web3Session) {
-        const irysAccess = await newIrysAccess(web3Session);
-        if (isStatusMessage(irysAccess)) {
-          setStatusMessage(irysAccess);
-        } else {
-          setIrysAccess(irysAccess);
-        }
+        return await newIrysAccess(web3Session);
       }
+      return web3NotInitialized;
     });
-    if (isStatusMessage(r)) {
-      setStatusMessage(r);
+    if (isStatusMessage(irysAccess)) {
+      setStatusMessage(irysAccess);
+    } else {
+      setIrysAccess(irysAccess);
     }
   }, [web3Session, wrap]);
 
@@ -69,20 +67,20 @@ export function ArtworkUi() {
     content.push(
       <Box key={'irys-content'} sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tabs value={tabIndex} onChange={handleChange}>
             <Tab label="My Artwork Proofs" />
-            <Tab label="Create Artwork TP" />
+            <Tab label="Create Artwork" />
             <Tab label="Irys File Upload" />
             <Tab label="Irys Funding" />
             <Tab label="Decryption" />
           </Tabs>
         </Box>
         <Paper sx={{ margin: '1em 0 1em 0' }}>
-          {value === 0 && <ArtworkListUi artworkTimeProof={artworkTimeProof} />}
-          {value === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={artworkTimeProof} />}
-          {value === 2 && <IrysFileUpload irysAccess={irysAccess} />}
-          {value === 3 && <IrysFundingUi irysAccess={irysAccess} />}
-          {value === 4 && <DecryptFileUi />}
+          {tabIndex === 0 && <ArtworkListUi artworkTimeProof={artworkTimeProof} />}
+          {tabIndex === 1 && <CreateArtworkUi irysAccess={irysAccess} artworkTimeProof={artworkTimeProof} />}
+          {tabIndex === 2 && <IrysFileUpload irysAccess={irysAccess} />}
+          {tabIndex === 3 && <IrysFundingUi irysAccess={irysAccess} />}
+          {tabIndex === 4 && <DecryptFileUi />}
         </Paper>
       </Box>
     );

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../types';
 import { Box, FormControlLabel, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
@@ -8,7 +7,7 @@ import { box, BoxKeyPair } from 'tweetnacl';
 import { saveAs } from 'file-saver';
 import { createSha256Hash } from '../../utils/crypto-util';
 import moment from 'moment';
-import { ArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
+import { ArtworkMetaData, ArtworkTimeProof } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
 
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
@@ -24,8 +23,9 @@ import { CreateArtworkSaveDialog } from './CreateArtworkSaveDialog';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { createZip, ZipEntry } from '../../utils/zip-utils';
 import { safeFilename } from '../../utils/misc-util';
-import { EncryptionType, MetaData } from './types';
+import { EncryptionType } from './types';
 import { loadIrysData } from '../../utils/irys-utils';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../utils/status-message';
 
 export function CreateArtworkUi({
   irysAccess,
@@ -44,8 +44,8 @@ export function CreateArtworkUi({
 
   const [encryptionType, setEncryptionType] = useState<EncryptionType>('no-encryption');
 
-  const [metaData, setMetaData] = useState<Partial<MetaData>>({});
-  const [secretMd, setSecretMd] = useState<Partial<MetaData>>({});
+  const [metaData, setMetaData] = useState<Partial<ArtworkMetaData>>({});
+  const [secretMd, setSecretMd] = useState<Partial<ArtworkMetaData>>({});
 
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
@@ -65,23 +65,32 @@ export function CreateArtworkUi({
       wrap('Check if funds are available', async () => {
         const irysData = await loadIrysData(irysAccess);
         if (isStatusMessage(irysData)) {
-          setStatusMessage(irysData);
-        } else {
-          if (irysData.uploadableMegabytes === 0) {
-            setIrysDataMessage(errorMessage(`Upload to Arweave not possible! Please use 'Irys Funding' first!`));
-          } else if (irysData.uploadableMegabytes < 1) {
-            setIrysDataMessage(
-              errorMessage(`Critical low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
-            );
-          } else if (irysData.uploadableMegabytes < 10) {
-            setIrysDataMessage(
-              warningMessage(`Low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
-            );
-          } else {
-            setIrysDataMessage(infoMessage(`Irys Upload capacity (to Arweave): ${irysData.uploadableMegabytes} MB`));
-          }
+          return irysData;
         }
-      }).catch(console.error);
+        if (irysData.uploadableMegabytes === 0) {
+          setIrysDataMessage(errorMessage(`Upload to Arweave not possible! Please use 'Irys Funding' first!`));
+          return;
+        }
+        if (irysData.uploadableMegabytes < 1) {
+          setIrysDataMessage(
+            errorMessage(`Critical low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
+          );
+          return;
+        }
+        if (irysData.uploadableMegabytes < 10) {
+          setIrysDataMessage(
+            warningMessage(`Low funding! Upload capacity to Arweave: ${irysData.uploadableMegabytes} MB`)
+          );
+          return;
+        }
+        setIrysDataMessage(infoMessage(`Irys Upload capacity (to Arweave): ${irysData.uploadableMegabytes} MB`));
+      })
+        .then((res) => {
+          if (isStatusMessage(res)) {
+            setStatusMessage(res);
+          }
+        })
+        .catch(console.error);
     }
   }, [wrap, irysAccess]);
 
@@ -221,8 +230,8 @@ export function CreateArtworkUi({
             disabled={!readyToPrepare}
             onClick={async () => {
               if (readyToPrepare) {
-                const md: Partial<MetaData> = { ...metaData };
-                const privateMd: Partial<MetaData> = {};
+                const md: Partial<ArtworkMetaData> = { ...metaData };
+                const privateMd: Partial<ArtworkMetaData> = {};
 
                 const prep = await prepareArtwork({
                   encryptionType,
@@ -327,53 +336,13 @@ export function CreateArtworkUi({
           key={'save-dialog'}
           irysAccess={irysAccess}
           artworkTimeProof={artworkTimeProof}
-          metaData={metaData as MetaData}
+          metaData={metaData as ArtworkMetaData}
           data={encryptedContent || uploadFile}
           done={() => {
             setOpenSaveDialog(false);
           }}
         />
       )}
-
-      {/*<Button*/}
-      {/*  key={'download-encrypted'}*/}
-      {/*  disabled={!encryptedContent || !providedFile || !contentHash}*/}
-      {/*  onClick={async () => {*/}
-      {/*    if (providedFile && encryptedContent) {*/}
-      {/*      const blob = new Blob([encryptedContent], { type: 'application/octed' });*/}
-      {/*      saveAs(blob, encryptedFilename(providedFile, contentHash));*/}
-      {/*    }*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  Download File and MetaData*/}
-      {/*</Button>*/}
-      {/*<Button*/}
-      {/*  key={'download'}*/}
-      {/*  disabled={!providedFile || !contentHash}*/}
-      {/*  onClick={async () => {*/}
-      {/*    if (providedFile && contentHash) {*/}
-      {/*      saveAs(providedFile, providerFilename(providedFile, contentHash));*/}
-      {/*    }*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  Download (original) File*/}
-      {/*</Button>*/}
-      {/*<Button*/}
-      {/*  key={'Download-Meta-Data'}*/}
-      {/*  disabled={!encryptedContentHash || !newKeyPair || !contentHash || !providedFile}*/}
-      {/*  onClick={() => {*/}
-      {/*    if (newKeyPair && contentHash && providedFile && encryptedContentHash) {*/}
-      {/*      saveMetaData({*/}
-      {/*        providedFile,*/}
-      {/*        contentHash,*/}
-      {/*        encryptedContentHash,*/}
-      {/*        keyPair: newKeyPair*/}
-      {/*      }).catch(console.error);*/}
-      {/*    }*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  Download Meta Data*/}
-      {/*</Button>*/}
     </Stack>
   );
 }
@@ -381,28 +350,3 @@ export function CreateArtworkUi({
 export function encryptedFilename(providedFile: File, contentHash: string) {
   return `${contentHash.substring(0, 8)}-encrypted-${providedFile.name}`;
 }
-
-// export async function downloadMetaData({
-//   providedFile,
-//   contentHash,
-//   encryptedContentHash,
-//   keyPair
-// }: {
-//   providedFile: File;
-//   contentHash: string;
-//   encryptedContentHash: string;
-//   keyPair: BoxKeyPair;
-// }) {
-//   const filename = providedFile.name;
-//   downloadMetadataContent(metadataFilename(providedFile, contentHash), {
-//     filename,
-//     fileSize: providedFile.size,
-//     encryptedFilename: encryptedFilename(providedFile, contentHash),
-//     secretKey: uint8Array2Hex(keyPair.secretKey),
-//     encryptionMethod: 'NaCl/TweetNaCl BoxKeyPair',
-//     encryptionAlgorithm: 'EC: Montgomery Curve25519',
-//     contentHash,
-//     encryptedContentHash,
-//     lastModified: moment(providedFile.lastModified).format('YYYY-MM-DD HH:mm')
-//   });
-// }

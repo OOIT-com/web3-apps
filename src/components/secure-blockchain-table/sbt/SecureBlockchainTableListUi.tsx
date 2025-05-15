@@ -1,7 +1,6 @@
 import { Button, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import * as React from 'react';
 import { FC, Fragment, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { ContractDataWithIndex } from '../../../contracts/contract-registry/ContractRegistry-support';
 import {
@@ -13,6 +12,7 @@ import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { OwnableWithBackupDialog } from '../../ownable-with-backup/OwnableWithBackupDialog';
 import { SalaryManagerTabConfig, SBTOpenMode } from '../SecureBlockchainTableUi';
 import { useAppContext } from '../../AppContextProvider';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../../utils/status-message";
 
 export const SecureBlockchainTableListUi: FC<{
   setConfig: (config: SalaryManagerTabConfig) => void;

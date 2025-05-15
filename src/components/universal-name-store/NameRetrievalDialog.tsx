@@ -1,4 +1,4 @@
-import { isStatusMessage, NotifyFun, StatusMessage, successMessage, warningMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { FC, useCallback, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -12,6 +12,7 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { UniversalNameStore } from '../../contracts/universal-name-store/UniversalNameStore-support';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { CopyBox } from '../common/CopyBox';
+import {isStatusMessage, StatusMessage, successMessage, warningMessage} from "../../utils/status-message";
 
 type SearchResult = { labelValue: string; resultValue: string };
 export const NameRetrievalDialog: FC<{ done: NotifyFun; universalNameStore: UniversalNameStore }> = ({

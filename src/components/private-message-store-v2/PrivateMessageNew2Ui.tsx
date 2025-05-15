@@ -6,14 +6,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { isStatusMessage, NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Box, Stack } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
-import { AddressEntryField } from '../address-book/AddressEntryField'; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
+import { AddressEntryField } from '../address-book/AddressEntryField';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message"; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
 export function PrivateMessageNew2Ui({
   done,

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { FC } from 'react';
-import { infoMessage, NotifyFun } from '../../types';
+import { NotifyFun } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { SBTEditorUi } from './sbt/SBTEditorUi';
 import { SBTApp } from './salary-manager-app/SBTApp';
 import { SalaryManagerTabConfig } from './SecureBlockchainTableUi';
+import {infoMessage} from "../../utils/status-message";
 
 export const AppSwitch: FC<{ config?: SalaryManagerTabConfig; done: NotifyFun }> = ({ config, done }) => {
   if (!config) {

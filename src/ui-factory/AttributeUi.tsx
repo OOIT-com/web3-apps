@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { Box } from '@mui/material';
 import {
   AttributeDef,
@@ -10,17 +10,12 @@ import {
 } from './types';
 import { InputUi } from './widgets/InputUi';
 
-export function AttributeUi({
-  attDef,
-  index,
-  widgetAction,
-  cxRow
-}: {
+export const AttributeUi: FC<{
   attDef: AttributeDef;
   index: number;
   widgetAction: WidgetActionFun;
   cxRow: PRecord;
-}): ReactElement {
+}> = ({ attDef, index, widgetAction, cxRow }): ReactElement => {
   const visible = resolveVisible(attDef.visible, cxRow);
   if (visible) {
     const reactWidgetFun: ReactWidget = attDef.uiType || InputUi;
@@ -37,7 +32,7 @@ export function AttributeUi({
     );
   }
   return <></>;
-}
+};
 
 export function resolveVisible(propValue: DynamicBooleanAttributeValue = true, cx: PRecord) {
   if (typeof propValue === 'boolean') {

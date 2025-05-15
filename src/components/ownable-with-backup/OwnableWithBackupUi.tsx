@@ -1,6 +1,5 @@
 import { Button, Stack, Table, TableBody } from '@mui/material';
 import { Fragment, useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { LDBox } from '../common/StyledBoxes';
 import { getOwnableWithBackup } from '../../contracts/ownable-with-backup/OwnableWithBackup-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
@@ -9,6 +8,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { toUserMessage } from '../../contracts/contract-utils';
 import { BackupOwnerEditUi } from './BackupOwnerEditUi';
 import { useAppContext } from '../AppContextProvider';
+import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type OwnableWithBackupData = {
   maxLength: number;

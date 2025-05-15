@@ -1,7 +1,6 @@
 import { Box, Stack, Table, TableBody } from '@mui/material';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { infoMessage, StatusMessage } from '../../types';
 import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TableRowComp } from '../common/TableRowComp';
@@ -13,6 +12,7 @@ import { useAppContext } from '../AppContextProvider';
 import { IrysData, loadIrysData } from '../../utils/irys-utils';
 import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
 import { getNetworkInfo } from '../../network-info';
+import {infoMessage, StatusMessage} from "../../utils/status-message";
 
 const arName = 'Irys (Arweave)';
 

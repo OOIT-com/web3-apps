@@ -1,6 +1,5 @@
 import { Box, Button, Stack, Table, TableBody, TableHead } from '@mui/material';
 import { Fragment, ReactNode, useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { TableRowComp } from '../common/TableRowComp';
 import {
   ContractData,
@@ -21,6 +20,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
 import { displayAddress } from '../../utils/misc-util';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export const OwnableWithBackup = 'OwnableWithBackup';
 export const Owner = 'Owner';

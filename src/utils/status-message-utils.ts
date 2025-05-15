@@ -1,4 +1,4 @@
-import { errorMessage } from '../types';
+import {errorMessage} from "./status-message";
 
 export function resolveAsStatusMessage(message: string, e: any) {
   let m = '';

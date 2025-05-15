@@ -1,4 +1,4 @@
-import { NotifyFun, StatusMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { useState } from 'react';
 import { ContractDataWithIndex } from '../../contracts/contract-registry/ContractRegistry-support';
 import Dialog from '@mui/material/Dialog';
@@ -12,6 +12,7 @@ import { CommandName, OwnableWithBackup } from './ContractRegistryListUi';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
+import {StatusMessage} from "../../utils/status-message";
 
 export function ContractEntryDetailView({
   done,

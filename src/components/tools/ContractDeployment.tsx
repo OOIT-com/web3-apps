@@ -2,12 +2,12 @@ import * as React from 'react';
 import { ChangeEvent, useState } from 'react';
 import { Button, Stack, TextField, Tooltip } from '@mui/material';
 import { StyledHead } from '../common/StyledHead';
-import { isStatusMessage, StatusMessage } from '../../types';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { addressBookAbi, addressBookBytecode } from '../../contracts/address-book/AddressBook-support';
 import { deployContract } from '../../contracts/deploy-contract';
 import { useAppContext } from '../AppContextProvider';
+import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function ContractDeployment() {
   const { wrap, web3Session } = useAppContext();

@@ -1,4 +1,4 @@
-import { isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { Button, Stack, Table, TableBody, TextField } from '@mui/material';
 import { LDBox } from '../common/StyledBoxes';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
@@ -18,6 +18,7 @@ import { deploymentPlans } from '../../contracts/deployment-plans';
 import { deployContract } from '../../contracts/deploy-contract';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export const planDeployerTitle = 'Contract Deployments';
 

@@ -1,4 +1,4 @@
-import { infoMessage, isStatusMessage, NotifyFun, StatusMessage, warningMessage } from '../../types';
+import { NotifyFun } from '../../types';
 import { useState } from 'react';
 
 import Dialog from '@mui/material/Dialog';
@@ -11,6 +11,7 @@ import { AddressData, getAddressBook } from '../../contracts/address-book/Addres
 import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
+import {infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
 
 export function AddressDataRetrieveDialog({
   done,

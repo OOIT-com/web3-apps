@@ -1,12 +1,12 @@
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { isStatusMessage, StatusMessage, successMessage, warningMessage } from '../../types';
 import { Stack } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import Button from '@mui/material/Button';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { useAppContext } from '../AppContextProvider';
+import {isStatusMessage, StatusMessage, successMessage, warningMessage} from "../../utils/status-message";
 
 export function SetEditablePart({
   sbtManager,

@@ -1,4 +1,4 @@
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../types';
+import { Web3Session } from '../types';
 import { NavigateFunction } from 'react-router-dom';
 import { getContractRegistry, initContractRegistry } from '../contracts/contract-registry/ContractRegistry-support';
 import { getAddressBook, initAddressBook } from '../contracts/address-book/AddressBook-support';
@@ -8,6 +8,7 @@ import { initKeyBlock } from '../contracts/key-block/KeyBlock-support';
 import { loadDefaultPublicKeyStoreV2 } from '../contracts/public-key-store/PublicKeyStoreV2-support';
 import { initArtworkTimeProof } from '../contracts/artwork-time-proof/ArtworkTimeProof-support';
 import { AppContextData, SetAddressData } from './AppContextProvider';
+import {errorMessage, isStatusMessage, StatusMessage} from "../utils/status-message";
 
 export const reloadAddressData = async (setAddressData: SetAddressData): Promise<StatusMessage | undefined> => {
   const addressBook = getAddressBook();

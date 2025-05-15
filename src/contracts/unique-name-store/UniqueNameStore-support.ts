@@ -1,9 +1,9 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { uniqueNameStoreAbi } from './UniqueNameStore-abi';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 type UniqueNameStoreAbiType = typeof uniqueNameStoreAbi;
 type UniqueNameStoreContractType = Contract<UniqueNameStoreAbiType>;

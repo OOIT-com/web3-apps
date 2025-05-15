@@ -1,7 +1,6 @@
 import { DataRowEntry, SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import {
   Button,
   FormControl,
@@ -21,6 +20,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
 import { useAppContext } from '../AppContextProvider';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function RowDataWithVersionsPart({
   sbtManager,

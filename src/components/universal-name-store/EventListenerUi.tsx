@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { FC, useEffect, useState } from 'react';
-import { infoMessage } from '../../types';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
@@ -10,6 +9,7 @@ import { Table, TableBody } from '@mui/material';
 import { TableRowComp } from '../common/TableRowComp';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { NoContractFound } from '../common/NoContractFound';
+import {infoMessage} from "../../utils/status-message";
 
 export const EventListenerUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

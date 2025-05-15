@@ -1,10 +1,16 @@
-import { ArtworkTimeProof, ArtworkEntry } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { errorMessage, isStatusMessage, StatusMessage, Web3Session } from '../../types';
+import {
+  ArtworkEntry,
+  ArtworkTimeProof,
+  EncryptionKeyLocation
+} from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
+import { Web3Session } from '../../types';
 import * as nacl from 'tweetnacl';
-import { encrypt } from '../../utils/nacl-util';
+import { decrypt, encrypt } from '../../utils/nacl-util';
 import { createSha256Hash } from '../../utils/crypto-util';
 import { getMySecretKeyV2 } from '../../contracts/public-key-store/PublicKeyStoreV2-support';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
+import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../utils/status-message';
+import { EncryptionType } from './types';
 
 export async function getMyArtworks(artworkTimeProof: ArtworkTimeProof): Promise<ArtworkEntry[] | StatusMessage> {
   const tag = '<getMyArtworks>';
@@ -29,11 +35,12 @@ export async function getMyArtworks(artworkTimeProof: ArtworkTimeProof): Promise
 }
 
 export type PrepareArtworkArgs = {
-  encryptionType: string;
+  encryptionType: EncryptionType;
   secretKey: Uint8Array;
   web3Session: Web3Session;
   artworkFile: File;
 };
+
 export type ArtworkPackage = {
   encryptedData?: Uint8Array;
   encryptedDataHash: string;
@@ -41,7 +48,7 @@ export type ArtworkPackage = {
 
   dataHash: string;
   encryptionSecret?: Uint8Array;
-  encryptionKeyLocation: string;
+  encryptionKeyLocation: EncryptionKeyLocation;
 };
 export const prepareArtwork = async ({
   encryptionType,
@@ -50,7 +57,7 @@ export const prepareArtwork = async ({
   artworkFile
 }: PrepareArtworkArgs): Promise<StatusMessage | ArtworkPackage> => {
   let encryptionSecret: Uint8Array | undefined = undefined;
-  let encryptionKeyLocation = '';
+  let encryptionKeyLocation: EncryptionKeyLocation = 'external-key-pair';
   if (encryptionType === 'new-key-pair') {
     encryptionSecret = secretKey;
     encryptionKeyLocation = 'external-key-pair';
@@ -79,4 +86,50 @@ export const prepareArtwork = async ({
     encryptedDataHash = await createSha256Hash(encryptedData);
   }
   return { encryptedData, encryptedDataHash, data, dataHash, encryptionKeyLocation, encryptionSecret };
+};
+
+export type DecryptArtworkArgs = {
+  encryptionKeyLocation: EncryptionKeyLocation;
+  secretKey: Uint8Array;
+  web3Session: Web3Session;
+  artworkData: Uint8Array;
+};
+
+export const decryptArtwork = async ({
+  encryptionKeyLocation,
+  secretKey,
+  web3Session,
+  artworkData
+}: DecryptArtworkArgs): Promise<StatusMessage | Uint8Array> => {
+  let encryptionSecret: Uint8Array | undefined = undefined;
+
+  if (encryptionKeyLocation === 'external-key-pair') {
+    // encryptionSecret = secretKey;
+    return warningMessage(`new-key-pair NOT IMPLEMENTED ${secretKey}`);
+  }
+
+  if (encryptionKeyLocation === 'public-key-pair-store') {
+    const res = await getMySecretKeyV2(web3Session);
+    if (isStatusMessage(res)) {
+      return res;
+    }
+    encryptionSecret = res;
+  }
+
+  const encryptedDataHash = await createSha256Hash(artworkData);
+  let decryptedDataHash = '';
+  let decryptedData;
+  if (encryptionSecret) {
+    const { publicKey, secretKey } = nacl.box.keyPair.fromSecretKey(encryptionSecret);
+
+    decryptedData = decrypt(secretKey, artworkData, publicKey);
+    if (!decryptedData) {
+      return errorMessage('Could not decrypt artwork data!');
+    }
+    decryptedDataHash = await createSha256Hash(decryptedData);
+  }
+  if (!decryptedData) {
+    return errorMessage('Decryption of artwork data failed!');
+  }
+  return decryptedData;
 };

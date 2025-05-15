@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { errorMessage, infoMessage, isStatusMessage, successMessage, warningMessage } from '../../types';
 import { Box, Divider, Grid, Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -14,6 +13,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
+import {errorMessage, infoMessage, isStatusMessage, successMessage, warningMessage} from "../../utils/status-message";
 
 export function UniqueNameStoreUi() {
   const app = useAppContext();

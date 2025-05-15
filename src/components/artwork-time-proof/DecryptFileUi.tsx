@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import { FileUploader } from 'react-drag-drop-files';
 import { LDBox } from '../common/StyledBoxes';
 import { file2string } from '../../utils/misc-util';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { decrypt, secretKey2BoxKeyPair } from '../../utils/nacl-util';
@@ -14,7 +13,8 @@ import { saveAs } from 'file-saver';
 import { StatusMessageDialog } from '../common/StatusMessageDialog';
 import { TableComp } from '../common/TableComp';
 import { TableRowComp } from '../common/TableRowComp';
-import { MetaData } from './types';
+import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
+import { ArtworkMetaData } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
 
 export function DecryptFileUi() {
   const { wrap } = useAppContext();
@@ -22,7 +22,7 @@ export function DecryptFileUi() {
   const [encryptedFile, setEncryptedFile] = useState<File>();
 
   const [metadataFile, setMetadataFile] = useState<File>();
-  const [metadata, setMetadata] = useState<MetaData>();
+  const [metadata, setMetadata] = useState<ArtworkMetaData>();
 
   return (
     <Stack spacing={2}>
@@ -147,7 +147,7 @@ export function DecryptFileUi() {
   );
 }
 
-async function checkEncryptedFile(encryptedFile: File, metadata: MetaData): Promise<StatusMessage> {
+async function checkEncryptedFile(encryptedFile: File, metadata: ArtworkMetaData): Promise<StatusMessage> {
   const keyPair = secretKey2BoxKeyPair(metadata.encryptionKey);
   const arrayBuffer = await encryptedFile.arrayBuffer();
   const encryptedContent = new Uint8Array(arrayBuffer);
@@ -164,7 +164,7 @@ async function checkEncryptedFile(encryptedFile: File, metadata: MetaData): Prom
   }
 }
 
-async function checkAndDownload(encryptedFile: File, metadata: MetaData): Promise<StatusMessage | void> {
+async function checkAndDownload(encryptedFile: File, metadata: ArtworkMetaData): Promise<StatusMessage | void> {
   const keyPair = secretKey2BoxKeyPair(metadata.encryptionKey);
   const arrayBuffer = await encryptedFile.arrayBuffer();
   const encryptedContent = new Uint8Array(arrayBuffer);

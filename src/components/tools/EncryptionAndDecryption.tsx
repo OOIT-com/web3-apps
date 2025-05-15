@@ -2,13 +2,13 @@ import * as React from 'react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button, Stack, TextField, Tooltip } from '@mui/material';
 import { StyledHead } from '../common/StyledHead';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../types';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { decryptText } from '../../utils/enc-dec-utils';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
+import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function EncryptionAndDecryption() {
   const { wrap, web3Session } = useAppContext();

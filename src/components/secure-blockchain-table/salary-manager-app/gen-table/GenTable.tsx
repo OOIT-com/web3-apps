@@ -7,7 +7,6 @@ import 'ag-grid-community/styles/ag-grid.css';
 import Button from '@mui/material/Button';
 import { useAppContext } from '../../../AppContextProvider';
 import { StatusMessageElement } from '../../../common/StatusMessageElement';
-import { errorMessage } from '../../../../types';
 
 import '../gen-table/gen-table.css';
 import { GenDataRow, GenTableDef, GenUpdateRowFun, ResizeMode, SaveDataRowFun } from './gen-types';
@@ -16,6 +15,7 @@ import { getResizeMode, getToggleState, resolveId, saveResizeMode } from './gen-
 import { getGenColDef } from './gen-table-col-def';
 import { GenDataRowDialog } from './GenDataRowDialog';
 import { GenColumnSelection } from './GenColumnSelection';
+import {errorMessage} from "../../../../utils/status-message";
 
 type GenTableProps = {
   def: GenTableDef;

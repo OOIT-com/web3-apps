@@ -1,10 +1,10 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../types';
 import { publicKeyStoreAbi } from './PublicKeyStore-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
+import {errorMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
 
 type PublicKeyStoreAbiType = typeof publicKeyStoreAbi;
 type PublicKeyStoreContractType = Contract<PublicKeyStoreAbiType>;

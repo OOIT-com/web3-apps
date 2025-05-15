@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import { PrivateMessageInBoxV2Ui } from './PrivateMessageInBoxV2Ui';
 import { PrivateMessageOutBoxV2Ui } from './PrivateMessageOutBoxV2Ui';
 import { Button, Paper } from '@mui/material';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../types';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { NoContractFound } from '../common/NoContractFound';
@@ -19,6 +18,7 @@ import {
   PrivateMessageStoreV2
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { ButtonPanel } from '../common/ButtonPanel';
+import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 export function PrivateMessageStoreV2Ui() {
   const [value, setValue] = React.useState(0);
