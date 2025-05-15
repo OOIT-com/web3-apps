@@ -104,6 +104,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
     "dev": "dotenv -f .env.development run react-app-rewired start",
     "build": "react-app-rewired build",
     "eject": "react-scripts eject",

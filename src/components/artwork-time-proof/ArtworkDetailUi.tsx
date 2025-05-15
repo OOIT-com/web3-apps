@@ -102,7 +102,7 @@ export const ArtworkDetailUi: FC<{ artwork: ArtworkEntry; editable?: boolean }> 
     if (!artwork) {
       return;
     }
-    let data = toPRecord(artwork);
+    const data = toPRecord(artwork);
     setData(data);
   }, [artwork]);
 

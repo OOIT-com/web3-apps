@@ -8,7 +8,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { artworkTimeProofAbi } from '../../contracts/artwork-time-proof/ArtworkTimeProof';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 const contractAddress0 = '0x738dBFC759B7937244AC69737445051102f8f1E8';
 const eventName0 = 'VerifiedAddressAdded';
@@ -109,7 +109,7 @@ function EventsDisplay({ events }: Readonly<{ events: any[] }>) {
           {events.map((event, index) => {
             const returnValues = event.returnValues;
             if (!returnValues) {
-              return <Box>{'No Events found!'}</Box>;
+              return <Box key={`no-event ${event.name}`}>{'No Events found!'}</Box>;
             }
             const keys = Object.keys(returnValues);
             return (

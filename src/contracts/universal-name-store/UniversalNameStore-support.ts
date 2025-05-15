@@ -8,7 +8,7 @@ import { ContractName, getContractAddress } from '../contract-utils';
 import { BigNumber } from '@ethersproject/bignumber';
 import { displayAddress } from '../../utils/misc-util';
 import { isZeroAddress } from '../../utils/constant-utils';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 type UniversalNameStoreAbiType = typeof universalNameStoreAbi;
 type UniversalNameStoreType = Contract<UniversalNameStoreAbiType>;
@@ -41,7 +41,7 @@ export class UniversalNameStore {
   public feeAmount: BigNumber = BigNumber.from(0);
   public readonly web3Session: Web3Session;
   public readonly publicAddress: string;
-  public editable: boolean = false;
+  public editable = false;
   public readonly owb: OwnableWithBackup;
   public readonly contractAddress: string;
 
@@ -168,7 +168,7 @@ export class UniversalNameStore {
     }
   }
 
-  public async getAddressCount(): Promise<BigInt | StatusMessage> {
+  public async getAddressCount(): Promise<bigint | StatusMessage> {
     const tag = '<Get User Count>';
     try {
       return await this.contract.methods.getAddressCount().call();
@@ -219,7 +219,7 @@ export class UniversalNameStore {
     }
   }
 
-  public async getKeyCountByAddress(addr: string): Promise<BigInt | StatusMessage> {
+  public async getKeyCountByAddress(addr: string): Promise<bigint | StatusMessage> {
     const tag = '<Get Key Count>';
     try {
       return await this.contract.methods.getKeyCountByAddress(addr).call();

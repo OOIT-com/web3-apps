@@ -13,7 +13,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { TableComp } from '../common/TableComp';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage, warningMessage } from '../../utils/status-message';
 
 export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();
@@ -71,6 +71,7 @@ export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ unive
               elements={[
                 'Fee',
                 <TextField
+                  key={'fee-update'}
                   value={feeUpdate}
                   error={hasError}
                   helperText={helperText}
@@ -96,6 +97,7 @@ export const SetFeeUi: FC<{ universalNameStore: UniversalNameStore }> = ({ unive
               colspan={[2]}
               elements={[
                 <ButtonPanel
+                  key={'button-panel'}
                   content={[
                     <Button
                       key={'save'}

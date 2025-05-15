@@ -1,9 +1,10 @@
 import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 import { SnackbarMessage, Web3Session } from '../types';
 import { AddressData, AddressDataWithIndex } from '../contracts/address-book/AddressBook-support';
-import {errorMessage, infoMessage, StatusMessage} from "../utils/status-message";
+import { errorMessage, infoMessage, StatusMessage } from '../utils/status-message';
 
 let SnackbarMessageCounter = 0;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 export type WrapFun = <R>(loading: string, p: () => Promise<R>) => Promise<R | StatusMessage>;
 export type SetWeb3Session = (w?: Web3Session) => void;
@@ -58,7 +59,7 @@ export function AppContextProvider({ children }: Readonly<{ children: ReactNode 
   );
 
   const dispatchSnackbarMessage = useCallback(
-    (statusMessage: StatusMessage | string | undefined, duration: number = 3000) => {
+    (statusMessage: StatusMessage | string | undefined, duration = 3000) => {
       if (!statusMessage) {
         return;
       }

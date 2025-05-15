@@ -6,10 +6,10 @@ import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { PValue, WidgetProps } from '../types';
 import { StatusMessageElement } from '../../components/common/StatusMessageElement';
 
-import {errorMessage} from "../../utils/status-message";
+import { errorMessage } from '../../utils/status-message';
 
 let counter = 1;
-let id = () => '' + counter++;
+const id = () => '' + counter++;
 
 export const SelectUi: FC<WidgetProps & { sx?: SxProps<Theme>; size?: 'small' | 'medium' }> = ({
   def,

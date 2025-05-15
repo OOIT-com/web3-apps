@@ -4,12 +4,11 @@ import { contractRegistryAbi } from './ContractRegistry-abi';
 import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { Contract } from 'web3-eth-contract';
 import { ContractName, getContractAddress } from '../contract-utils';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
 
 type ContractRegistryAbiType = typeof contractRegistryAbi;
 type ContractRegistryContractType = Contract<ContractRegistryAbiType>;
 
-export const contract: undefined = undefined;
 export let contractAddress = '';
 
 export const newContractDataTemplate = (name: string, contractAddress: string): ContractDataWithIndex => ({

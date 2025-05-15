@@ -16,7 +16,7 @@ import { SelectUi } from '../../ui-factory/widgets/SelectUi';
 import FileSaver from 'file-saver';
 import zipcelx, { ZipCelXCell, ZipCelXDataSet } from 'zipcelx';
 import { decryptKeyBlockValue2 } from './secret-vault-utils';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 type DownloadType = 'encrypted' | 'decrypted';
 export const SecretVaultDownloadDialog: FC<{

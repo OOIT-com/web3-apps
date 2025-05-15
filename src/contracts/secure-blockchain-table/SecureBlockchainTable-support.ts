@@ -13,7 +13,7 @@ import { decryptContent, EncPrefix, encryptContent, secretKey64ToBoxKeyPair } fr
 import { BoxKeyPair } from 'tweetnacl';
 import { toNumber } from '../contract-utils';
 import { decryptBase64 } from '../../utils/enc-dec-utils';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 type SecureBlockchainTableAbiType = typeof secureBlockchainTableAbi;
 type SecureBlockchainTableType = Contract<SecureBlockchainTableAbiType>;
@@ -54,7 +54,7 @@ export class SBTManager {
   public readonly name: string;
   public readonly web3Session: Web3Session;
   public readonly publicAddress: string;
-  public editable: boolean = false;
+  public editable = false;
   public readonly owb: OwnableWithBackup;
 
   private readonly contract: SecureBlockchainTableType;

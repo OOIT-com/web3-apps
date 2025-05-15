@@ -30,7 +30,7 @@ export const templateRow = (def: GenTableDef, idValue: IdValue): GenDataRow =>
   }, {} as GenDataRow);
 
 export const calcSumRows = (getTableDef: GenTableDef, dataTable: GenDataRow[]): GenDataRow[] => {
-  let sumRowResult = templateRow(getTableDef, 'sum-row');
+  const sumRowResult = templateRow(getTableDef, 'sum-row');
   dataTable.forEach((row, index) => {
     getTableDef.attributes.forEach(({ name, type, sumRow = 'sum' }) => {
       if (type === 'number' && typeof sumRowResult[name] === 'number' && typeof row[name] === 'number') {

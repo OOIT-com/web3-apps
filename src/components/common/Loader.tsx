@@ -6,7 +6,6 @@ import { DivBox } from './DivBox';
 export default function Loader() {
   const { loading } = useAppContext();
   const [start, setStart] = useState(false);
-  const handleClose = () => {};
 
   useEffect(() => {
     setStart(false);
@@ -19,7 +18,6 @@ export default function Loader() {
       <Backdrop
         sx={(theme) => ({ background: '#11111199', color: '#fff', zIndex: theme.zIndex.drawer + 1000 })}
         open={true}
-        onClick={handleClose}
       >
         {start && (
           <DivBox sx={(theme: Theme) => ({ background: 'black', padding: '2em', borderRadius: '0.4em' })}>

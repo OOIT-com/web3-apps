@@ -7,7 +7,9 @@ import { AppContextProvider } from './components/AppContextProvider';
 import Loader from './components/common/Loader';
 
 export const ColorModeContext = createContext({
-  toggleColorMode: () => {}
+  toggleColorMode: () => {
+    console.debug('before init');
+  }
 });
 type ColorModeTypes = 'light' | 'dark';
 const __dapp_color_mode = '__dapp_color_mode';

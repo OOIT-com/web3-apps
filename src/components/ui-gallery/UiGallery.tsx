@@ -19,7 +19,11 @@ export const Secondary01 = () => {
       title={'My Crypto Ui'}
       level={'second'}
       content={[<DairyOnBlockchainUi key={'create-a-daily-node'} />]}
-      toolbar={[<Button onClick={() => alert('refresh')}>Refresh</Button>]}
+      toolbar={[
+        <Button key={'1'} onClick={() => alert('refresh')}>
+          Refresh
+        </Button>
+      ]}
     />
   );
 };

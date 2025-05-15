@@ -16,7 +16,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { decryptKeyBlockValue2, encryptKeyBlockValue2 } from './secret-vault-utils';
 import { useAppContext } from '../AppContextProvider';
 import { PasswordTextField } from '../common/PasswordTextField';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 type EditEntry = { value: string; enc: boolean; name: string };
 
@@ -85,7 +85,6 @@ export function SecretVaultEntryUi({
           )}
           <TextField
             key={'name'}
-            autoFocus
             margin="dense"
             value={entry.name || ''}
             label="Name"
@@ -114,7 +113,6 @@ export function SecretVaultEntryUi({
             }}
             value={entry.value}
             fullWidth
-            autoFocus
             size={'small'}
           />
         </Stack>

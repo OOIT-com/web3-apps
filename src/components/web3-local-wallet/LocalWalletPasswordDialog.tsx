@@ -10,7 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { removeAllLocalWalletFromLocalStorage } from './local-wallet-utils';
-import {errorMessage, StatusMessage, successMessage, warningMessage} from "../../utils/status-message";
+import { errorMessage, StatusMessage, successMessage, warningMessage } from '../../utils/status-message';
 
 const localStorageWalletPasswordHash = '__EVM_WALLET_PASSWORD_HASH_OOIT__';
 const sessionStorageWalletPassword = '__EVM_WALLET_PASSWORD_HASH_OOIT__';
@@ -33,6 +33,7 @@ export const LocalWalletPasswordDialog: FC<{
   }, [walletPassword, walletPasswordIsCorrect]);
 
   return (
+    // eslint-disable-next-line react/react-in-jsx-scope
     <Dialog open={true} fullWidth={true} maxWidth={'lg'} onClose={() => w?.location?.reload()}>
       <DialogTitle>
         {walletPasswordHash ? 'Connect with Local Wallet' : 'Create New Password for Local Wallet'}

@@ -141,7 +141,7 @@ export const updateCompensationComparisons = (dataRow: SMDataRow): SMDataRow => 
 // per = (new-old)/old
 
 export const calcSumRows = (smTableRows: SMDataRow[]): SMDataRow[] => {
-  let sumRowResult = templateRow('sum-row');
+  const sumRowResult = templateRow('sum-row');
   smTableRows.forEach((row, index) => {
     smTableRowAttributes.forEach(({ name, type, sumRow = 'sum' }) => {
       if (type === 'number' && typeof sumRowResult[name] === 'number' && typeof row[name] === 'number') {
@@ -150,6 +150,7 @@ export const calcSumRows = (smTableRows: SMDataRow[]): SMDataRow[] => {
           sumRowResult[name] += row[name];
         } else if (sumRow === 'average') {
           const currentAverage = sumRowResult[name];
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           sumRowResult[name] = (currentAverage * index + row[name]) / (index + 1);
         }

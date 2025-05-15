@@ -32,7 +32,7 @@ export function resolveBoolean(def: AttributeDef, propertyName: 'editable', cx: 
   return defaultValue;
 }
 
-export function toPRecord<V extends {}>(obj: V): PRecord {
+export function toPRecord<V extends object>(obj: V): PRecord {
   const entries = Object.entries(obj);
   return entries.reduce<PRecord>((a, [key, value]) => {
     let pValue: PValue | undefined = undefined;

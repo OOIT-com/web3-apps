@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material';
 
 import logo from '../../images/keyblock200.png';
-import { ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
-export const LoginFragment: React.FC<{ content: ReactNode }> = ({ content }) => {
+export const LoginFragment: FC<{ content: ReactNode }> = (props) => {
   return (
     <Stack
       direction="column"
@@ -31,7 +31,7 @@ export const LoginFragment: React.FC<{ content: ReactNode }> = ({ content }) => 
       >
         <img src={logo} alt={'logo'} />
       </Stack>
-      {content}
+      {props.content}
     </Stack>
   );
 };
