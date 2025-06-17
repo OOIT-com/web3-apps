@@ -10,6 +10,8 @@ import { Web3BaseProvider } from 'web3';
 import { errorMessage, isStatusMessage, StatusMessage } from './status-message';
 import BaseWebIrys from '@irys/web-upload/dist/types/base';
 
+export type ResponseType = { id: string; timestamp: number };
+
 export type Tags = {
   name: string;
   value: string;
@@ -76,11 +78,11 @@ export class IrysAccess {
     return this.irys?.withdrawBalance(amount);
   }
 
-  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<StatusMessage | any> {
+  public async upload(data: string | Buffer | Readable, tags: Tags): Promise<StatusMessage | ResponseType> {
     if (!this.irys) {
       return errorMessage('Irys not initialized!');
     }
-    return this.irys.upload(data, { tags });
+    return (await this.irys.upload(data, { tags })) as ResponseType;
   }
 }
 
