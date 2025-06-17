@@ -17,6 +17,15 @@ Here the features for an Artwork:
 - Created Timestamp (proof of time)
 - Hash of uploaded file (proof of content)
   
+## Encryption Type
+
+For the encryption of the art work file the following options exist:
+- **no encryption**: The art work file is saved as provided.
+- **account private key**: The private key associated with the user is used for encryption of the art work file.
+- **secret key from store**: An independent key from the secret store - encrypted with the private key - is used for encryption of the art work file.
+- **new key**: A newly generated key is used exclusively for one art work file. **Important**: Fhe key has to be store by the user himeself!
+
+
 
 # Tab Description
 

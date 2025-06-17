@@ -18,10 +18,12 @@ export const InputUi: ReactWidget = ({ def, value, cx = {}, action }: Readonly<W
     currentValue = def.formatter(value);
   }
 
+  const label = def.noLabel ? '' : def.label ?? humanizeString(def.name);
+
   return (
     <TextField
       size={'small'}
-      label={def.label ?? humanizeString(def.name)}
+      label={label}
       autoComplete={'off'}
       fullWidth
       multiline={!!def.multiline}
@@ -31,6 +33,15 @@ export const InputUi: ReactWidget = ({ def, value, cx = {}, action }: Readonly<W
       value={currentValue}
       onChange={(e) => (action ? action({ [def.name]: e.target.value }) : undefined)}
       disabled={!editable}
+      sx={{
+        color: 'black !important',
+        '& .MuiInputBase-input': {
+          color: 'black' // Set font color to black when disabled
+        },
+        '& .MuiInputLabel-root.Mui-disabled': {
+          color: 'black' // Set label color to black when disabled
+        }
+      }}
     />
   );
 };

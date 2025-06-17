@@ -122,7 +122,7 @@ export function CreateArtworkUi({
 
       <CollapsiblePanel
         key={'create-artwork-information'}
-        title={'Create Artwork Proof'}
+        title={'Create Artwork with Proof'}
         collapsible={false}
         toolbar={[
           <Button key={'clear-button'} disabled={!uploadFile} onClick={() => setOpenConfirmDeleteDialog(true)}>
@@ -131,96 +131,105 @@ export function CreateArtworkUi({
         ]}
         content={[
           <StatusMessageElement key="irys-data" statusMessage={irysDataMessage} />,
-          <ButtonPanel key={'upload-file-control'} mode={'left'}>
-            <FileUploader
-              key={'file-upload'}
-              handleChange={(file: File) => {
-                setUploadFile(file);
-                setMetaData((md) => ({ ...md, artworkName: file.name }));
-              }}
-              name="file"
+
+          <CollapsiblePanel key={'upload-file'} title={'Upload Artwork File'} level={'third'} collapsible={false}>
+            <ButtonPanel key={'upload-file-control'} mode={'left'}>
+              <FileUploader
+                key={'file-upload'}
+                handleChange={(file: File) => {
+                  setUploadFile(file);
+                  setMetaData((md) => ({ ...md, artworkName: file.name }));
+                }}
+                name="file"
+              >
+                <Button variant={'contained'}>Upload Artwork file</Button>
+              </FileUploader>
+              <Box key={'file-name-label'}>Artwork file name:</Box>{' '}
+              <Box key={'file-name'} sx={{ fontWeight: 'bold' }}>
+                {uploadFile?.name}
+              </Box>
+            </ButtonPanel>
+          </CollapsiblePanel>,
+          <CollapsiblePanel key={'encryption'} title={'File Encryption'} level={'third'} collapsible={false}>
+            <RadioGroup
+              key={'encryption-type'}
+              value={encryptionType}
+              row
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                setEncryptionType(event.target.value as EncryptionType)
+              }
             >
-              <Button variant={'contained'}>Upload Artwork file</Button>
-            </FileUploader>
-            <Box key={'file-name-label'}>Artwork file name:</Box>{' '}
-            <Box key={'file-name'} sx={{ fontWeight: 'bold' }}>
-              {uploadFile?.name}
-            </Box>
-          </ButtonPanel>,
-          <RadioGroup
-            key={'encryption-type'}
-            value={encryptionType}
-            row
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              setEncryptionType(event.target.value as EncryptionType)
-            }
-          >
-            <FormControlLabel
-              key={'no-encryption'}
-              value={'no-encryption'}
-              control={<Radio />}
-              label="Use No encryption"
-            />
-            <FormControlLabel
-              key={'use-public-key-store-v2'}
-              value={'use-public-key-store-v2'}
-              control={<Radio />}
-              label="Use Public Key Store"
-            />
-            <FormControlLabel key={'new-key-pair'} value={'new-key-pair'} control={<Radio />} label="New Key Pair" />
-          </RadioGroup>,
-          <Fragment key={'new-key-pair'}>
-            {encryptionType === 'new-key-pair' && (
-              <ButtonPanel
-                mode={'left'}
-                key={'new-key-pair-panel'}
-                content={[
-                  <AddressBoxWithCopy
-                    key={'secret-key-hex'}
-                    label={'Secret Key for Encryption (Make sure to save it!)'}
-                    value={'0x' + Buffer.from(newKeyPair.secretKey).toString('hex')}
-                    reduced={false}
-                    variant={'outlined'}
-                  />,
-                  <Button
-                    key={'new-key-pair'}
-                    onClick={() => {
-                      setNewKeyPair(box.keyPair());
-                    }}
-                  >
-                    New Key Pair
-                  </Button>
-                ]}
+              <FormControlLabel
+                key={'no-encryption'}
+                value={'no-encryption'}
+                control={<Radio />}
+                label="Use No encryption"
               />
-            )}
-          </Fragment>,
-          <TextField
-            key={'artwork-name'}
-            label={'Artwork Name*'}
-            value={artworkName ?? ''}
-            onChange={(e) => setMetaData((md) => ({ ...md, artworkName: e.target.value }))}
-            fullWidth={true}
-          />,
-          <TextField
-            key={'artwork-description'}
-            label={'Artwork Description'}
-            value={artworkDescription ?? ''}
-            onChange={(e) => setMetaData((md) => ({ ...md, artworkDescription: e.target.value }))}
-            fullWidth={true}
-          />,
-          <TextField
-            key={'artwork-author'}
-            label={'Artwork Author'}
-            value={artworkAuthor ?? ''}
-            onChange={(e) => setMetaData((md) => ({ ...md, artworkAuthor: e.target.value }))}
-            fullWidth={true}
-          />
+              <FormControlLabel
+                key={'use-public-key-store-v2'}
+                value={'use-public-key-store-v2'}
+                control={<Radio />}
+                label="Use Public Key Store"
+              />
+              <FormControlLabel key={'new-key-pair'} value={'new-key-pair'} control={<Radio />} label="New Key Pair" />
+            </RadioGroup>{' '}
+            <Fragment key={'new-key-pair'}>
+              {encryptionType === 'new-key-pair' && (
+                <ButtonPanel
+                  mode={'left'}
+                  key={'new-key-pair-panel'}
+                  content={[
+                    <AddressBoxWithCopy
+                      key={'secret-key-hex'}
+                      label={'Secret Key for Encryption (Make sure to save it!)'}
+                      value={'0x' + Buffer.from(newKeyPair.secretKey).toString('hex')}
+                      reduced={false}
+                      variant={'outlined'}
+                    />,
+                    <Button
+                      key={'new-key-pair'}
+                      onClick={() => {
+                        setNewKeyPair(box.keyPair());
+                      }}
+                    >
+                      New Key Pair
+                    </Button>
+                  ]}
+                />
+              )}
+            </Fragment>
+          </CollapsiblePanel>,
+          <CollapsiblePanel key={'fields'} title={'Data Fields'} level={'third'} collapsible={false}>
+            <TextField
+              key={'artwork-name'}
+              label={'Artwork Name*'}
+              value={artworkName ?? ''}
+              onChange={(e) => setMetaData((md) => ({ ...md, artworkName: e.target.value }))}
+              fullWidth={true}
+            />
+
+            <TextField
+              key={'artwork-description'}
+              label={'Artwork Description'}
+              value={artworkDescription ?? ''}
+              onChange={(e) => setMetaData((md) => ({ ...md, artworkDescription: e.target.value }))}
+              fullWidth={true}
+            />
+
+            <TextField
+              key={'artwork-author'}
+              label={'Artwork Author'}
+              value={artworkAuthor ?? ''}
+              onChange={(e) => setMetaData((md) => ({ ...md, artworkAuthor: e.target.value }))}
+              fullWidth={true}
+            />
+          </CollapsiblePanel>
         ]}
       />
 
       <CollapsiblePanel
         key={'prepare-artwork-package'}
-        level={'second'}
+        level={'third'}
         collapsible={false}
         title={'Prepare Artwork Package'}
         content={[

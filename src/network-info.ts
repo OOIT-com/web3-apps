@@ -176,7 +176,7 @@ export const networks: NetworkInfo[] = [
     chainId: 43114,
     currencySymbol: 'AVAX',
     blockExplorerUrl: 'https://cchain.explorer.avax.network',
-    rpcUrl: 'https//api.avax.network/ext/bc/C/rpc',
+    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
     PostFix: 'AVAX_MAINNET',
     isMainnet: true,
     irysTokenname: 'avalanche',

@@ -1,0 +1,4 @@
+curl --request POST \
+  --header 'content-type: application/json' \
+  --url 'https://uploader.irys.xyz/graphql' \
+  --data '{"query":"query getByIds { transactions(ids: [\"Gdrw4AGMJ88ymYiXzkTgjihRdjUKhcteBTM9cLTK8rNY\"]) { edges { node { id tags { name value } } } } }"}'

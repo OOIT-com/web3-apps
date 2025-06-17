@@ -45,7 +45,6 @@ export type ArtworkPackage = {
   encryptedData?: Uint8Array;
   encryptedDataHash: string;
   data: Uint8Array;
-
   dataHash: string;
   encryptionSecret?: Uint8Array;
   encryptionKeyLocation: EncryptionKeyLocation;
@@ -60,7 +59,6 @@ export const prepareArtwork = async ({
   let encryptionKeyLocation: EncryptionKeyLocation = 'external-key-pair';
   if (encryptionType === 'new-key-pair') {
     encryptionSecret = secretKey;
-    encryptionKeyLocation = 'external-key-pair';
   } else if (encryptionType === 'use-public-key-store-v2') {
     const res = await getMySecretKeyV2(web3Session);
     if (isStatusMessage(res)) {
@@ -78,7 +76,6 @@ export const prepareArtwork = async ({
   let encryptedDataHash = '';
   if (encryptionSecret) {
     const { publicKey, secretKey } = nacl.box.keyPair.fromSecretKey(encryptionSecret);
-
     encryptedData = encrypt(secretKey, data, publicKey);
     if (!encryptedData) {
       return errorMessage('Could not encrypt data!');
@@ -116,8 +113,6 @@ export const decryptArtwork = async ({
     encryptionSecret = res;
   }
 
-  const encryptedDataHash = await createSha256Hash(artworkData);
-  let decryptedDataHash = '';
   let decryptedData;
   if (encryptionSecret) {
     const { publicKey, secretKey } = nacl.box.keyPair.fromSecretKey(encryptionSecret);
@@ -126,7 +121,6 @@ export const decryptArtwork = async ({
     if (!decryptedData) {
       return errorMessage('Could not decrypt artwork data!');
     }
-    decryptedDataHash = await createSha256Hash(decryptedData);
   }
   if (!decryptedData) {
     return errorMessage('Decryption of artwork data failed!');

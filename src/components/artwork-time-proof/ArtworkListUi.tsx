@@ -67,7 +67,7 @@ export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artw
         maxWidth={'xl'}
         onClose={() => setArtworkDetail(undefined)}
       >
-        <DialogTitle>{`Artwork: ${artworkDetail.name}`}</DialogTitle>
+        <DialogTitle>{`Artwork Detail: ${artworkDetail.name}`}</DialogTitle>
         <DialogContent>
           <Stack spacing={2}>
             <ArtworkDetailUi artwork={artworkDetail} />
@@ -85,7 +85,7 @@ export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artw
 
   return (
     <CollapsiblePanel
-      title={`My Artworks (Proven Author Address: ${displayAddress(web3Session.publicAddress)})`}
+      title={`My Artworks (Author Proof: ${web3Session.publicAddress})`}
       content={content}
       collapsible={false}
     />

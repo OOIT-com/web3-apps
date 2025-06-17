@@ -12,7 +12,7 @@ export const TableRowComp: FC<TableRowCompProps> = ({ elements, align, colspan =
   return (
     <TableRow>
       {elements.map((e, i) => (
-        <TableCell key={'' + i} align={getAlign(i, align)} colSpan={colspan[i]}>
+        <TableCell sx={{ verticalAlign: 'top' }} key={'' + i} align={getAlign(i, align)} colSpan={colspan[i]}>
           {e}
         </TableCell>
       ))}

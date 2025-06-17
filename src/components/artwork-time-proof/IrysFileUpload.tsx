@@ -11,7 +11,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { useAppContext } from '../AppContextProvider';
 import { DownloadLinkWithCopy } from '../common/DownloadLinkWithCopy';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 const LINK_URL = 'https://gateway.irys.xyz';
 
@@ -121,7 +121,7 @@ export function IrysFileUpload({ irysAccess }: Readonly<{ irysAccess: IrysAccess
           <>
             <Box sx={{ fontSize: '80%' }}>
               <pre>{JSON.stringify(uploadResponse, null, ' ')}</pre>
-              <Box>{downloadLink}</Box>{' '}
+              <Box>{downloadLink}</Box>
             </Box>
             <Box>
               <DownloadLinkWithCopy

@@ -98,7 +98,7 @@ export const CreateArtworkSaveDialog: FC<{
                 disabled={uploadStatusMessage !== undefined}
                 onClick={async () => {
                   setUploadInfo(undefined);
-                  let dataBuff: Buffer | undefined = undefined;
+                  let dataBuff: Buffer | undefined;
                   if (isFile(data)) {
                     const arr = await data.arrayBuffer();
                     dataBuff = Buffer.from(arr);
@@ -110,7 +110,7 @@ export const CreateArtworkSaveDialog: FC<{
                     name: k,
                     value: (metaData[k] ?? '').toString()
                   }));
-                  const ur = await irysAccess.upload(dataBuff, tags);
+                  const ur: StatusMessage | any = await irysAccess.upload(dataBuff, tags);
                   if (isStatusMessage(ur)) {
                     setStatusMessage(ur);
                     return;
@@ -141,12 +141,12 @@ export const CreateArtworkSaveDialog: FC<{
                   setRegisterStatusMessage(infoMessage(`${artworkName} registered!`));
                 }}
               >
-                Upload And Register
+                Upload
               </Button>,
               <Button
                 key={'try-register-again'}
                 variant={'contained'}
-                disabled={registerStatusMessage !== undefined && uploadStatusMessage === undefined}
+                disabled={registerStatusMessage !== undefined && !uploadInfo}
                 onClick={async () => {
                   if (uploadInfo) {
                     const res = wrap(`Retry to register ${artworkName}`, () =>
@@ -160,6 +160,7 @@ export const CreateArtworkSaveDialog: FC<{
                       setStatusMessage(res);
                       return;
                     }
+                    setUploadInfo(undefined);
                     setRegisterStatusMessage(infoMessage(`${artworkName} registered!`));
                   }
                 }}

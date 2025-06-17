@@ -11,7 +11,7 @@ export const AttributeTableUi = ({
   attributeDefs
 }: {
   data: PRecord;
-  setData: SetData;
+  setData?: SetData;
   attributeDefs: AttributeDef[];
 }) => (
   <Table>
@@ -25,7 +25,11 @@ export const AttributeTableUi = ({
               key={'control'}
               attDef={{ ...attDef, noLabel: true }}
               index={index}
-              widgetAction={(value) => setData({ ...data, ...value })}
+              widgetAction={(value) => {
+                if (setData) {
+                  setData({ ...data, ...value });
+                }
+              }}
               cxRow={data}
             />
           ]}
@@ -35,4 +39,4 @@ export const AttributeTableUi = ({
   </Table>
 );
 
-const LabelUi = ({ label }: { label: string }) => <Box>{label}</Box>;
+const LabelUi = ({ label }: { label: string }) => <Box sx={{ fontWeight: 600 }}>{label}</Box>;
