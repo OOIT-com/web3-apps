@@ -31,13 +31,13 @@ import {
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { MessageDisplay } from './MessageDisplay';
 import { OpenInboxMessageButton } from './OpenInboxMessageButton';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 export function PrivateMessageInBoxV2Ui({
   privateMessageStoreV2
 }: Readonly<{ privateMessageStoreV2: PrivateMessageStoreV2 }>) {
   const { wrap, web3Session } = useAppContext();
-  const { publicAddress, networkId = 0 } = web3Session || {};
+  const { publicAddress, chainId = 0 } = web3Session || {};
   const theme = useTheme();
   const [messages, setMessages] = useState<GetInBoxResult[]>([]);
   const [decryptedDataList, setDecryptedDataList] = useState<DecryptedDataList>([]);
@@ -66,7 +66,7 @@ export function PrivateMessageInBoxV2Ui({
     return <Web3NotInitialized />;
   }
   const noMessages = messages.length === 0;
-  const { name } = getNetworkInfo(networkId);
+  const { name } = getNetworkInfo(chainId);
 
   return (
     <Stack>

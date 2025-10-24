@@ -1,4 +1,5 @@
 import { AttributeDef, PRecord, PValue } from './types';
+import { ReactElement } from 'react';
 
 export function resolveEditable({
   def,
@@ -55,3 +56,5 @@ export function toPRecord<V extends object>(obj: V): PRecord {
     return a;
   }, {});
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const noop = () => {};

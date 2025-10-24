@@ -16,25 +16,36 @@ export const AttributeTableUi = ({
 }) => (
   <Table>
     <TableBody>
-      {attributeDefs.map((attDef, index) => (
-        <TableRowComp
-          key={attDef.name}
-          elements={[
-            <LabelUi key={'label'} label={attDef.label ?? humanizeString(attDef.name)} />,
-            <AttributeUi
-              key={'control'}
-              attDef={{ ...attDef, noLabel: true }}
-              index={index}
-              widgetAction={(value) => {
-                if (setData) {
-                  setData({ ...data, ...value });
-                }
-              }}
-              cxRow={data}
-            />
-          ]}
-        />
-      ))}
+      {attributeDefs.map((attDef, index) => {
+        if (attDef.ui) {
+          return <TableRowComp key={`${attDef.name}`} elements={[attDef.ui]} colspan={[2]} />;
+        }
+
+        let label = attDef.label ?? humanizeString(attDef.name);
+        if (attDef.noLabel) {
+          label = '';
+        }
+
+        return (
+          <TableRowComp
+            key={attDef.name}
+            elements={[
+              <LabelUi key={'label'} label={label} />,
+              <AttributeUi
+                key={'control'}
+                attDef={{ ...attDef, noLabel: true }}
+                index={index}
+                widgetAction={(value) => {
+                  if (setData) {
+                    setData({ ...data, ...value });
+                  }
+                }}
+                cxRow={data}
+              />
+            ]}
+          />
+        );
+      })}
     </TableBody>
   </Table>
 );

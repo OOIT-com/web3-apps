@@ -12,7 +12,7 @@ import { useAppContext } from '../AppContextProvider';
 import { IrysData, loadIrysData } from '../../utils/irys-utils';
 import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
 import { getNetworkInfo } from '../../network-info';
-import {infoMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, StatusMessage } from '../../utils/status-message';
 
 const arName = 'Irys (Arweave)';
 
@@ -24,18 +24,17 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
   const refreshIrysData = useCallback(async () => {
     return wrap(`Loading Data for ${arName}...`, async () => {
       setStatusMessage(undefined);
-      const { address, polygonBalance, balance, statusMessage, pricePerMega, uploadableMegabytes } = await loadIrysData(
-        irysAccess
-      );
+      const { address, blockchainBalance, balance, statusMessage, pricePerMega, uploadableMegabytes } =
+        await loadIrysData(irysAccess);
       if (statusMessage.status === 'error') {
         setStatusMessage(statusMessage);
       } else {
-        setIrysData({ polygonBalance, address, balance, pricePerMega, uploadableMegabytes });
+        setIrysData({ blockchainBalance, address, balance, pricePerMega, uploadableMegabytes });
       }
     });
   }, [wrap, irysAccess]);
 
-  const symbol = getNetworkInfo(web3Session?.networkId).currencySymbol;
+  const symbol = getNetworkInfo(web3Session?.chainId).currencySymbol;
   const usdPrice = useUsdPrice(symbol);
 
   useEffect(() => {
@@ -88,12 +87,12 @@ export function IrysFundingUi({ irysAccess }: Readonly<{ irysAccess: IrysAccess 
           />
           <TableRowComp key={'balances'} elements={[<Header2 key={'title'}>Balances</Header2>]} colspan={[3]} />
           <TableRowComp
-            key={'polygone-balance'}
+            key={'blockchain-balance'}
             elements={[
               <Box key={'title'} sx={{ fontWeight: 'bold' }}>{`Your balance on ${displayAddress(
                 irysAccess.getAddress()
               )}`}</Box>,
-              displayUsdPrice({ amount: +irysData.polygonBalance / 1e18, symbol, usdPrice })
+              displayUsdPrice({ amount: +irysData.blockchainBalance / 1e18, symbol, usdPrice })
             ]}
             colspan={[1, 2]}
           />

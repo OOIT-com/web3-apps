@@ -17,13 +17,13 @@ import { TableRowInfo } from '../common/TableRowInfo';
 import { AppTopTitle } from '../common/AppTopTitle';
 import publicKeyPng from '../images/public-key.png';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import {infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
 
 export function PublicKeyStoreUi() {
   const app = useAppContext();
   const { wrap, web3Session } = app;
 
-  const { publicKey = '', publicAddress, networkId = 0 } = web3Session || {};
+  const { publicKey = '', publicAddress, chainId = 0 } = web3Session || {};
 
   const [address0, setAddress0] = useState('');
   const [publicKey0, setPublicKey0] = useState('');
@@ -31,7 +31,7 @@ export function PublicKeyStoreUi() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [statusMessage0, setStatusMessage0] = useState<StatusMessage>();
 
-  const { name } = getNetworkInfo(networkId);
+  const { name } = getNetworkInfo(chainId);
   const publicKeyStore = getPublicKeyStore();
 
   const getPublicKey = useCallback(

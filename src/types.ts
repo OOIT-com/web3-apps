@@ -8,7 +8,7 @@ export function isError(e: any): e is Error {
 
 export type Web3Session = {
   web3: Web3;
-  networkId: number;
+  chainId: number;
   // Deprecated
   decryptFun: DecryptFun;
   publicAddress: string;

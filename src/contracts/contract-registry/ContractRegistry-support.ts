@@ -47,8 +47,8 @@ export type ContractDataWithIndex = ContractData & {
 
 export const getContractRegistryContractAddress = () => contractAddress;
 
-export function initContractRegistry(web3: Web3, networkId: number): StatusMessage {
-  contractAddress = getContractAddress(networkId, ContractName.CONTRACT_REGISTRY);
+export function initContractRegistry(web3: Web3, chainId: number): StatusMessage {
+  contractAddress = getContractAddress(chainId, ContractName.CONTRACT_REGISTRY);
   const contract = new web3.eth.Contract(contractRegistryAbi as any, contractAddress);
   instance = new ContractRegistry(contract, contractAddress);
   return successMessage(`Contract ${ContractName.CONTRACT_REGISTRY} successfully initialized!`);

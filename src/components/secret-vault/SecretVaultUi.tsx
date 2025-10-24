@@ -29,7 +29,7 @@ import {isStatusMessage, StatusMessage} from "../../utils/status-message";
 
 const SecretVaultUi: FC = () => {
   const { wrap, web3Session } = useAppContext();
-  const { publicAddress, networkId = 0, web3 } = web3Session || {};
+  const { publicAddress, chainId = 0, web3 } = web3Session || {};
   const theme = useTheme();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [secretVaultEntries, setSecretVaultEntries] = useState<SecretVaultEntry[]>([]);
@@ -40,7 +40,7 @@ const SecretVaultUi: FC = () => {
 
   const refreshData = useCallback(async () => {
     const keyBlock = getKeyBlock();
-    if (!publicAddress || !web3 || !networkId || !keyBlock) {
+    if (!publicAddress || !web3 || !chainId || !keyBlock) {
       return;
     }
     setStatusMessage(undefined);
@@ -50,7 +50,7 @@ const SecretVaultUi: FC = () => {
     } else {
       setSecretVaultEntries(items);
     }
-  }, [networkId, publicAddress, web3, wrap]);
+  }, [chainId, publicAddress, web3, wrap]);
 
   useEffect(() => {
     refreshData().catch(console.error);
@@ -136,7 +136,7 @@ const SecretVaultUi: FC = () => {
     return content;
   }, [statusMessage, theme.palette.mode, filterValue, refreshData, secretVaultEntries]);
 
-  const { name } = getNetworkInfo(networkId);
+  const { name } = getNetworkInfo(chainId);
 
   const keyBlock = getKeyBlock();
   if (!keyBlock) {

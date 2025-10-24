@@ -22,7 +22,7 @@ export function ContracVerifierDialog({
   readonly contractData: ContractData;
 }>) {
   const { wrap, web3Session } = useAppContext();
-  const { web3, networkId = 0 } = web3Session || {};
+  const { web3, chainId = 0 } = web3Session || {};
   const [bytecode, setBytecode] = useState('');
   let statusMessage: StatusMessage | undefined;
   if (!web3Session) {
@@ -34,14 +34,14 @@ export function ContracVerifierDialog({
     statusMessage = errorMessage('ContractRegistry not initialized!');
   }
 
-  if (!web3 || !networkId || !networkId) {
+  if (!web3 || !chainId || !chainId) {
     statusMessage = infoMessage('Loading...');
   }
   if (statusMessage) {
     return <StatusMessageElement statusMessage={statusMessage} />;
   }
 
-  const info = getNetworkInfo(networkId);
+  const info = getNetworkInfo(chainId);
   return (
     <Dialog open={true} onClose={() => done()} maxWidth={'md'} fullWidth={true}>
       <DialogTitle>Verifier Dialog for {`${contractData.name} (Contract: ${contractData.contractName})`}</DialogTitle>

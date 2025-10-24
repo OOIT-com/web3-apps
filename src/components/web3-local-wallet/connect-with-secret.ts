@@ -7,17 +7,17 @@ import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
 import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 import { Wallet } from 'alchemy-sdk';
-import {errorMessage, infoMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage } from '../../utils/status-message';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
 
 export async function connectWithSecret(
   app: AppContextData,
-  networkId: number,
+  chainId: number,
   secret: string
 ): Promise<Web3Session | undefined> {
   const { dispatchSnackbarMessage } = app;
-  const network = getNetworkInfo(+networkId);
+  const network = getNetworkInfo(+chainId);
   if (!network) {
     dispatchSnackbarMessage(errorMessage('Unknown Network!'));
     return;
@@ -51,7 +51,7 @@ export async function connectWithSecret(
   };
 
   return {
-    networkId,
+    chainId,
     web3,
     publicAddress,
     decryptFun,

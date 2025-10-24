@@ -10,6 +10,7 @@ export type WidgetActionFun = (value: PRecord) => void;
 
 export interface AttributeDef<NAMES = string> {
   name: NAMES;
+  ui?: ReactElement;
   labelId?: string;
   label?: string;
   description?: string;
@@ -66,7 +67,10 @@ export type ReactWidget = (prop: WidgetProps) => ReactElement;
 //export type SRecord = Record<string, string>;
 export type IdValue = string | number;
 export type PValue = boolean | string | number;
-export type PRecord = Record<string, PValue>;
+// PRecord should be at Record type that has names from Names, but not all names needed to be available
+// export type PRecord<NAMES extends string = string> = Partial<Record<NAMES, PValue>>;
+export type PRecord<NAMES extends string = string> = Record<NAMES, PValue>;
+
 export type PRecordCompatible<T> = Pick<
   T,
   {

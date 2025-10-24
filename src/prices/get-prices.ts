@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {errorMessage, isStatusMessage, StatusMessage} from "../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../utils/status-message';
 
 export type UsdPrice = { price: string; symbol: string; timestamp: string; updated: number };
 const refreshInterval = 1000 * 60 * 5; // 5 minutes;
@@ -126,7 +126,7 @@ export const getUsdPriceCoinApi = async (symbol: string): Promise<UsdPrice | Sta
 //   symbol?: string;
 // }): Promise<string> => {
 //   if (web3Session && !symbol) {
-//     const ni = getNetworkInfo(web3Session.networkId);
+//     const ni = getNetworkInfo(web3Session.chainId);
 //     symbol = ni.currencySymbol;
 //   }
 //   if (!symbol) {

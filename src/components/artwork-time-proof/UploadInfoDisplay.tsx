@@ -16,9 +16,9 @@ export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo 
     return <></>;
   }
 
-  const networkId = web3Session.networkId;
+  const chainId = web3Session.chainId;
 
-  const networkInfo = getNetworkInfo(networkId);
+  const networkInfo = getNetworkInfo(chainId);
   const downloadLinks: string[] = [];
   if (networkInfo.isMainnet) {
     downloadLinks.push(`https://gateway.irys.xyz/${uploadInfo.uploadId}`);

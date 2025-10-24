@@ -58,10 +58,6 @@ export class IrysAccess {
     return '';
   }
 
-  public async getLoadedBalance(): Promise<string> {
-    return this.getBalance(this.web3Session.publicAddress);
-  }
-
   public getPrice(bytes: number) {
     return this.irys?.getPrice(bytes) || 0;
   }
@@ -88,9 +84,9 @@ export class IrysAccess {
 
 // funding does not work but file upload is working!
 const getWebIrys = async (web3Session: Web3Session): Promise<UploadBuilder | StatusMessage> => {
-  const { networkId, web3 } = web3Session;
+  const { chainId, web3 } = web3Session;
 
-  const { currencySymbol, isMainnet } = getNetworkInfo(networkId);
+  const { currencySymbol, isMainnet } = getNetworkInfo(chainId);
   //const provider = new ethers.BrowserProvider(w.ethereum);
   const provider = web3.currentProvider as Web3BaseProvider;
   // const provider = new ethers.JsonRpcProvider(rpcUrl); // Replace with your provider URL

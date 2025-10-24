@@ -32,7 +32,7 @@ import {
 } from './local-wallet-utils';
 import { displayAddress } from '../../utils/misc-util';
 import { AddAccountUi } from './AddAccountUi';
-import {errorMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, StatusMessage } from '../../utils/status-message';
 
 const warningMessage: StatusMessage = {
   status: 'warning',
@@ -53,7 +53,7 @@ export const local_wallet_default_network_id = '__LOCAL_WALLET_DEFAULT_NETWORK_I
 export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walletPassword }) => {
   const app = useAppContext();
   const navigate = useNavigate();
-  const [networkId, setNetworkId] = useState(localStorage.getItem(local_wallet_default_network_id) ?? '64165');
+  const [chainId, setChainId] = useState(localStorage.getItem(local_wallet_default_network_id) ?? '64165');
   const [localWalletList, setLocalWalletList] = useState<LocalWalletData[]>([]);
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [showAdd, setShowAdd] = useState(false);
@@ -65,7 +65,7 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
 
   const connectWeb3 = useCallback(
     async (index: number): Promise<StatusMessage | undefined> => {
-      if (+networkId) {
+      if (+chainId) {
         const account = getLocalWalletFromLocalStorage(index);
         if (!account) {
           return;
@@ -77,7 +77,7 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
           return;
         }
 
-        const web3Session = await connectWithSecret(app, +networkId, privateKey);
+        const web3Session = await connectWithSecret(app, +chainId, privateKey);
         if (web3Session) {
           await initDapps(web3Session, app, navigate);
         } else {
@@ -85,7 +85,7 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
         }
       }
     },
-    [app, navigate, networkId, walletPassword]
+    [app, navigate, chainId, walletPassword]
   );
 
   const selectLabel = 'Select Blockchain';
@@ -123,14 +123,14 @@ export const LocalWalletConnectDialog: FC<{ walletPassword: string }> = ({ walle
           <FormControl fullWidth={true}>
             <InputLabel id={'network'}>{selectLabel}</InputLabel>
             <Select
-              key={'networkId'}
+              key={'chainId'}
               labelId={'network'}
               label={selectLabel}
-              value={networkId}
+              value={chainId}
               onChange={(e) => {
-                const networkId = e.target.value;
-                localStorage.setItem(local_wallet_default_network_id, networkId);
-                setNetworkId(networkId);
+                const chainId = e.target.value;
+                localStorage.setItem(local_wallet_default_network_id, chainId);
+                setChainId(chainId);
               }}
             >
               {networkSelection.map((e) => (

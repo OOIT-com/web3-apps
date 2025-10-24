@@ -8,7 +8,7 @@ import { initKeyBlock } from '../contracts/key-block/KeyBlock-support';
 import { loadDefaultPublicKeyStoreV2 } from '../contracts/public-key-store/PublicKeyStoreV2-support';
 import { initArtworkTimeProof } from '../contracts/artwork-time-proof/ArtworkTimeProof-support';
 import { AppContextData, SetAddressData } from './AppContextProvider';
-import {errorMessage, isStatusMessage, StatusMessage} from "../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../utils/status-message';
 
 export const reloadAddressData = async (setAddressData: SetAddressData): Promise<StatusMessage | undefined> => {
   const addressBook = getAddressBook();
@@ -28,9 +28,9 @@ export async function initDapps(
   navigate: NavigateFunction
 ): Promise<void> {
   const { dispatchSnackbarMessage } = app;
-  const { web3, networkId, publicAddress } = web3Session;
+  const { web3, chainId, publicAddress } = web3Session;
 
-  const res = initContractRegistry(web3, networkId);
+  const res = initContractRegistry(web3, chainId);
   dispatchSnackbarMessage(res);
 
   const contractRegistry = getContractRegistry();

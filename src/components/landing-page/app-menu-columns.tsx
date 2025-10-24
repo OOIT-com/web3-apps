@@ -23,6 +23,7 @@ import contractRegistryPng from '../images/contract-registry.png';
 import toolsPng from '../images/tools.png';
 import paymentsPng from '../images/payments.png';
 import aboutPng from '../images/about.png';
+import secureBlockchainDrivePng from '../images/secure-blockchain-drive.png';
 import { SecureBlockchainTableUi } from '../secure-blockchain-table/SecureBlockchainTableUi';
 import { UniversalNameStoreUi } from '../universal-name-store/UniversalNameStoreUi';
 import { UiGallery } from '../ui-gallery/UiGallery';
@@ -30,6 +31,7 @@ import { AddressBookUi } from '../address-book/AddressBookUi';
 import { PrivateMessageStoreV2Ui } from '../private-message-store-v2/PrivateMessageStoreV2Ui';
 import { AppIcon } from '../common/AppIcon';
 import { PaymentsUi } from '../payments/PaymentsUi';
+import { SecureBlockchainDriveUi } from '../secure-blockchain-drive/SecureBlockchainDriveUi';
 
 const visibleApps: string[] = (process.env.REACT_APP_VISIBLE_APPS ?? '').split(/\s*,\s*/).filter((e) => !!e);
 
@@ -75,6 +77,13 @@ const menuColumnsAll: AppMenuColumn[] = [
         icon: <AppIcon src={salaryManager} alt={'Salary Manager'} />,
         description: 'Save and secret salary management tool!',
         element: <SecureBlockchainTableUi />
+      },
+      {
+        path: 'secure-blockchain-drive',
+        name: 'Secure Blockchain Drive',
+        icon: <AppIcon src={secureBlockchainDrivePng} alt={'Secure Blockchain Drive'} />,
+        description: 'Use a Document Drive on the blockhain secure and save!',
+        element: <SecureBlockchainDriveUi />
       }
     ]
   },

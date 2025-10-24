@@ -8,12 +8,12 @@ import { getNetworkInfo } from '../../network-info';
 
 export const EthTextField: FC<TextFieldProps> = (props) => {
   const { web3Session } = useAppContext();
-  const { networkId } = web3Session || {};
+  const { chainId } = web3Session || {};
 
-  if (!networkId) {
+  if (!chainId) {
     return <Web3NotInitialized />;
   }
-  const { currencySymbol } = getNetworkInfo(networkId);
+  const { currencySymbol } = getNetworkInfo(chainId);
   return (
     <TextField
       value={props.value}

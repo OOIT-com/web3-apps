@@ -20,8 +20,8 @@ export const PaymentPanel: FC<{ web3Session: Web3Session }> = ({ web3Session }) 
   const [amountEth, setAmountEth] = useState('0.0');
 
   const { wrap } = useAppContext();
-  const { networkId, publicAddress, web3 } = web3Session;
-  const { currencySymbol } = getNetworkInfo(networkId);
+  const { chainId, publicAddress, web3 } = web3Session;
+  const { currencySymbol } = getNetworkInfo(chainId);
 
   const updateYourBalance = useCallback(
     () =>

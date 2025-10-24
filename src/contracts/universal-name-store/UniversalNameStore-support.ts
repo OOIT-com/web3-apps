@@ -27,8 +27,8 @@ export async function getUniversalNameStore(web3Session: Web3Session): Promise<U
   if (instance) {
     return instance;
   }
-  const { networkId } = web3Session;
-  const contractAddress = getContractAddress(networkId, ContractName.UNIVERSAL_NAME_STORE);
+  const { chainId } = web3Session;
+  const contractAddress = getContractAddress(chainId, ContractName.UNIVERSAL_NAME_STORE);
   if (!contractAddress) {
     return errorMessage(`No contract address found in .env found for ${ContractName.UNIVERSAL_NAME_STORE}!`);
   }

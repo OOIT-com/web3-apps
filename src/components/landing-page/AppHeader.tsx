@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, Toolbar, Tooltip, useTheme } from '@mui/material';
+import { Box, Button, Chip, IconButton, Stack, Toolbar, Tooltip, useTheme } from '@mui/material';
 import logo from '../../images/keyblock200.png';
 import { green } from '@mui/material/colors';
 import LinkIcon from '@mui/icons-material/Link';
@@ -6,7 +6,7 @@ import LinkOffIcon from '@mui/icons-material/LinkOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import { useContext, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { ColorModeContext } from '../../DApp';
 import { useNavigate } from 'react-router-dom';
 import { getNetworkInfo } from '../../network-info';
@@ -68,17 +68,18 @@ export function AppHeader() {
   let name = 'Not Connected';
 
   if (web3Session) {
-    const { networkId } = web3Session;
-    const networkInfo = getNetworkInfo(networkId);
+    const { chainId } = web3Session;
+    const networkInfo = getNetworkInfo(chainId);
     name = networkInfo.name;
   }
+  const isMainnet = getNetworkInfo(web3Session?.chainId).isMainnet;
 
   return (
     <LDAppBar position="static" elevation={0}>
       <Toolbar variant="regular">
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} sx={{ width: '100%' }}>
           <Stack
-            onClick={() => navigate('/menu')}
+            key={'image'}
             direction="row"
             justifyContent="center"
             alignItems="center"
@@ -90,7 +91,12 @@ export function AppHeader() {
           </Stack>
           <ConnectionAddressDisplay publicAddress={publicAddress} isXs={isXs} />
 
-          <Stack direction="row" justifyContent="center" alignItems="center" spacing={0.5}>
+          {!isMainnet && (
+            <Stack key={'is-testnet'} direction="row" justifyContent="center" alignItems="center" spacing={0.5}>
+              {isXs ? <IsTestnet small /> : <IsTestnet />}
+            </Stack>
+          )}
+          <Stack key={'info'} direction="row" justifyContent="center" alignItems="center" spacing={0.5}>
             <Button onClick={() => setOpenInfoPage(true)} startIcon={<InfoOutlinedIcon />}>
               {isXs ? '' : name}
             </Button>
@@ -105,3 +111,7 @@ export function AppHeader() {
     </LDAppBar>
   );
 }
+
+const IsTestnet: FC<{ small?: boolean }> = ({ small = false }) => (
+  <Chip sx={{ background: 'rgb(255, 202, 102)' }} label={small ? 'T' : 'Testnet'} />
+);

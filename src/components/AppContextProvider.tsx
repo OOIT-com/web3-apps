@@ -2,10 +2,10 @@ import React, { createContext, ReactNode, useCallback, useContext, useMemo, useS
 import { SnackbarMessage, Web3Session } from '../types';
 import { AddressData, AddressDataWithIndex } from '../contracts/address-book/AddressBook-support';
 import { errorMessage, infoMessage, StatusMessage } from '../utils/status-message';
+import { noop } from '../ui-factory/utils';
 
 let SnackbarMessageCounter = 0;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
 export type WrapFun = <R>(loading: string, p: () => Promise<R>) => Promise<R | StatusMessage>;
 export type SetWeb3Session = (w?: Web3Session) => void;
 export type SetAddressData = (a?: AddressData[]) => void;
@@ -28,7 +28,7 @@ export type AppContextData = {
 
 const defaultValue: AppContextData = {
   loading: '',
-  setLoading: noop as never,
+  setLoading: noop() as never,
   wrap: noop as never,
   setSnackbarMessage: noop as never,
   dispatchSnackbarMessage: noop as never,

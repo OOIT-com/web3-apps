@@ -1,6 +1,6 @@
 import { getNetworkInfo } from '../network-info';
 import { BigNumber } from 'alchemy-sdk';
-import {StatusMessage} from "../utils/status-message";
+import { StatusMessage } from '../utils/status-message';
 
 export const toUserMessage = (statusMessage: StatusMessage) => {
   const sm = { ...statusMessage, systemMessage: statusMessage.userMessage };
@@ -32,8 +32,8 @@ export enum ContractName {
   UNIVERSAL_NAME_STORE = 'UNIVERSAL_NAME_STORE'
 }
 
-export function getContractAddress(networkId: number, contractName: ContractName | string): string {
-  const network = getNetworkInfo(networkId);
+export function getContractAddress(chainId: number, contractName: ContractName | string): string {
+  const network = getNetworkInfo(chainId);
   const envName = `REACT_APP_${contractName}_${network.PostFix}`;
   return (process.env[envName] ?? '').toLowerCase();
 }

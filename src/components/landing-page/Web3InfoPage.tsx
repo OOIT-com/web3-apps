@@ -19,14 +19,14 @@ import { AddressBoxWithCopy } from '../common/KeyBoxWithCopy';
 export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: NotifyFun }>) {
   const app = useAppContext();
   const { web3Session } = app || {};
-  const { publicAddress, web3, networkId = 0, publicKey = '' } = web3Session || {};
+  const { publicAddress, web3, publicKey = '' } = web3Session || {};
 
   const [loading, setLoading] = useState(false);
   const [balanceWei, setBalanceWei] = useState('');
   const [chainId, setChainId] = useState(-1);
   const [gasPriceWei, setGasPriceWei] = useState(-1);
 
-  const symbol = getNetworkInfo(web3Session?.networkId).currencySymbol;
+  const symbol = getNetworkInfo(web3Session?.chainId).currencySymbol;
   const usdPrice = useUsdPrice(symbol);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
       }
     };
     load();
-  }, [open, publicAddress, web3, networkId]);
+  }, [open, publicAddress, web3, chainId]);
 
   if (!open) {
     return <></>;
@@ -60,7 +60,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
     currencySymbol = 'n/a',
     name = 'n/a',
     homePage
-  } = getNetworkInfo(networkId) || {};
+  } = getNetworkInfo(chainId) || {};
 
   return (
     <Dialog open={open} onClose={done} fullWidth={true} maxWidth={'md'}>
@@ -94,7 +94,7 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
                 <TableRowInfo
                   key={'contract-registry'}
                   label={'Contract Registry'}
-                  value={getContractAddress(networkId, ContractName.CONTRACT_REGISTRY)}
+                  value={getContractAddress(chainId, ContractName.CONTRACT_REGISTRY)}
                 />
                 <TableRowInfo key={'name'} label={'Network Name'} value={loading || !web3 ? 'loading' : name} />
                 <TableRowInfo key={'chain-id'} label={'Chain Id'} value={loading || !web3 ? 'loading' : '' + chainId} />

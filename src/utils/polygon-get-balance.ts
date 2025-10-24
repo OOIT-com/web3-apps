@@ -1,9 +1,9 @@
 import axios from 'axios';
 import * as process from 'process';
 
-import {errorMessage, StatusMessage} from "./status-message";
+import { errorMessage, StatusMessage } from './status-message';
 // tutorial
-export const getPolygonBalance = async (address: string, isMainnet = true): Promise<StatusMessage | string> => {
+export const getBlockchainBalance = async (address: string, isMainnet = true): Promise<StatusMessage | string> => {
   const prefix = isMainnet ? '' : '-testnet';
   const host = `https://api${prefix}.polygonscan.com`;
   console.log(`*** Polygon${prefix} get balance  ***`);
