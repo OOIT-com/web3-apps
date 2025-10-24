@@ -85,6 +85,7 @@ export function AppHeader() {
             alignItems="center"
             spacing={0.5}
             sx={{ fontWeight: 'bold', fontSize: '120%', cursor: 'pointer' }}
+            onClick={() => navigate('/menu')}
           >
             <img src={logo} alt={'KeyBlock'} style={{ maxHeight: '1.2em' }} />
             {isXs ? '' : <Box>{'Menu'}</Box>}
