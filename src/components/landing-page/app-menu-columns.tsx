@@ -73,7 +73,7 @@ const menuColumnsAll: AppMenuColumn[] = [
       },
       {
         path: 'secure-blockchain-table',
-        name: 'Salary Manager',
+        name: 'Salary Manager (SBT',
         icon: <AppIcon src={salaryManager} alt={'Salary Manager'} />,
         description: 'Save and secret salary management tool!',
         element: <SecureBlockchainTableUi />

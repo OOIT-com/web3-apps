@@ -12,24 +12,24 @@ import salaryManagerPng from '../images/salary-manager.png';
 import { ContractRegistry, getContractRegistry } from '../../contracts/contract-registry/ContractRegistry-support';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import { AppSwitch } from './AppSwitch';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { SecureBlockchainTableSwitch } from './SecureBlockchainTableSwitch';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
 
 export type SBTOpenMode = 'edit' | 'app';
-export type SalaryManagerTabConfig = { sbtManager: SBTManager; mode: SBTOpenMode };
+export type SBTManagerData = { sbtManager: SBTManager; mode: SBTOpenMode };
 
 export function SecureBlockchainTableUi() {
   const { wrap, web3Session } = useAppContext();
   const { publicAddress } = web3Session || {};
-  const [value, setValue] = React.useState(0);
-  const [config, setConfig] = React.useState<SalaryManagerTabConfig>();
+  const [tabIndex, setTabIndex] = React.useState(0);
+  const [currentSBT, setCurrentSBT] = React.useState<SBTManagerData>();
   const [contractRegistry, setContractRegistry] = useState<ContractRegistry>();
   const [owner, setOwner] = useState('');
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
 
   const done = useCallback(() => {
-    setConfig(undefined);
-    setValue(0);
+    setCurrentSBT(undefined);
+    setTabIndex(0);
   }, []);
 
   useEffect(() => {
@@ -52,13 +52,13 @@ export function SecureBlockchainTableUi() {
   }, [contractRegistry]);
 
   useEffect(() => {
-    if (config) {
-      setValue(1);
+    if (currentSBT) {
+      setTabIndex(1);
     }
-  }, [config]);
+  }, [currentSBT]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTabIndex(newValue);
   };
 
   if (!web3Session) {
@@ -79,19 +79,19 @@ export function SecureBlockchainTableUi() {
           statusMessage={statusMessage}
           onClose={() => setStatusMessage(undefined)}
         />,
-        <Tabs key={'tabs'} value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs key={'tabs'} value={tabIndex} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Salary Manager List" />
-          {!!config && <Tab label={`Salary Manager ${config.sbtManager.name}`} disabled={!config} />}
+          {!!currentSBT && <Tab label={`SBT Manager ${currentSBT.sbtManager.name}`} disabled={!currentSBT} />}
         </Tabs>,
         <Paper key={'paper'} sx={{ margin: '1em 0 1em 0' }}>
-          {value === 0 && (
+          {tabIndex === 0 && (
             <SecureBlockchainTableListUi
               prefix={'SALARY_MANAGER_'}
               isOwner={publicAddress === owner}
-              setConfig={setConfig}
+              setCurrentSBT={setCurrentSBT}
             />
           )}
-          {value === 1 && <AppSwitch done={done} config={config} />}
+          {tabIndex === 1 && <SecureBlockchainTableSwitch done={done} sbtManagerData={currentSBT} />}
         </Paper>
       ]}
     ></CollapsiblePanel>

@@ -10,18 +10,18 @@ import {
 import { SecureBlockchainTablePanel } from './SecureBlockchainTablePanel';
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import { OwnableWithBackupDialog } from '../../ownable-with-backup/OwnableWithBackupDialog';
-import { SalaryManagerTabConfig, SBTOpenMode } from '../SecureBlockchainTableUi';
+import { SBTManagerData, SBTOpenMode } from '../SecureBlockchainTableUi';
 import { useAppContext } from '../../AppContextProvider';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../../utils/status-message';
 
 export const SecureBlockchainTableListUi: FC<{
-  setConfig: (config: SalaryManagerTabConfig) => void;
+  setCurrentSBT: (config: SBTManagerData) => void;
   prefix: string;
   isOwner: boolean;
-}> = ({ setConfig, prefix, isOwner }) => {
+}> = ({ setCurrentSBT, prefix, isOwner }) => {
   const { wrap, web3Session } = useAppContext();
 
-  const [salaryManagerDataList, setSalaryManagerDataList] = useState<ContractDataWithIndex[]>([]);
+  const [sbtContractList, setSbtContractList] = useState<ContractDataWithIndex[]>();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [openOwnership, setOpenOwnership] = useState('');
 
@@ -32,7 +32,7 @@ export const SecureBlockchainTableListUi: FC<{
         if (isStatusMessage(list)) {
           setStatusMessage(list);
         } else {
-          setSalaryManagerDataList(list);
+          setSbtContractList(list);
         }
       }),
     [wrap]
@@ -41,16 +41,16 @@ export const SecureBlockchainTableListUi: FC<{
     refresh().catch(console.error);
   }, [refresh]);
 
-  const openDetail = useCallback(
-    async (data: ContractDataWithIndex, mode: SBTOpenMode) => {
+  const openSBTContract = useCallback(
+    async (sbtContract: ContractDataWithIndex, mode: SBTOpenMode) => {
       if (!web3Session) {
         return;
       }
-      const sbtManager = new SBTManager(data, web3Session);
+      const sbtManager = new SBTManager(sbtContract, web3Session);
       await wrap('Init SBT Manager...', () => sbtManager.init());
-      setConfig({ sbtManager: sbtManager, mode });
+      setCurrentSBT({ sbtManager: sbtManager, mode });
     },
-    [web3Session, wrap, setConfig]
+    [web3Session, wrap, setCurrentSBT]
   );
 
   if (!web3Session) {
@@ -61,9 +61,9 @@ export const SecureBlockchainTableListUi: FC<{
     return <StatusMessageElement statusMessage={statusMessage} />;
   }
 
-  const content =
-    salaryManagerDataList.length === 0 ? (
-      <StatusMessageElement statusMessage={infoMessage(`No Salary Manager contracts found!`)} />
+  const content = sbtContractList ? (
+    sbtContractList.length === 0 ? (
+      <StatusMessageElement statusMessage={infoMessage(`No Secure Blockchain Table contracts found!`)} />
     ) : (
       <Table sx={{ minWidth: 800 }}>
         <TableHead>
@@ -74,10 +74,10 @@ export const SecureBlockchainTableListUi: FC<{
           </TableRow>
         </TableHead>
         <TableBody>
-          {salaryManagerDataList
-            .filter((e) => e.name.startsWith(prefix))
-            .map((data, index) => {
-              const { name } = data;
+          {sbtContractList
+            .filter((contract) => contract.name.startsWith(prefix))
+            .map((sbtContract, index) => {
+              const { name } = sbtContract;
 
               return (
                 <Fragment key={'frag-' + index}>
@@ -87,16 +87,16 @@ export const SecureBlockchainTableListUi: FC<{
 
                     <TableCell key={'actions'}>
                       <Stack direction={'row'}>
-                        <Button key={'edit'} onClick={() => openDetail(data, 'edit')}>
+                        <Button key={'edit'} onClick={() => openSBTContract(sbtContract, 'edit')}>
                           Edit
                         </Button>
-                        <Button key={'app'} onClick={() => openDetail(data, 'app')}>
+                        <Button key={'app'} onClick={() => openSBTContract(sbtContract, 'app')}>
                           App
                         </Button>
                         <Button
                           key={'ownership'}
                           onClick={() => {
-                            setOpenOwnership(data.contractAddress);
+                            setOpenOwnership(sbtContract.contractAddress);
                           }}
                         >
                           Ownership
@@ -109,7 +109,10 @@ export const SecureBlockchainTableListUi: FC<{
             })}
         </TableBody>
       </Table>
-    );
+    )
+  ) : (
+    <StatusMessageElement statusMessage={infoMessage(`Loading...!`)} />
+  );
 
   return (
     <Stack spacing={2}>

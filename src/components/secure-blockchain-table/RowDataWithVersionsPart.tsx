@@ -16,11 +16,11 @@ import {
 import { TableRowComp } from '../common/TableRowComp';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
 import { useAppContext } from '../AppContextProvider';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
 
 export function RowDataWithVersionsPart({
   sbtManager,
@@ -137,7 +137,7 @@ export function RowDataWithVersionsPart({
               <MenuItem key={'new'} value={-1}>
                 New
               </MenuItem>
-              {new Array(data.length + 1).fill(0).map((_, i) => (
+              {new Array(data.length).fill(0).map((_, i) => (
                 <MenuItem key={i + 'index'} value={i}>
                   {`Row ${i + 1}`}
                 </MenuItem>
@@ -148,26 +148,25 @@ export function RowDataWithVersionsPart({
           <Button
             key={'save'}
             sx={{ whiteSpace: 'nowrap' }}
-            onClick={() =>
-              wrap(`Encrypt & save a new Row`, async () => {
+            onClick={async () => {
+              const res = await wrap(`Encrypt & save a new Row`, async () => {
                 const encContent = await sbtManager.encryptContent(newEntry);
                 if (isStatusMessage(encContent)) {
                   setStatusMessage(encContent);
                   return;
                 }
-                let res;
                 if (newRow < 0) {
-                  res = await sbtManager.addRowData(encContent);
+                  return await sbtManager.addRowData(encContent);
                 } else {
-                  res = await sbtManager.setDataRow(newRow, encContent);
+                  return await sbtManager.setDataRow(newRow, encContent);
                 }
-                if (isStatusMessage(res)) {
-                  setStatusMessage(res);
-                } else {
-                  refreshData();
-                }
-              }).catch(console.error)
-            }
+              });
+              if (isStatusMessage(res)) {
+                setStatusMessage(res);
+              } else {
+                refreshData();
+              }
+            }}
           >
             Add Entry
           </Button>

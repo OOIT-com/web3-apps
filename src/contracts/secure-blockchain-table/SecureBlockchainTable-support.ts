@@ -95,7 +95,7 @@ export class SBTManager {
   }
 
   public async getUserEncSecret(userAddress: string): Promise<string | StatusMessage> {
-    const tag = '<Get User Secret>';
+    const tag = '<Get Users Encoded Secret>';
     try {
       return this.contract.methods.userEncSecretMap(userAddress).call();
     } catch (e) {
@@ -104,7 +104,7 @@ export class SBTManager {
   }
 
   public async removeEncSecret(userAddress: string): Promise<StatusMessage | undefined> {
-    const tag = '<Remove Enc Secret>';
+    const tag = '<Remove Users Encoded Secret>';
     try {
       const from = this.publicAddress;
       await this.contract.methods.removeEncSecret(userAddress).call({ from });
@@ -115,7 +115,7 @@ export class SBTManager {
   }
 
   public async setEncSecret(userAddress: string, encSecret: string): Promise<undefined | StatusMessage> {
-    const tag = '<Set Enc Secret>';
+    const tag = '<Set Users Encoded Secret>';
     try {
       const from = this.publicAddress;
       await this.contract.methods.setEncSecret(userAddress, encSecret).call({ from });
@@ -224,7 +224,7 @@ export class SBTManager {
   }
 
   public async getRowCount(): Promise<number | StatusMessage> {
-    const tag = '<getRowCount>';
+    const tag = '<Get Row Count>';
     try {
       return toNumber(await this.contract.methods.getDataRowCount().call());
     } catch (e) {
@@ -233,7 +233,7 @@ export class SBTManager {
   }
 
   public async getVersionCount(row: number): Promise<number | StatusMessage> {
-    const tag = '<getVersionCount>';
+    const tag = `<Get Version Count for ${row}>`;
     try {
       return toNumber(await this.contract.methods.getDataRowVersionCount(row).call());
     } catch (e) {
@@ -241,10 +241,10 @@ export class SBTManager {
     }
   }
 
-  public async getRowData<O>(rowIndex: number, version: number): Promise<DataRowEntry | StatusMessage> {
+  public async getRowData<T>(rowIndex: number, version: number): Promise<DataRowEntry | StatusMessage> {
     const tag = '<getLatestVersion>';
     try {
-      const o: DataRowEntry<O> = await this.contract.methods.getDataRow(rowIndex, version).call();
+      const o: DataRowEntry<T> = await this.contract.methods.getDataRow(rowIndex, version).call();
       o.created = toNumber(o.created);
       o.status = toNumber(o.status);
       o.version = toNumber(o.version);
@@ -340,13 +340,14 @@ export class SBTManager {
       await this.contract.methods.addDataRow(content, 1).call({ from: this.publicAddress });
       const promiEvent = this.contract.methods.addDataRow(content, 1).send({ from: this.publicAddress });
 
-      const p = new Promise<number>((resolve) => {
-        promiEvent.on('confirmation', ({ receipt }) => {
-          console.log(`addRowData blockHash: ${receipt?.blockHash}`);
-          resolve(17);
-        });
-      });
-      return await p;
+      // const p = new Promise<number>((resolve) => {
+      //   promiEvent.on('confirmation', ({ receipt }) => {
+      //     console.log(`addRowData blockHash: ${receipt?.blockHash}`);
+      //     resolve(17);
+      //   });
+      // });
+      await promiEvent;
+      return await this.getRowCount();
     } catch (e) {
       return resolveAsStatusMessage(`${tag}`, e);
     }

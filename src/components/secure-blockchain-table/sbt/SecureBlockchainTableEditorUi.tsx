@@ -3,23 +3,20 @@ import { SBTManager } from '../../../contracts/secure-blockchain-table/SecureBlo
 import { CollapsiblePanel } from '../../common/CollapsiblePanel';
 import Button from '@mui/material/Button';
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { NotifyRefresh } from '../../../types';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { RowDataWithVersionsPart } from '../RowDataWithVersionsPart';
 import { SetEditablePart } from '../SetEditablePart';
 import { DataPart } from '../../common/DataPart';
-import { UserManagement } from '../UserManagement';
+import { SBTUserManagement } from '../SBTUserManagement';
 import { useAppContext } from '../../AppContextProvider';
-import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../../utils/status-message';
 
-export function SBTEditorUi({
-  sbtManager,
-  done
-}: Readonly<{
+export const SecureBlockchainTableEditorUi: FC<{
   sbtManager: SBTManager;
   done: NotifyRefresh;
-}>) {
+}> = ({ sbtManager, done }) => {
   const { wrap } = useAppContext();
   const [editable, setEditable] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -72,7 +69,7 @@ export function SBTEditorUi({
       content={
         <Stack spacing={1}>
           <StatusMessageElement statusMessage={statusMessage} />
-          {isOwner && <UserManagement sbtManager={sbtManager} editable={isOwner} />}
+          {isOwner && <SBTUserManagement sbtManager={sbtManager} editable={isOwner} />}
           <SetEditablePart sbtManager={sbtManager} editable={editable} setEditable={setEditable} isOwner={isOwner} />
 
           <DataPart
@@ -94,4 +91,4 @@ export function SBTEditorUi({
       }
     />
   );
-}
+};

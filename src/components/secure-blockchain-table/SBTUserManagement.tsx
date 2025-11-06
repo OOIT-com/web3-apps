@@ -11,7 +11,6 @@ import { isAddress } from 'ethers';
 import { displayAddress } from '../../utils/misc-util';
 import { decryptBase64 } from '../../utils/enc-dec-utils';
 import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
-import { encryptForUser } from '../shared-secret-store/SharedSecretStoreUi';
 import { AddressEntryField } from '../address-book/AddressEntryField';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -20,9 +19,10 @@ import DialogContent from '@mui/material/DialogContent';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { encryptForUser } from '../shared-secret-store/shared-secret-store-utils';
 
-export function UserManagement({
+export function SBTUserManagement({
   sbtManager,
   editable
 }: Readonly<{

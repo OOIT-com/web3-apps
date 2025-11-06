@@ -21,17 +21,17 @@ import {
   SharedSecretStore
 } from '../../contracts/shared-secret-store/SharedSecretStore-support';
 import { LDBox } from '../common/StyledBoxes';
-import { getPublicKeyStore, PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
+import { getPublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { useAppContext, WrapFun } from '../AppContextProvider';
-import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
+import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { encryptForUser } from './shared-secret-store-utils';
 
 type User = {
   user: string;
@@ -310,35 +310,6 @@ export const SharedSecretStoreUi: FC = () => {
     </Stack>
   );
 };
-
-export async function encryptForUser(
-  wrap: WrapFun,
-  userAddress: string,
-  secret: Uint8Array,
-  publicKeyStore: PublicKeyStore
-): Promise<StatusMessage | Uint8Array> {
-  const publicKey = await wrap(`Reading Public Key for ${userAddress} from PublicKeyStore...`, () =>
-    publicKeyStore.get(userAddress)
-  );
-
-  if (isStatusMessage(publicKey)) {
-    return publicKey;
-  }
-  if (!publicKey) {
-    return errorMessage(
-      `For the address ${displayAddress(
-        userAddress
-      )} no Public Key is stored on this Blockchain! Please inform the user of ${displayAddress(
-        userAddress
-      )} to publish the Public Key to the Public Key Store!`
-    );
-  }
-  const res = await encryptEthCryptoBinary(publicKey, secret);
-  if (!res) {
-    return errorMessage('Error occurred in: encryptEthCryptoBinary');
-  }
-  return res;
-}
 
 function SecretDialog({ secret, close }: { secret: string; close: NotifyFun }) {
   return (

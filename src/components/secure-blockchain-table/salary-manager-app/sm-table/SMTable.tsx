@@ -1,5 +1,5 @@
 import { Stack, useTheme } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { CellEditRequestEvent, ColDef, GetRowIdParams, GridApi } from 'ag-grid-community';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-theme-material.css'; // import material theme
@@ -15,7 +15,7 @@ import { getResizeMode, getToggleState, saveResizeMode } from './utils';
 
 import './sm-table.css';
 import { SMColumnSelection } from './SMColumnSelection';
-import {errorMessage} from "../../../../utils/status-message";
+import { errorMessage } from '../../../../utils/status-message';
 
 export type UpdateRowFun = (
   cmd: 'update' | 'reset' | 'delete',
@@ -26,15 +26,7 @@ export type UpdateRowFun = (
 
 export type SaveDataRowFun = (dataRow: SMDataRow) => void;
 
-export function SMTable({
-  dataRows,
-  prevYear,
-  newYear,
-  owner,
-  updateRow,
-  saveRowDataToContract,
-  height = 10
-}: Readonly<{
+type SMTableProps = {
   dataRows: SMDataRow[];
   prevYear: number;
   newYear: number;
@@ -43,7 +35,16 @@ export function SMTable({
   height?: number;
   updateRow?: UpdateRowFun;
   saveRowDataToContract?: SaveDataRowFun;
-}>) {
+};
+export const SMTable: FC<SMTableProps> = ({
+  dataRows,
+  prevYear,
+  newYear,
+  owner,
+  updateRow,
+  saveRowDataToContract,
+  height = 10
+}) => {
   const { web3Session } = useAppContext();
 
   const theme = useTheme();
@@ -152,4 +153,4 @@ export function SMTable({
       )}
     </Stack>
   );
-}
+};
