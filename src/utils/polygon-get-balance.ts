@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as process from 'process';
 
 import { errorMessage, StatusMessage } from '../shared/status-message';
@@ -9,13 +8,14 @@ export const getBlockchainBalance = async (address: string, isMainnet = true): P
   console.log(`*** Polygon${prefix} get balance  ***`);
   const apikey = process.env.REACT_APP_POLYGONSCAN_API_KEY;
   const url = `${host}/api?module=account&action=balance&address=${address}&apikey=${apikey}`;
-  const res = await axios.get(url, {
+  const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json'
     }
   });
   if (res.status === 200) {
-    return res.data?.result || '';
+    const data = await res.json();
+    return data?.result || '';
   } else {
     return errorMessage('Request for Polygon balance failed!', `${res.status}, ${res.status}`);
   }
