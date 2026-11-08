@@ -12,7 +12,7 @@ import { CommandName, OwnableWithBackup } from './ContractRegistryListUi';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
-import {StatusMessage} from "../../utils/status-message";
+import { StatusMessage } from '../../shared/status-message';
 
 export function ContractEntryDetailView({
   done,

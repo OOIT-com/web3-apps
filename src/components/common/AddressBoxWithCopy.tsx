@@ -7,7 +7,7 @@ import { isAddress } from 'ethers';
 import { resolveAddress } from '../../address-names';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
-import {infoMessage, isStatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage } from '../../shared/status-message';
 
 const defaultSx = {
   fontSize: '80%',

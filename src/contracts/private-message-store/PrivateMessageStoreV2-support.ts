@@ -5,7 +5,6 @@ import { Web3Session } from '../../types';
 import { privateMessageStoreV2Abi, privateMessageStoreV2Bytecode } from './PrivateMessageStoreV2-abi';
 import { getContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { decryptContentFromSender, encryptContentForReceiver } from '../../utils/nacl-util';
 import { newPublicKeyStoreV2, PublicKeyStoreV2 } from '../public-key-store/PublicKeyStoreV2-support';
 import { Buffer } from 'buffer';
@@ -13,7 +12,7 @@ import { displayAddress } from '../../utils/misc-util';
 import { deployContract } from '../deploy-contract';
 import { publicKeyStoreV2Abi, publicKeyStoreV2bytecode } from '../public-key-store/PublicKeyStoreV2-abi';
 import { DeploymentFunction } from '../types';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, resolveAsStatusMessage, StatusMessage } from '../../shared/status-message';
 
 type PrivateMessageStoreV2AbiType = typeof privateMessageStoreV2Abi;
 type PrivateMessageStoreV2Type = Contract<PrivateMessageStoreV2AbiType>;

@@ -8,7 +8,7 @@ import { useAppContext } from '../AppContextProvider';
 import { decryptText } from '../../utils/enc-dec-utils';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function EncryptionAndDecryption() {
   const { wrap, web3Session } = useAppContext();

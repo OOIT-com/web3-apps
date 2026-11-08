@@ -41,3 +41,19 @@ export const successMessage = (userMessage: string): StatusMessage => ({
 });
 export const isStatusMessage = (arg: any): arg is StatusMessage =>
   !!(arg && typeof arg === 'object' && arg.status && arg.userMessage);
+export function resolveAsStatusMessage(message: string, e: any) {
+  let m = '';
+  if (e && typeof e === 'object') {
+    if (e.error) {
+      e = e.error;
+    }
+    if (e.reason) {
+      m = e.reason;
+    } else if (e.data?.message) {
+      m = e.data?.message;
+    } else if (e.message) {
+      m = e.message;
+    }
+  }
+  return errorMessage(`${message}: ${m}`, e);
+}

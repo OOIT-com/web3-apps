@@ -14,7 +14,7 @@ import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { AddressEntryField } from '../address-book/AddressEntryField';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message"; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
+import { isStatusMessage, StatusMessage } from '../../shared/status-message'; //const receiverDisplay = (e: AddressData): string => `${e.name} ${displayAddress(e.userAddress)}`;
 
 export function PrivateMessageNew2Ui({
   done,

@@ -5,8 +5,13 @@ import moment from 'moment';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { keyBlockAbi } from './KeyBlock-abi';
 import { ContractName } from '../contract-utils';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
-import {errorMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
+import {
+  errorMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage,
+  successMessage
+} from '../../shared/status-message';
 
 type KeyBlockAbiType = typeof keyBlockAbi;
 type KeyBlockContractType = Contract<KeyBlockAbiType>;

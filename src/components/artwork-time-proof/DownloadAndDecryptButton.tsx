@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { FC, useState } from 'react';
 import { UploadInfo } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { useAppContext } from '../AppContextProvider';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { Button } from '@mui/material';

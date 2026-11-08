@@ -15,7 +15,8 @@ export const networks: NetworkInfo[] = [
     chainId: 1,
     currencySymbol: 'ETH',
     blockExplorerUrl: 'https://etherscan.io',
-    rpcUrl: 'https://mainnet.infura.io/v3/YOUR-PROJECT-ID',
+    // rpcUrl: 'https://eth.publicrpc.com',
+    rpcUrl: 'https://mainnet.infura.io/v3/05a70a58a58e4884bce7b11116f2e75d',
     PostFix: 'ETHEREUM_MAINNET',
     isMainnet: true,
     isEVM: true
@@ -25,7 +26,7 @@ export const networks: NetworkInfo[] = [
     chainId: 4,
     currencySymbol: 'ETH',
     blockExplorerUrl: 'https://rinkeby.etherscan.io',
-    rpcUrl: 'https://rinkeby.infura.io/v3/YOUR-PROJECT-ID',
+    rpcUrl: 'https://rpc.sepolia.org',
     PostFix: 'ETHEREUM_RINKEBY',
     isMainnet: false,
     isEVM: true

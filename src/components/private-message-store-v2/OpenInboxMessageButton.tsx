@@ -4,7 +4,7 @@ import { Button, Stack } from '@mui/material';
 import { DecryptedDataList, Message, SetDecryptedDataList } from './private-message-store2-types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export type OpenInboxMessageButtonProps = {
   sender: string;

@@ -13,7 +13,13 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContractName } from '../../contracts/contract-utils';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import {errorMessage, infoMessage, isStatusMessage, successMessage, warningMessage} from "../../utils/status-message";
+import {
+  errorMessage,
+  infoMessage,
+  isStatusMessage,
+  successMessage,
+  warningMessage
+} from '../../shared/status-message';
 
 export function UniqueNameStoreUi() {
   const app = useAppContext();

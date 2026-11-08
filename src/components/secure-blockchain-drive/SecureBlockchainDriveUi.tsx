@@ -10,7 +10,7 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { AppTopTitle } from '../common/AppTopTitle';
 import artworkPng from '../images/artwork.png';
 import help from './SecureBlockchainDrive.md';
-import { StatusMessage } from '../../utils/status-message';
+import { StatusMessage } from '../../shared/status-message';
 import { ShamirSecretSharingUi } from './ShamirSecretSharingUi';
 
 export const SecureBlockchainDriveUi = () => {

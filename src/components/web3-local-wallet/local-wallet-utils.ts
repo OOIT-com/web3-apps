@@ -1,6 +1,6 @@
 import { HDNodeWallet, Wallet } from 'ethers';
 import { isMnemonic, isPrivateKey } from '../../utils/ethers-utils';
-import {errorMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, StatusMessage } from '../../shared/status-message';
 
 export type LocalWalletData = { name: string; address: string; encWalletJson: string };
 export const local_wallet_list_name = '__LOCAL_WALLET_LIST_OOIT__';

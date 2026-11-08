@@ -11,9 +11,8 @@ import {
   newAddressDataTemplate
 } from '../../contracts/address-book/AddressBook-support';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { useAppContext } from '../AppContextProvider';
-import {StatusMessage, warningMessage} from "../../utils/status-message";
+import { resolveAsStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function AddressDataEditDialog({
   done,

@@ -16,13 +16,13 @@ import keyPairStorePng from '../images/key-pair-store.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { ButtonPanel } from '../common/ButtonPanel';
 import {
-    errorMessage,
-    infoMessage,
-    isStatusMessage,
-    StatusMessage,
-    successMessage,
-    warningMessage
-} from "../../utils/status-message";
+  errorMessage,
+  infoMessage,
+  isStatusMessage,
+  StatusMessage,
+  successMessage,
+  warningMessage
+} from '../../shared/status-message';
 
 export function PublicKeyStoreV2Ui() {
   const { wrap, web3Session, dispatchSnackbarMessage } = useAppContext();

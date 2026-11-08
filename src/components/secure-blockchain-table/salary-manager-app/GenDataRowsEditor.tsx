@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import { StatusMessageElement } from '../../common/StatusMessageElement';
 
 import { GenTable } from './gen-table/GenTable';
-import { GenDataRow, GenTableDef, GenTableMode, GenUpdateRowFun, OperationalFields } from './gen-table/gen-types';
+import { GenDataRow, GenTableMode, GenUpdateRowFun, OperationalFields } from './gen-table/gen-types';
 import { PRecord, PRecordCompatible } from '../../../ui-factory/types';
 import {
   createUpdatedFieldsMap,
@@ -18,7 +18,8 @@ import {
   saveRowData
 } from './gen-table/gen-utils';
 import { metadata } from './gen-table/metadata/metadata';
-import {errorMessage, isStatusMessage, StatusMessage, warningMessage} from "../../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../shared/status-message';
+import { SBTMetaData } from '../sbt-types';
 
 export function GenDataRowsEditor({
   sbtManager,
@@ -28,26 +29,16 @@ export function GenDataRowsEditor({
 }: Readonly<{
   sbtManager: SBTManager;
   initialData: string;
-  metaData: string;
+  metaData: SBTMetaData;
   mode?: GenTableMode;
 }>) {
   const { wrap } = useAppContext();
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [owner, setOwner] = useState('');
-  const [def, setDef] = useState<GenTableDef>();
   const [dataRowEntries, setDataRowEntries] = useState<DataRowEntry<PRecord>[]>();
   const [dataRows, setDataRows] = useState<GenDataRow[]>([]);
 
-  useEffect(() => {
-    if (metaData) {
-      const def = metadata[metaData];
-      if (def) {
-        setDef(def);
-      } else {
-        setStatusMessage(errorMessage('No GenTableDef found from metaData!'));
-      }
-    }
-  }, [metaData]);
+  const def = metadata.def;
 
   const refreshRowDataFromContract = useCallback(async () => {
     setStatusMessage(undefined);
@@ -55,7 +46,13 @@ export function GenDataRowsEditor({
       setStatusMessage(warningMessage(`No initial data found for ${sbtManager.name}!`));
       return;
     }
-    const parseInitialData = JSON.parse(initialData || '{}') as GenInitialData;
+    let parseInitialData = {};
+    try {
+      parseInitialData = JSON.parse(initialData || '{}') as GenInitialData;
+    } catch (e) {
+      setStatusMessage(errorMessage((e as Error).message));
+      return;
+    }
     // owner
     const owner = await sbtManager.owb.owner();
     if (isStatusMessage(owner)) {
@@ -69,7 +66,11 @@ export function GenDataRowsEditor({
       setStatusMessage(rowDataEntries0);
     } else {
       setDataRowEntries(rowDataEntries0);
-      const initialDataRows = mergeInitialDataAndRowData(def, parseInitialData.smTableRows, rowDataEntries0);
+      const initialDataRows = mergeInitialDataAndRowData(
+        def,
+        (parseInitialData as GenInitialData).smTableRows,
+        rowDataEntries0
+      );
 
       // merge unsaved changes
       setDataRows((currentDataRows) => {

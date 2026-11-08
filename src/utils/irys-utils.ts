@@ -1,6 +1,6 @@
 import { IrysAccess } from './IrysAccess';
 
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from './status-message';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../shared/status-message';
 
 export const IRYS_GATEWAY = process.env.REACT_APP_IRYS_GATEWAY;
 

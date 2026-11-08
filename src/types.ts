@@ -1,6 +1,6 @@
 import { DecryptFun } from './components/web3-local-wallet/connect-with-secret';
 import Web3 from 'web3';
-import { StatusMessage } from './utils/status-message';
+import { StatusMessage } from './shared/status-message';
 
 export function isError(e: any): e is Error {
   return e?.message;

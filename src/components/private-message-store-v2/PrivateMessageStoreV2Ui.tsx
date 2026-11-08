@@ -18,7 +18,7 @@ import {
   PrivateMessageStoreV2
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { ButtonPanel } from '../common/ButtonPanel';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function PrivateMessageStoreV2Ui() {
   const [value, setValue] = React.useState(0);

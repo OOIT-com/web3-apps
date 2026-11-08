@@ -6,12 +6,11 @@ import { FileUploader } from 'react-drag-drop-files';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { LDBox } from '../common/StyledBoxes';
 import { createSha256Hash } from '../../utils/crypto-util';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { IrysAccess } from '../../utils/IrysAccess';
 import { useAppContext } from '../AppContextProvider';
 import { DownloadLinkWithCopy } from '../common/DownloadLinkWithCopy';
-import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { isStatusMessage, resolveAsStatusMessage, StatusMessage } from '../../shared/status-message';
 
 const LINK_URL = 'https://gateway.irys.xyz';
 

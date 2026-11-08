@@ -1,11 +1,16 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { artworkTimeProofAbi } from './ArtworkTimeProof';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
+import {
+  errorMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage,
+  successMessage
+} from '../../shared/status-message';
 
 type ArtworkTimeProofType = typeof artworkTimeProofAbi;
 export type UploadInfo = Partial<ArtworkMetaData> & {

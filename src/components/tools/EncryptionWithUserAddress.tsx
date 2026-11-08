@@ -10,7 +10,7 @@ import { useAppContext } from '../AppContextProvider';
 import { AddressEntryField } from '../address-book/AddressEntryField';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 import { encryptEthCrypto } from '../../utils/eth-crypto-utils';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function EncryptionWithUserAddress() {
   const { wrap, web3Session } = useAppContext();

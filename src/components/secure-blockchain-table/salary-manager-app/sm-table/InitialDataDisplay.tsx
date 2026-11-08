@@ -4,6 +4,7 @@ import { SMTable } from './SMTable';
 import { Stack } from '@mui/material';
 import { StatusMessageElement } from '../../../common/StatusMessageElement';
 import { updateCompensationComparisons } from './sm-table-col-def';
+import { errorMessage } from '../../../../shared/status-message';
 
 export function InitialDataDisplay({
   initialData
@@ -15,7 +16,12 @@ export function InitialDataDisplay({
   const content: ReactNode[] = [];
 
   if (initialData) {
-    const smData = JSON.parse(initialData) as SMInitialData;
+    let smData = {} as SMInitialData;
+    try {
+      smData = JSON.parse(initialData) as SMInitialData;
+    } catch (e) {
+      return <StatusMessageElement key={'error'} statusMessage={errorMessage((e as Error).message)} />;
+    }
     const { smTableRows, prevYear, newYear } = smData;
     const dataRows = smTableRows.map((dataRow) => updateCompensationComparisons(dataRow));
     content.push(<SMTable key={'sm-table'} dataRows={dataRows} newYear={newYear} prevYear={prevYear} />);

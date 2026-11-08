@@ -1,12 +1,18 @@
 import Web3 from 'web3';
 
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { Contract } from 'web3-eth-contract';
 import { getOwnableWithBackup, OwnableWithBackup } from '../ownable-with-backup/OwnableWithBackup-support';
 import { addressBookAbi, addressBookBytecode } from './AddressBook-abi';
 import { ContractName } from '../contract-utils';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../utils/status-message";
+import {
+  errorMessage,
+  infoMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage,
+  successMessage
+} from '../../shared/status-message';
 
 export { addressBookAbi, addressBookBytecode };
 

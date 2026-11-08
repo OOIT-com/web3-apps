@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as process from 'process';
 
-import { errorMessage, StatusMessage } from './status-message';
+import { errorMessage, StatusMessage } from '../shared/status-message';
 // tutorial
 export const getBlockchainBalance = async (address: string, isMainnet = true): Promise<StatusMessage | string> => {
   const prefix = isMainnet ? '' : '-testnet';

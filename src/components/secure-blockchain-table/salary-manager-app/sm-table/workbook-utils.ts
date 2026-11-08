@@ -2,7 +2,7 @@ import { utils, WorkBook } from 'xlsx';
 import { AllData, CurrencyRate, SMInitialData, Office, OfficeRate, Year } from '../types';
 import moment from 'moment';
 import { prepareDataRows } from './utils';
-import {errorMessage, infoMessage, StatusMessage} from "../../../../utils/status-message";
+import { errorMessage, infoMessage, StatusMessage } from '../../../../shared/status-message';
 
 export const workbookToInitialData = (wb: WorkBook): SMInitialData | StatusMessage => {
   // Years

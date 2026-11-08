@@ -7,7 +7,7 @@ import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { InitialDataDisplay } from './sm-table/InitialDataDisplay';
 import { getInitialDataFromContract, saveInitialData } from './sm-app-utils';
 import { InititalDataUploaderButton } from './InititalDataUploaderButton';
-import {infoMessage, isStatusMessage, StatusMessage, successMessage} from "../../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../../shared/status-message';
 
 export function SalaryManagerInitialDataPanel({
   readonly,

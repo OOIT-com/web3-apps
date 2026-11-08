@@ -7,13 +7,18 @@ import {
   ContractDataWithIndex,
   getContractRegistry
 } from '../contract-registry/ContractRegistry-support';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { getOwnableWithBackup, OwnableWithBackup } from '../ownable-with-backup/OwnableWithBackup-support';
 import { decryptContent, EncPrefix, encryptContent, secretKey64ToBoxKeyPair } from '../../utils/nacl-util';
 import { BoxKeyPair } from 'tweetnacl';
 import { toNumber } from '../contract-utils';
 import { decryptBase64 } from '../../utils/enc-dec-utils';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import {
+  errorMessage,
+  infoMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage
+} from '../../shared/status-message';
 
 type SecureBlockchainTableAbiType = typeof secureBlockchainTableAbi;
 type SecureBlockchainTableType = Contract<SecureBlockchainTableAbiType>;

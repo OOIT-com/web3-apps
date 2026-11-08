@@ -7,7 +7,7 @@ import { getOwnableWithBackup } from '../../contracts/ownable-with-backup/Ownabl
 import { toUserMessage } from '../../contracts/contract-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import {errorMessage} from "../../utils/status-message";
+import { errorMessage } from '../../shared/status-message';
 
 export type BackupOwnerEditProps = {
   contractAddress: string;

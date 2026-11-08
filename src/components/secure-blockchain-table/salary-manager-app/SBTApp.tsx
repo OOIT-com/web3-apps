@@ -9,14 +9,12 @@ import { StatusMessageElement } from '../../common/StatusMessageElement';
 import { SalaryManagerDataRowsEditor } from './SalaryManagerDataRowsEditor';
 import { SMTableMode } from './sm-table/types';
 import Button from '@mui/material/Button';
-import { GenDataRowsEditor } from './GenDataRowsEditor';
-import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../../shared/status-message';
 
 export function SBTApp({ sbtManager, done }: Readonly<{ sbtManager: SBTManager; done: NotifyFun }>) {
   const [isOwner, setIsOwner] = useState(false);
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
   const [initialData, setInitialData] = useState('');
-  const [metaData, setMetaData] = useState('');
   const [mode, setMode] = useState<SMTableMode>('readonly');
 
   useEffect(() => {
@@ -37,16 +35,6 @@ export function SBTApp({ sbtManager, done }: Readonly<{ sbtManager: SBTManager; 
     });
   }, [sbtManager]);
 
-  useEffect(() => {
-    sbtManager.getMetaData().then((res) => {
-      if (isStatusMessage(res)) {
-        setStatusMessage(res);
-      } else {
-        setMetaData(res);
-      }
-    });
-  }, [sbtManager]);
-
   const content: ReactNode[] = [
     <StatusMessageElement
       key={'status-message'}
@@ -61,17 +49,23 @@ export function SBTApp({ sbtManager, done }: Readonly<{ sbtManager: SBTManager; 
       setInitialData={setInitialData}
     />
   ];
-  if (metaData && initialData) {
-    content.push(
-      <GenDataRowsEditor
-        key={'gen-data-rows-editor'}
-        sbtManager={sbtManager}
-        metaData={metaData}
-        initialData={initialData}
-        mode={mode}
-      />
-    );
-  }
+
+  // if (metaData && typeof metaData === 'object') {
+  //   if (metaData.type === 'address') {
+  //     content.push(<Box id={'address-box'}>Welcome to the address box....</Box>);
+  //   } else if (initialData) {
+  //     content.push(
+  //       <GenDataRowsEditor
+  //         key={'gen-data-rows-editor'}
+  //         sbtManager={sbtManager}
+  //         metaData={metaData}
+  //         initialData={initialData}
+  //         mode={mode}
+  //       />
+  //     );
+  //   }
+  // }
+
   if (initialData) {
     content.push(
       <SalaryManagerDataRowsEditor key={'table-editor'} sbtManager={sbtManager} initialData={initialData} mode={mode} />

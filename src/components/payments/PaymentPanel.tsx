@@ -11,7 +11,7 @@ import { getContractBalance, sendAmount } from '../../utils/web3-utils';
 import { useAppContext } from '../AppContextProvider';
 import { displayAddress } from '../../utils/misc-util';
 import { EthTextField } from '../common/EthTextField';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export const PaymentPanel: FC<{ web3Session: Web3Session }> = ({ web3Session }) => {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();

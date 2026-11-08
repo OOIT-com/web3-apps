@@ -11,6 +11,7 @@ import { EncryptionWithUserAddress } from './EncryptionWithUserAddress';
 import { AppTopTitle } from '../common/AppTopTitle';
 import toolsImg from '../images/tools.png';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { TransactionFinder } from './TransactionFinder';
 
 const isDev = process.env.REACT_APP_ENV === 'DEV';
 
@@ -37,6 +38,7 @@ export function ToolsUi() {
               <Tab key={'2'} label="Encryption for User" />
               {isDev && <Tab key={'3'} label="Contract Deployment" />}
               {isDev && <Tab key={'4'} label="Event Finder" />}
+              {isDev && <Tab key={'5'} label="Transaction Finder" />}
             </Tabs>
           </Box>
           <Container sx={{ marginTop: '1em' }}>
@@ -57,6 +59,11 @@ export function ToolsUi() {
             {isDev && (
               <Box key={4} sx={{ display: tabValue === 4 ? 'block' : 'none' }}>
                 <EventFinder />
+              </Box>
+            )}{' '}
+            {isDev && (
+              <Box key={4} sx={{ display: tabValue === 5 ? 'block' : 'none' }}>
+                <TransactionFinder />
               </Box>
             )}
           </Container>

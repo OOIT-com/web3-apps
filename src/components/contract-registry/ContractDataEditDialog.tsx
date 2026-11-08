@@ -12,7 +12,7 @@ import { Button, Stack, TextField, TextFieldProps } from '@mui/material';
 import moment from 'moment/moment';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function ContractDataEditDialog({
   done,

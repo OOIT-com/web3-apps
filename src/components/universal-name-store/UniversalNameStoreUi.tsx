@@ -17,7 +17,7 @@ import { EventListenerUi } from './EventListenerUi';
 import { NoContractFound } from '../common/NoContractFound';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { UniversalNamePropertiesUi } from './UniversalNamePropertiesUi';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function UniversalNameStoreUi() {
   const app = useAppContext();

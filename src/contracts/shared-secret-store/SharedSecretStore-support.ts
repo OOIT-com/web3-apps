@@ -2,10 +2,15 @@ import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
 import { sharedSecretStoreAbi, sharedSecretStoreBytecode } from './SharedSecretStore-abi';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
 import { deployContract } from '../deploy-contract';
 import { newEncSecretByPublicKey } from '../../utils/enc-dec-utils';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import {
+  errorMessage,
+  infoMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage
+} from '../../shared/status-message';
 
 type SharedSecretStoreAbiType = typeof sharedSecretStoreAbi;
 type SharedSecretStoreContractType = Contract<SharedSecretStoreAbiType>;

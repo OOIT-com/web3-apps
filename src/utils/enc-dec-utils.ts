@@ -3,7 +3,7 @@ import { DecryptFun } from '../components/web3-local-wallet/connect-with-secret'
 import { Web3Session } from '../types';
 import { newBoxKeyPair } from './nacl-util';
 import { encryptEthCryptoBinary } from './eth-crypto-utils';
-import {errorMessage, StatusMessage} from "./status-message";
+import { errorMessage, StatusMessage } from '../shared/status-message';
 
 export function uint8Array2Hex(u: Uint8Array): string {
   return Buffer.from(u).toString('hex');

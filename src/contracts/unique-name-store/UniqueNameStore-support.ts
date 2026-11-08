@@ -3,7 +3,7 @@ import { Contract } from 'web3-eth-contract';
 import { uniqueNameStoreAbi } from './UniqueNameStore-abi';
 import { ContractRegistry } from '../contract-registry/ContractRegistry-support';
 import { ContractName } from '../contract-utils';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 type UniqueNameStoreAbiType = typeof uniqueNameStoreAbi;
 type UniqueNameStoreContractType = Contract<UniqueNameStoreAbiType>;

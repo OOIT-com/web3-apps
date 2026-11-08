@@ -1,6 +1,6 @@
 import { getNetworkInfo } from '../network-info';
 import { BigNumber } from 'alchemy-sdk';
-import { StatusMessage } from '../utils/status-message';
+import { StatusMessage } from '../shared/status-message';
 
 export const toUserMessage = (statusMessage: StatusMessage) => {
   const sm = { ...statusMessage, systemMessage: statusMessage.userMessage };

@@ -4,7 +4,7 @@ import { Button, Stack } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { OutMessage, SetOutMessages } from './private-message-store2-types';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export type DecryptButtonProps = {
   address?: string;

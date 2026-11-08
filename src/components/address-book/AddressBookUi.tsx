@@ -16,7 +16,7 @@ import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import addressBookImg from '../images/address-book.png';
 import { AppTopTitle } from '../common/AppTopTitle';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function AddressBookUi() {
   const { wrap, web3Session, addressData = [], setAddressData } = useAppContext();

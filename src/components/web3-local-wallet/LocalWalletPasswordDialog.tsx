@@ -10,7 +10,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { removeAllLocalWalletFromLocalStorage } from './local-wallet-utils';
-import { errorMessage, StatusMessage, successMessage, warningMessage } from '../../utils/status-message';
+import { errorMessage, StatusMessage, successMessage, warningMessage } from '../../shared/status-message';
 
 const localStorageWalletPasswordHash = '__EVM_WALLET_PASSWORD_HASH_OOIT__';
 const sessionStorageWalletPassword = '__EVM_WALLET_PASSWORD_HASH_OOIT__';

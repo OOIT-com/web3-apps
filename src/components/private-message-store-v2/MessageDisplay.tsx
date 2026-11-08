@@ -6,7 +6,7 @@ import { AddressDisplayWithAddressBook } from '../common/AddressDisplayWithAddre
 import { ButtonPanel } from '../common/ButtonPanel';
 import { NotifyFun } from '../../types';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import {StatusMessage} from "../../utils/status-message";
+import { StatusMessage } from '../../shared/status-message';
 
 export const MessageDisplay: FC<{
   message: Message;

@@ -7,7 +7,7 @@ import { getNetworkInfo } from '../network-info';
 import { Buffer } from 'buffer';
 import type { Readable } from 'stream';
 import { Web3BaseProvider } from 'web3';
-import { errorMessage, isStatusMessage, StatusMessage } from './status-message';
+import { errorMessage, isStatusMessage, StatusMessage } from '../shared/status-message';
 import BaseWebIrys from '@irys/web-upload/dist/types/base';
 
 export type ResponseType = { id: string; timestamp: number };

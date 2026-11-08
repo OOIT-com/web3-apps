@@ -6,7 +6,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import Button from '@mui/material/Button';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { useAppContext } from '../AppContextProvider';
-import {isStatusMessage, StatusMessage, successMessage, warningMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage, successMessage, warningMessage } from '../../shared/status-message';
 
 export function SetEditablePart({
   sbtManager,

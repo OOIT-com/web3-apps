@@ -19,7 +19,7 @@ import artworkPng from '../images/artwork.png';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
 import help from './ArtworkHelp.md';
-import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function ArtworkUi() {
   const { wrap, web3Session } = useAppContext();

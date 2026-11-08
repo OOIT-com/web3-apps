@@ -1,5 +1,5 @@
 import { Web3Session } from '../types';
-import {StatusMessage} from "../utils/status-message";
+import { StatusMessage } from '../shared/status-message';
 
 export type ConstructorArgDef = { name: string };
 

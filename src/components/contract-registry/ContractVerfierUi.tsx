@@ -11,7 +11,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { ContracVerifierDialog } from './ContracVerifierDialog';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export const contractVerifierTitle = 'Contract Verification';
 

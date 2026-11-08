@@ -8,7 +8,7 @@ import { initKeyBlock } from '../contracts/key-block/KeyBlock-support';
 import { loadDefaultPublicKeyStoreV2 } from '../contracts/public-key-store/PublicKeyStoreV2-support';
 import { initArtworkTimeProof } from '../contracts/artwork-time-proof/ArtworkTimeProof-support';
 import { AppContextData, SetAddressData } from './AppContextProvider';
-import { errorMessage, isStatusMessage, StatusMessage } from '../utils/status-message';
+import { errorMessage, isStatusMessage, StatusMessage } from '../shared/status-message';
 
 export const reloadAddressData = async (setAddressData: SetAddressData): Promise<StatusMessage | undefined> => {
   const addressBook = getAddressBook();

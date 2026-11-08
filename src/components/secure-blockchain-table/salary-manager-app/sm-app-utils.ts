@@ -10,7 +10,7 @@ import {
   UpdatedFieldsMap
 } from './sm-table/types';
 import { read, WorkBook } from 'xlsx';
-import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../../shared/status-message';
 
 export const getSMInitialDataFromContract = async (
   wrap: WrapFun,

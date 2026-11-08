@@ -6,7 +6,7 @@ import { AttributeTableUi } from '../../ui-factory/AttributeTableUi';
 import { toPRecord } from '../../ui-factory/utils';
 import { formatIso1000 } from '../../utils/moment-utils';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { errorMessage } from '../../utils/status-message';
+import { errorMessage } from '../../shared/status-message';
 import { UploadiInfoDisplay } from './UploadInfoDisplay';
 
 const attDefs: AttributeDef[] = [

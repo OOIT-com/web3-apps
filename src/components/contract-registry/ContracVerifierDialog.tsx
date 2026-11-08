@@ -12,7 +12,7 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { getNetworkInfo } from '../../network-info';
 import { getMetaData } from '../artwork-time-proof/irys-utils';
 import { useAppContext } from '../AppContextProvider';
-import { errorMessage, infoMessage, StatusMessage } from '../../utils/status-message';
+import { errorMessage, infoMessage, StatusMessage } from '../../shared/status-message';
 
 export function ContracVerifierDialog({
   done,

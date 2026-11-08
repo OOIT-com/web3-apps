@@ -25,7 +25,7 @@ import secretVaultPng from '../images/secret-vault.png';
 import { AppTopTitle } from '../common/AppTopTitle';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { SecretVaultDownloadDialog } from './SecretVaultDownloadDialog';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 const SecretVaultUi: FC = () => {
   const { wrap, web3Session } = useAppContext();

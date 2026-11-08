@@ -9,7 +9,7 @@ import { formatIso1000 } from '../../utils/moment-utils';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import { StatusMessage } from '../../utils/status-message';
+import { StatusMessage } from '../../shared/status-message';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 
 export const ArtworkTable: FC<{

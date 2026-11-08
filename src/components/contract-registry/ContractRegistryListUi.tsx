@@ -20,7 +20,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { NoContractFound } from '../common/NoContractFound';
 import { ContractName } from '../../contracts/contract-utils';
 import { displayAddress } from '../../utils/misc-util';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export const OwnableWithBackup = 'OwnableWithBackup';
 export const Owner = 'Owner';

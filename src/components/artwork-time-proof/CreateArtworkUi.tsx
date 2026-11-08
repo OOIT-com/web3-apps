@@ -25,7 +25,7 @@ import { createZip, ZipEntry } from '../../utils/zip-utils';
 import { safeFilename } from '../../utils/misc-util';
 import { EncryptionType } from './types';
 import { loadIrysData } from '../../utils/irys-utils';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../utils/status-message';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function CreateArtworkUi({
   irysAccess,

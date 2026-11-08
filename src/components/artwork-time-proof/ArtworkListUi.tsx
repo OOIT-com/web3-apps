@@ -12,7 +12,7 @@ import { ArtworkDetailUi } from './ArtworkDetailUi';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import { ArtworkTable } from './ArtworkTable';
-import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { displayAddress } from '../../utils/misc-util';
 
 export const ArtworkListUi: FC<{ artworkTimeProof: ArtworkTimeProof }> = ({ artworkTimeProof }) => {

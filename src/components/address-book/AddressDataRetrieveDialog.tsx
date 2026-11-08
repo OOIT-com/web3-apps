@@ -11,7 +11,7 @@ import { AddressData, getAddressBook } from '../../contracts/address-book/Addres
 import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
-import {infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function AddressDataRetrieveDialog({
   done,

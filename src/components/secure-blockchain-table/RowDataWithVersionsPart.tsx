@@ -19,7 +19,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { Base64Display } from '../common/Base64Display';
 import { useAppContext } from '../AppContextProvider';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 
 export function RowDataWithVersionsPart({

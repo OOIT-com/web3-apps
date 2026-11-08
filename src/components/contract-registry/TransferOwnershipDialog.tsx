@@ -9,7 +9,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
 import { AddressEntryField } from '../address-book/AddressEntryField';
-import {StatusMessage} from "../../utils/status-message";
+import { StatusMessage } from '../../shared/status-message';
 
 export function TransferOwnershipDialog({
   done,

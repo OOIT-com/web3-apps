@@ -7,7 +7,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { addressBookAbi, addressBookBytecode } from '../../contracts/address-book/AddressBook-support';
 import { deployContract } from '../../contracts/deploy-contract';
 import { useAppContext } from '../AppContextProvider';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function ContractDeployment() {
   const { wrap, web3Session } = useAppContext();

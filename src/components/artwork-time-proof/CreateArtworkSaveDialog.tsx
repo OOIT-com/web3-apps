@@ -21,7 +21,7 @@ import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import moment from 'moment';
 import { downloadLink } from '../../utils/irys-utils';
 import { formatIso } from '../../utils/moment-utils';
-import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../shared/status-message';
 
 export const CreateArtworkSaveDialog: FC<{
   irysAccess: IrysAccess;

@@ -1,18 +1,18 @@
 import { Button, Stack, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import * as React from 'react';
 import { FC, Fragment, useCallback, useEffect, useState } from 'react';
-import { StatusMessageElement } from '../../common/StatusMessageElement';
-import { ContractDataWithIndex } from '../../../contracts/contract-registry/ContractRegistry-support';
+import { StatusMessageElement } from '../common/StatusMessageElement';
+import { ContractDataWithIndex } from '../../contracts/contract-registry/ContractRegistry-support';
 import {
   getSecureBlockchainTableList,
   SBTManager
-} from '../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
+} from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { SecureBlockchainTablePanel } from './SecureBlockchainTablePanel';
-import { CollapsiblePanel } from '../../common/CollapsiblePanel';
-import { OwnableWithBackupDialog } from '../../ownable-with-backup/OwnableWithBackupDialog';
-import { SBTManagerData, SBTOpenMode } from '../SecureBlockchainTableUi';
-import { useAppContext } from '../../AppContextProvider';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../../utils/status-message';
+import { CollapsiblePanel } from '../common/CollapsiblePanel';
+import { OwnableWithBackupDialog } from '../ownable-with-backup/OwnableWithBackupDialog';
+import { SBTManagerData, SBTOpenMode } from './SecureBlockchainTableUi';
+import { useAppContext } from '../AppContextProvider';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export const SecureBlockchainTableListUi: FC<{
   setCurrentSBT: (config: SBTManagerData) => void;

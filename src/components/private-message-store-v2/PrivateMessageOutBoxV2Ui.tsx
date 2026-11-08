@@ -27,7 +27,7 @@ import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { DecryptButton2 } from './DecryptButton2';
 import { OutMessage, SetOutMessages } from './private-message-store2-types';
 import { OutMessageDisplay } from './OutMessageDisplay';
-import {infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function PrivateMessageOutBoxV2Ui({
   privateMessageStoreV2

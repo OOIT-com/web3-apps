@@ -7,7 +7,7 @@ import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
-import {errorMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { errorMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function SeedPhrase2Keys() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();

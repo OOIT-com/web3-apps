@@ -5,7 +5,7 @@ import { FC, useState } from 'react';
 import { LDBox, PublicKeyBox } from './StyledBoxes';
 import { displayKey } from '../../utils/enc-dec-utils';
 import { useAppContext } from '../AppContextProvider';
-import {infoMessage} from "../../utils/status-message";
+import { infoMessage } from '../../shared/status-message';
 
 const defaultSx = {
   fontSize: '80%',

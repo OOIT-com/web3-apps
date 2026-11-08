@@ -3,7 +3,7 @@ import { WrapFun } from '../../../AppContextProvider';
 import { DataRowEntry, SBTManager } from '../../../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { IdValue, PRecord } from '../../../../ui-factory/types';
 import { SMDataRowKeys, SMDataRowUpdateableKeys } from '../sm-table/types';
-import {isStatusMessage, StatusMessage} from "../../../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../../../shared/status-message';
 
 const toggleStatePrefix = '__gen_toggleState_';
 export const getToggleState = (key: string): string[] => {

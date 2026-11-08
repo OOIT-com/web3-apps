@@ -20,7 +20,7 @@ import { TableRowComp } from '../common/TableRowComp';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { AttributeDef, PRecord } from '../../ui-factory/types';
 import { AttributeTableUi } from '../../ui-factory/AttributeTableUi';
-import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 const attDefs: AttributeDef[] = [{ name: 'key' }, { name: 'value' }];
 

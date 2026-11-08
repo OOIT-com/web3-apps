@@ -30,7 +30,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import { isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { encryptForUser } from './shared-secret-store-utils';
 
 type User = {

@@ -5,7 +5,7 @@ import { Stack, TextField } from '@mui/material';
 import { StatusMessageElement } from './StatusMessageElement';
 import { CollapsiblePanel } from './CollapsiblePanel';
 import { useAppContext } from '../AppContextProvider';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function DataPart({
   editable,

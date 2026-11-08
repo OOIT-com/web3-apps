@@ -1,7 +1,6 @@
 import Web3 from 'web3/lib/types';
 import { Contract } from 'web3-eth-contract';
-import { resolveAsStatusMessage } from '../utils/status-message-utils';
-import {errorMessage, StatusMessage} from "../utils/status-message";
+import { errorMessage, resolveAsStatusMessage, StatusMessage } from '../shared/status-message';
 
 export async function deployContract({
   web3,

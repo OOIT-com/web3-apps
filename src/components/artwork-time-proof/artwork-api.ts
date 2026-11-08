@@ -8,8 +8,13 @@ import * as nacl from 'tweetnacl';
 import { decrypt, encrypt } from '../../utils/nacl-util';
 import { createSha256Hash } from '../../utils/crypto-util';
 import { getMySecretKeyV2 } from '../../contracts/public-key-store/PublicKeyStoreV2-support';
-import { resolveAsStatusMessage } from '../../utils/status-message-utils';
-import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../utils/status-message';
+import {
+  errorMessage,
+  isStatusMessage,
+  resolveAsStatusMessage,
+  StatusMessage,
+  warningMessage
+} from '../../shared/status-message';
 import { EncryptionType } from './types';
 
 export async function getMyArtworks(artworkTimeProof: ArtworkTimeProof): Promise<ArtworkEntry[] | StatusMessage> {

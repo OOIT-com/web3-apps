@@ -2,7 +2,7 @@ import { FileUploader } from 'react-drag-drop-files';
 import { loadWorkBook } from './sm-app-utils';
 import { workbookToInitialData } from './sm-table/workbook-utils';
 import Button from '@mui/material/Button';
-import {isStatusMessage, StatusMessage} from "../../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../../shared/status-message';
 
 export function InititalDataUploaderButton({
   setUploadResult

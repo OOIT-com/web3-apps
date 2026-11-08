@@ -1,6 +1,6 @@
 import { WrapFun } from '../AppContextProvider';
 import { PublicKeyStore } from '../../contracts/public-key-store/PublicKeyStore-support';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { displayAddress } from '../../utils/misc-util';
 import { encryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 
@@ -14,11 +14,9 @@ export async function encryptForUser(
     `Reading Public Key for user address ${displayAddress(userAddress)} from PublicKeyStore...`,
     () => publicKeyStore.get(userAddress)
   );
-
   if (!publicKey || publicKey === '0x') {
     return errorMessage(`No public key found for user address: ${displayAddress(userAddress)}`);
   }
-
   if (isStatusMessage(publicKey)) {
     return publicKey;
   }

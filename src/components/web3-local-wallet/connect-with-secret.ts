@@ -7,7 +7,7 @@ import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
 import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 import { Wallet } from 'alchemy-sdk';
-import { errorMessage, infoMessage } from '../../utils/status-message';
+import { errorMessage, infoMessage } from '../../shared/status-message';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
 

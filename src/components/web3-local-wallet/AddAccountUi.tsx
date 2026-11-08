@@ -8,7 +8,7 @@ import { Wallet } from 'ethers';
 import { FC, useState } from 'react';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { PasswordTextField } from '../common/PasswordTextField';
-import {errorMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export const AddAccountUi: FC<{ walletPassword: string; refreshLocalWalletList: NotifyFun }> = ({
   walletPassword,

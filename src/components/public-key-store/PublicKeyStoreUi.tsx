@@ -17,7 +17,7 @@ import { TableRowInfo } from '../common/TableRowInfo';
 import { AppTopTitle } from '../common/AppTopTitle';
 import publicKeyPng from '../images/public-key.png';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
-import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
+import { infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../shared/status-message';
 
 export function PublicKeyStoreUi() {
   const app = useAppContext();

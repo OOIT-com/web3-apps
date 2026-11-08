@@ -13,7 +13,7 @@ import { saveAs } from 'file-saver';
 import { StatusMessageDialog } from '../common/StatusMessageDialog';
 import { TableComp } from '../common/TableComp';
 import { TableRowComp } from '../common/TableRowComp';
-import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../utils/status-message';
+import { errorMessage, isStatusMessage, StatusMessage, successMessage } from '../../shared/status-message';
 import { ArtworkMetaData } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
 
 export function DecryptFileUi() {

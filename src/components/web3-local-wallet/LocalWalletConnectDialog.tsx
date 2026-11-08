@@ -32,7 +32,7 @@ import {
 } from './local-wallet-utils';
 import { displayAddress } from '../../utils/misc-util';
 import { AddAccountUi } from './AddAccountUi';
-import { errorMessage, StatusMessage } from '../../utils/status-message';
+import { errorMessage, StatusMessage } from '../../shared/status-message';
 
 const warningMessage: StatusMessage = {
   status: 'warning',

@@ -17,7 +17,7 @@ import {
 } from './sm-app-utils';
 import { calcSumRows, updateCompensationComparisons } from './sm-table/sm-table-col-def';
 import { SMInitialData } from './types';
-import {errorMessage, isStatusMessage, StatusMessage, warningMessage} from "../../../utils/status-message";
+import { errorMessage, isStatusMessage, StatusMessage, warningMessage } from '../../../shared/status-message';
 
 export function SalaryManagerDataRowsEditor({
   sbtManager,
@@ -38,7 +38,11 @@ export function SalaryManagerDataRowsEditor({
 
   useEffect(() => {
     if (initialData) {
-      setParsedInitialData(JSON.parse(initialData));
+      try {
+        setParsedInitialData(JSON.parse(initialData));
+      } catch (e) {
+        setStatusMessage(errorMessage('Could not parse initial data'));
+      }
     }
   }, [initialData]);
   const refreshRowDataFromContract = useCallback(async () => {

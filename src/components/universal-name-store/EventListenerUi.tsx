@@ -9,7 +9,7 @@ import { Table, TableBody } from '@mui/material';
 import { TableRowComp } from '../common/TableRowComp';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { NoContractFound } from '../common/NoContractFound';
-import {infoMessage} from "../../utils/status-message";
+import { infoMessage } from '../../shared/status-message';
 
 export const EventListenerUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

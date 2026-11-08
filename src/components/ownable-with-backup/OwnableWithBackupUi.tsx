@@ -8,7 +8,7 @@ import { StatusMessageElement } from '../common/StatusMessageElement';
 import { toUserMessage } from '../../contracts/contract-utils';
 import { BackupOwnerEditUi } from './BackupOwnerEditUi';
 import { useAppContext } from '../AppContextProvider';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 type OwnableWithBackupData = {
   maxLength: number;

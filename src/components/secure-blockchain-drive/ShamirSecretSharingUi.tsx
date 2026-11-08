@@ -6,7 +6,7 @@ import { AttributeDef, PRecord } from '../../ui-factory/types';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { Button } from '@mui/material';
 import { combine, split } from 'shamir-secret-sharing';
-import { errorMessage } from '../../utils/status-message';
+import { errorMessage } from '../../shared/status-message';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { noop } from '../../ui-factory/utils';
 

@@ -15,7 +15,7 @@ import { getResizeMode, getToggleState, saveResizeMode } from './utils';
 
 import './sm-table.css';
 import { SMColumnSelection } from './SMColumnSelection';
-import { errorMessage } from '../../../../utils/status-message';
+import { errorMessage } from '../../../../shared/status-message';
 
 export type UpdateRowFun = (
   cmd: 'update' | 'reset' | 'delete',

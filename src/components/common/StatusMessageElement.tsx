@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Alert, AlertTitle, Box } from '@mui/material';
 
-import {StatusMessage} from "../../utils/status-message";
+import { StatusMessage } from '../../shared/status-message';
 
 export type StatusMessageProps = {
   statusMessage?: StatusMessage;

@@ -31,7 +31,7 @@ import {
 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
 import { MessageDisplay } from './MessageDisplay';
 import { OpenInboxMessageButton } from './OpenInboxMessageButton';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function PrivateMessageInBoxV2Ui({
   privateMessageStoreV2

@@ -15,7 +15,7 @@ import { getResizeMode, getToggleState, resolveId, saveResizeMode } from './gen-
 import { getGenColDef } from './gen-table-col-def';
 import { GenDataRowDialog } from './GenDataRowDialog';
 import { GenColumnSelection } from './GenColumnSelection';
-import {errorMessage} from "../../../../utils/status-message";
+import { errorMessage } from '../../../../shared/status-message';
 
 type GenTableProps = {
   def: GenTableDef;

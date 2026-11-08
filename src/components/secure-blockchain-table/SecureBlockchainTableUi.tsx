@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Paper } from '@mui/material';
 import { StatusMessageElement } from '../common/StatusMessageElement';
-import { SecureBlockchainTableListUi } from './sbt/SecureBlockchainTableListUi';
+import { SecureBlockchainTableListUi } from './SecureBlockchainTableListUi';
 import { SBTManager } from '../../contracts/secure-blockchain-table/SecureBlockchainTable-support';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
 import { AppTopTitle } from '../common/AppTopTitle';
@@ -13,7 +13,7 @@ import { ContractRegistry, getContractRegistry } from '../../contracts/contract-
 import { useAppContext } from '../AppContextProvider';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { SecureBlockchainTableSwitch } from './SecureBlockchainTableSwitch';
-import { infoMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { infoMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export type SBTOpenMode = 'edit' | 'app';
 export type SBTManagerData = { sbtManager: SBTManager; mode: SBTOpenMode };
@@ -42,7 +42,7 @@ export function SecureBlockchainTableUi() {
           setOwner(res);
         }
       }
-    });
+    }).catch(console.error);
   }, [contractRegistry, web3Session, wrap]);
 
   useEffect(() => {
@@ -54,10 +54,12 @@ export function SecureBlockchainTableUi() {
   useEffect(() => {
     if (currentSBT) {
       setTabIndex(1);
+    } else {
+      setTabIndex(0);
     }
   }, [currentSBT]);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
 
@@ -91,7 +93,7 @@ export function SecureBlockchainTableUi() {
               setCurrentSBT={setCurrentSBT}
             />
           )}
-          {tabIndex === 1 && <SecureBlockchainTableSwitch done={done} sbtManagerData={currentSBT} />}
+          {tabIndex === 1 && currentSBT && <SecureBlockchainTableSwitch done={done} sbtManagerData={currentSBT} />}
         </Paper>
       ]}
     ></CollapsiblePanel>

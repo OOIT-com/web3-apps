@@ -16,7 +16,7 @@ import { Html } from '../common/Html';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import helpFile from './RegisterNameHelp.md';
 import { ButtonPanel } from '../common/ButtonPanel';
-import {errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { errorMessage, infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export const RegisterNameUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

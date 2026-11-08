@@ -1,4 +1,4 @@
-import { errorMessage, StatusMessage } from './status-message';
+import { errorMessage, StatusMessage } from '../shared/status-message';
 
 export const fetchAsUint8Array = async (link: string): Promise<Uint8Array | StatusMessage> => {
   try {

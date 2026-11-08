@@ -18,7 +18,7 @@ import { deploymentPlans } from '../../contracts/deployment-plans';
 import { deployContract } from '../../contracts/deploy-contract';
 import { useAppContext } from '../AppContextProvider';
 import { CollapsiblePanel } from '../common/CollapsiblePanel';
-import {isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export const planDeployerTitle = 'Contract Deployments';
 

@@ -10,7 +10,7 @@ import { WithdrawUi } from './WithdrawUi';
 import { SetFeeUi } from './SetFeeUi';
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { NoContractFound } from '../common/NoContractFound';
-import {StatusMessage} from "../../utils/status-message";
+import { StatusMessage } from '../../shared/status-message';
 
 export const OwnerAdminUi: FC<{ universalNameStore: UniversalNameStore }> = ({ universalNameStore }) => {
   const app = useAppContext();

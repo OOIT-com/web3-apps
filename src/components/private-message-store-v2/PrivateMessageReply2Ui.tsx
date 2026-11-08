@@ -15,7 +15,7 @@ import { useAppContext } from '../AppContextProvider';
 
 import { Web3NotInitialized } from '../common/Web3NotInitialized';
 import { PrivateMessageStoreV2 } from '../../contracts/private-message-store/PrivateMessageStoreV2-support';
-import {isStatusMessage, StatusMessage} from "../../utils/status-message";
+import { isStatusMessage, StatusMessage } from '../../shared/status-message';
 
 export function PrivateMessageReply2Ui({
   messageToReply,

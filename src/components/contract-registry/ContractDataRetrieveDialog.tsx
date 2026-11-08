@@ -11,7 +11,7 @@ import { LDBox } from '../common/StyledBoxes';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { useAppContext } from '../AppContextProvider';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
-import {infoMessage, isStatusMessage, StatusMessage, warningMessage} from "../../utils/status-message";
+import { infoMessage, isStatusMessage, StatusMessage, warningMessage } from '../../shared/status-message';
 
 export function ContractDataRetrieveDialog({
   done,

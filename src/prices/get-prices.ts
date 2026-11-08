@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { errorMessage, isStatusMessage, StatusMessage } from '../utils/status-message';
+import { errorMessage, isStatusMessage, StatusMessage } from '../shared/status-message';
 
 export type UsdPrice = { price: string; symbol: string; timestamp: string; updated: number };
 const refreshInterval = 1000 * 60 * 5; // 5 minutes;

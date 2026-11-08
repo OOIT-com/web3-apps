@@ -19,7 +19,7 @@ import DialogContent from '@mui/material/DialogContent';
 import { LDBox } from '../common/StyledBoxes';
 import { useAppContext } from '../AppContextProvider';
 import { ButtonPanel } from '../common/ButtonPanel';
-import { errorMessage, isStatusMessage, StatusMessage } from '../../utils/status-message';
+import { errorMessage, isStatusMessage, StatusMessage } from '../../shared/status-message';
 import { encryptForUser } from '../shared-secret-store/shared-secret-store-utils';
 
 export function SBTUserManagement({
@@ -84,7 +84,7 @@ export function SBTUserManagement({
             disabled={!newUser || !isAddress(newUser)}
             sx={{ whiteSpace: 'nowrap' }}
             onClick={async () => {
-              const res = wrap(`Add user ${displayAddress(newUser)}...`, async () => {
+              const res = wrap(`Add User ${displayAddress(newUser)}...`, async () => {
                 setStatusMessage(undefined);
                 const publicKeyStore = getPublicKeyStore();
                 if (!publicKeyStore) {
@@ -128,12 +128,6 @@ export function SBTUserManagement({
             Add User
           </Button>
         ]}
-        // key={'edit-row-entry'}
-        // direction={'row'}
-        // justifyContent="space-between"
-        // alignItems="baseline"
-        // spacing={1}
-        // sx={{ margin: '1em 0' }}
       />
       <Table>
         <TableBody>

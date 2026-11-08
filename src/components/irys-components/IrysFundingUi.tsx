@@ -12,7 +12,7 @@ import { useAppContext } from '../AppContextProvider';
 import { IrysData, loadIrysData } from '../../utils/irys-utils';
 import { displayUsdPrice, useUsdPrice } from '../../prices/get-prices';
 import { getNetworkInfo } from '../../network-info';
-import { infoMessage, StatusMessage } from '../../utils/status-message';
+import { infoMessage, StatusMessage } from '../../shared/status-message';
 
 const arName = 'Irys (Arweave)';
 
