@@ -50,7 +50,7 @@ export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo 
                 <div>
                   <DownloadAndDecryptButton uploadInfo={uploadInfo} />{' '}
                   <Button
-                    key={'download'}
+                    key={'download-button'}
                     variant={'contained'}
                     onClick={() => {
                       const filename = uploadInfo.encryptionKeyLocation
