@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button, Stack, Tooltip } from '@mui/material';
-import { Wallet } from 'alchemy-sdk';
 import { StyledHead } from '../common/StyledHead';
 import { AddressBoxWithCopy } from '../common/AddressBoxWithCopy';
 import { mmPublicEncryptionKey } from '../../utils/nacl-util';
 import { StatusMessageElement } from '../common/StatusMessageElement';
 import { TextFieldWithCopy } from '../common/TextFieldWithCopy';
 import { errorMessage, StatusMessage, warningMessage } from '../../shared/status-message';
+import { HDNodeWallet, Mnemonic, Wallet } from 'ethers';
 
 export function SeedPhrase2Keys() {
   const [statusMessage, setStatusMessage] = useState<StatusMessage>();
@@ -31,7 +31,9 @@ export function SeedPhrase2Keys() {
   const convertToKeys = useCallback((seedPhrase: string) => {
     try {
       setStatusMessage(undefined);
-      const wallet = new Wallet(seedPhrase);
+
+      const mn: Mnemonic = Mnemonic.fromPhrase(seedPhrase);
+      const wallet = HDNodeWallet.fromMnemonic(mn);
       setPrivateKey(wallet.privateKey);
       setPublicAddress(wallet.address);
       setPublicKey(wallet.publicKey);
@@ -42,7 +44,8 @@ export function SeedPhrase2Keys() {
 
     try {
       setStatusMessage(undefined);
-      const wallet = Wallet.fromMnemonic(seedPhrase);
+      const mn: Mnemonic = Mnemonic.fromPhrase(seedPhrase);
+      const wallet = HDNodeWallet.fromMnemonic(mn);
       setPrivateKey(wallet.privateKey);
       setPublicAddress(wallet.address);
       setPublicKey(wallet.publicKey);
@@ -74,9 +77,13 @@ export function SeedPhrase2Keys() {
                 try {
                   setStatusMessage(undefined);
                   const wallet = Wallet.createRandom();
-                  setSeedPhrase(wallet.mnemonic.phrase);
-                  convertToKeys(wallet.mnemonic.phrase);
-                  setStatusMessage(warningMessage('Keep Seed Phrase and Keys secred!'));
+                  if (!wallet.mnemonic?.phrase) {
+                    setStatusMessage(errorMessage('Could not create random wallet...!'));
+                  } else {
+                    setSeedPhrase(wallet.mnemonic.phrase);
+                    convertToKeys(wallet.mnemonic.phrase);
+                    setStatusMessage(warningMessage('Keep Seed Phrase and Keys secred!'));
+                  }
                 } catch (e) {
                   setStatusMessage(errorMessage('Did you provide 12 words from the Seed Phrase?', e));
                 }

@@ -2,8 +2,8 @@ import { Buffer } from 'buffer';
 
 import { base64ToJson } from '../../utils/enc-dec-utils';
 import { Web3Session } from '../../types';
-import { Wallet } from 'alchemy-sdk';
 import { decryptEthCrypto, encryptEthCrypto } from '../../utils/eth-crypto-utils';
+import { SigningKey } from 'ethers';
 
 export const decryptKeyBlockValue2 = async (
   web3Session: Web3Session,
@@ -42,8 +42,8 @@ export const encryptKeyBlockValue2 = async (web3Session: Web3Session, message: s
   const { privateKey } = web3Session;
   if (privateKey) {
     console.log('use: EthCrypto.encryptWithPublicKey');
-    const w = new Wallet(privateKey);
-    const encrypted = await encryptEthCrypto(w.publicKey, message);
+    const publicKey = SigningKey.computePublicKey(privateKey, false);
+    const encrypted = await encryptEthCrypto(publicKey, message);
     if (encrypted !== null) {
       return encrypted;
     }

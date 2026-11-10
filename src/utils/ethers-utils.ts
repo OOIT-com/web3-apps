@@ -1,5 +1,4 @@
-import { keccak256, Wallet } from 'ethers';
-import { Wallet as AlchemyWallet } from 'alchemy-sdk';
+import { keccak256, Mnemonic, Wallet } from 'ethers';
 
 export const keccakFromString = (s: string): string => {
   if (!s) {
@@ -20,9 +19,12 @@ export const isPrivateKey = (content: string): boolean => {
 
 export const isMnemonic = (content: string): boolean => {
   try {
-    AlchemyWallet.fromMnemonic(content);
-    return true;
+    const mn: Mnemonic = Mnemonic.fromPhrase(content);
+    if (mn) {
+      return true;
+    }
   } catch (e) {
-    return false;
+    // ignore
   }
+  return false;
 };

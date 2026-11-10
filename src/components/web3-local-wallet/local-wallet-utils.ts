@@ -5,9 +5,9 @@ import { errorMessage, StatusMessage } from '../../shared/status-message';
 export type LocalWalletData = { name: string; address: string; encWalletJson: string };
 export const local_wallet_list_name = '__LOCAL_WALLET_LIST_OOIT__';
 
-export const addLocalWalletToLocalStorage = (accountEntry: LocalWalletData): void => {
+export const addLocalWalletToLocalStorage = (localWalletData: LocalWalletData): void => {
   const updatedStorage = getLocalWalletList();
-  updatedStorage.push(accountEntry);
+  updatedStorage.push(localWalletData);
   localStorage.setItem(local_wallet_list_name, JSON.stringify(updatedStorage));
 };
 
@@ -41,7 +41,8 @@ export const getLocalWalletList = (): LocalWalletData[] => {
   }
   return list;
 };
-export const createAccountEntry = async ({
+
+export const createLocalWalletEntry = async ({
   name,
   secret,
   walletPassword
@@ -58,7 +59,7 @@ export const createAccountEntry = async ({
     wallet = Wallet.fromPhrase(secret);
   }
   if (!wallet) {
-    return errorMessage(`Could not create an account with ${secret}`);
+    return errorMessage(`Could not create an account/wallet with ${secret}`);
   }
   return {
     name,

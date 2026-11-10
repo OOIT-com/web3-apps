@@ -1,5 +1,4 @@
 import { getNetworkInfo } from '../network-info';
-import { BigNumber } from 'alchemy-sdk';
 import { StatusMessage } from '../shared/status-message';
 
 export const toUserMessage = (statusMessage: StatusMessage) => {
@@ -38,4 +37,4 @@ export function getContractAddress(chainId: number, contractName: ContractName |
   return (process.env[envName] ?? '').toLowerCase();
 }
 
-export const toNumber = (o: number | BigNumber | string): number => (typeof o === 'number' ? o : +o.toString());
+export const toNumber = (o: number | string): number => (typeof o === 'number' ? o : +o.toString());

@@ -1,12 +1,11 @@
 import { Web3Session } from '../../types';
 import { getNetworkInfo } from '../../network-info';
-import { HDNodeWallet, Mnemonic } from 'ethers';
+import { HDNodeWallet, Mnemonic, SigningKey } from 'ethers';
 import Web3 from 'web3';
 import { Buffer } from 'buffer';
 import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
 import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
-import { Wallet } from 'alchemy-sdk';
 import { errorMessage, infoMessage } from '../../shared/status-message';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
@@ -30,11 +29,13 @@ export async function connectWithSecret(
     const mn: Mnemonic = Mnemonic.fromPhrase(secret);
     privateKey = HDNodeWallet.fromMnemonic(mn).privateKey;
   }
+
   const web3 = new Web3(network.rpcUrl);
   web3.eth.accounts.wallet.add(privateKey);
 
   const publicAddress = web3.eth.accounts.wallet[0].address.toLowerCase();
-  const publicKey = new Wallet(privateKey).publicKey;
+  const publicKey = SigningKey.computePublicKey(privateKey, false);
+
   const privateKeyUint8Array = new Uint8Array(Buffer.from(privateKey.substring(2), 'hex'));
   const decryptFun: DecryptFun = async (message: Uint8Array) => {
     const arr: Uint8Array | null = decryptStandalone(privateKeyUint8Array, message);
@@ -44,8 +45,6 @@ export async function connectWithSecret(
       const decMessageBuff = Buffer.from(decMessageUtf8, 'base64');
       return new Uint8Array(decMessageBuff);
     }
-
-    // try eth-crypot
 
     return await decryptEthCryptoBinary(privateKey, message);
   };

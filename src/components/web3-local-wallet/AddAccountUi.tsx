@@ -2,7 +2,7 @@ import { Button, Stack, Tooltip } from '@mui/material';
 import { LDBox } from '../common/StyledBoxes';
 import TextField from '@mui/material/TextField';
 import { ButtonPanel } from '../common/ButtonPanel';
-import { addLocalWalletToLocalStorage, createAccountEntry } from './local-wallet-utils';
+import { addLocalWalletToLocalStorage, createLocalWalletEntry } from './local-wallet-utils';
 import { NotifyFun } from '../../types';
 import { Wallet } from 'ethers';
 import { FC, useState } from 'react';
@@ -50,15 +50,13 @@ export const AddAccountUi: FC<{ walletPassword: string; refreshLocalWalletList: 
             disabled={!secret || !name}
             onClick={async () => {
               setStatusMessage(undefined);
-              const localWallet = await createAccountEntry({ name, secret, walletPassword });
+              const localWallet = await createLocalWalletEntry({ name, secret, walletPassword });
               if (isStatusMessage(localWallet)) {
                 setStatusMessage(localWallet);
                 return;
               }
               addLocalWalletToLocalStorage(localWallet);
               refreshLocalWalletList();
-
-              //connectWeb3(getLocalWalletList().length - 1);
             }}
           >
             Add
