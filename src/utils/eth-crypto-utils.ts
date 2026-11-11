@@ -1,40 +1,56 @@
 import EthCrypto from 'eth-crypto';
 import { Buffer } from 'buffer';
 import { deflate, inflate } from 'pako';
+import {
+  decryptEthCrypto as decryptEthCryptoCurves,
+  decryptEthCryptoBinary as decryptEthCryptoBinaryCurves,
+  encryptEthCrypto as encryptEthCryptoCurves,
+  encryptEthCryptoBinary as encryptEthCryptoBinaryCurves
+} from './curves-utils';
 
-export const decryptEthCrypto = async (privateKey: string, value: string): Promise<string | undefined> => {
-  try {
-    const deflatedMessage64 = await EthCrypto.decryptWithPrivateKey(privateKey, JSON.parse(value));
-    return Buffer.from(inflate(Buffer.from(deflatedMessage64, 'base64'))).toString();
-  } catch (e) {
-    console.warn('decryptEthCrypto failed!');
-  }
-};
+const USE_CURVES = true;
 
-export const encryptEthCrypto = async (publicKey: string, message: string): Promise<string | undefined> => {
-  if (publicKey.startsWith('0x')) {
-    publicKey = publicKey.substring(2);
-  }
+export const decryptEthCrypto = USE_CURVES
+  ? decryptEthCryptoCurves
+  : async (privateKey: string, value: string): Promise<string | undefined> => {
+      try {
+        const deflatedMessage64 = await EthCrypto.decryptWithPrivateKey(privateKey, JSON.parse(value));
+        return Buffer.from(inflate(Buffer.from(deflatedMessage64, 'base64'))).toString();
+      } catch (e) {
+        console.warn('decryptEthCrypto failed!');
+      }
+    };
 
-  try {
-    const deflatedMessage64 = Buffer.from(deflate(Buffer.from(message))).toString('base64');
-    const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, deflatedMessage64);
-    return JSON.stringify(encrypted);
-  } catch (e) {
-    console.warn('EthCrypto.encryptWithPublicKey failed!');
-  }
-};
+export const encryptEthCrypto = USE_CURVES
+  ? encryptEthCryptoCurves
+  : async (publicKey: string, message: string): Promise<string | undefined> => {
+      if (publicKey.startsWith('0x')) {
+        publicKey = publicKey.substring(2);
+      }
 
-export const encryptEthCryptoBinary = async (publicKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
-  const res = await encryptEthCrypto(publicKey, Buffer.from(data).toString('base64'));
-  if (res) {
-    return new Uint8Array(Buffer.from(res));
-  }
-};
+      try {
+        const deflatedMessage64 = Buffer.from(deflate(Buffer.from(message))).toString('base64');
+        const encrypted = await EthCrypto.encryptWithPublicKey(publicKey, deflatedMessage64);
+        return JSON.stringify(encrypted);
+      } catch (e) {
+        console.warn('EthCrypto.encryptWithPublicKey failed!');
+      }
+    };
 
-export const decryptEthCryptoBinary = async (privateKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
-  const res = await decryptEthCrypto(privateKey, Buffer.from(data).toString());
-  if (res) {
-    return new Uint8Array(Buffer.from(res, 'base64'));
-  }
-};
+export const encryptEthCryptoBinary = USE_CURVES
+  ? encryptEthCryptoBinaryCurves
+  : async (publicKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
+      const res = await encryptEthCrypto(publicKey, Buffer.from(data).toString('base64'));
+      if (res) {
+        return new Uint8Array(Buffer.from(res));
+      }
+    };
+
+export const decryptEthCryptoBinary = USE_CURVES
+  ? decryptEthCryptoBinaryCurves
+  : async (privateKey: string, data: Uint8Array): Promise<Uint8Array | undefined> => {
+      const res = await decryptEthCrypto(privateKey, Buffer.from(data).toString());
+      if (res) {
+        return new Uint8Array(Buffer.from(res, 'base64'));
+      }
+    };

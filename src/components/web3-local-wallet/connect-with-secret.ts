@@ -3,10 +3,10 @@ import { getNetworkInfo } from '../../network-info';
 import { HDNodeWallet, Mnemonic, SigningKey } from 'ethers';
 import Web3 from 'web3';
 import { Buffer } from 'buffer';
-import { decryptStandalone } from '../../utils/metamask-util';
 import { AppContextData } from '../AppContextProvider';
 import { decryptEthCryptoBinary } from '../../utils/eth-crypto-utils';
 import { errorMessage, infoMessage } from '../../shared/status-message';
+import { decryptStandalone } from '../../utils/nacl-util';
 
 export type DecryptFun = (msg: Uint8Array) => Promise<Uint8Array | undefined>;
 

@@ -88,3 +88,50 @@ export const decryptContentFromSender = ({
   }
   return Buffer.from(inflate(data)).toString();
 };
+export function encryptBuffer(publicKey: string, data: Buffer): Buffer {
+  // Returned object contains 4 properties: version, ephemPublicKey, nonce, ciphertext
+  // Each contains data encoded using base64, version is always the same string
+  // const enc = encrypt({
+  //   publicKey,
+  //   data: data.toString('base64'),
+  //   version: 'x25519-xsalsa20-poly1305'
+  // });
+  //
+  // // We want to store the data in smart contract, therefore we concatenate them
+  // // into single Buffer
+  // return Buffer.concat([
+  //   Buffer.from(enc.ephemPublicKey, 'base64'),
+  //   Buffer.from(enc.nonce, 'base64'),
+  //   Buffer.from(enc.ciphertext, 'base64')
+  // ]);
+  return Buffer.from('');
+}
+
+export function encryptStandalone(publicKey: Uint8Array, data: Uint8Array): Uint8Array {
+  // generate ephemeral keypair
+  const ephemeralKeyPair = nacl.box.keyPair();
+
+  const nonce = nacl.randomBytes(nacl.box.nonceLength);
+
+  // encrypt
+  const encryptedMessage = nacl.box(data, nonce, publicKey, ephemeralKeyPair.secretKey);
+
+  const e0 = Buffer.from(naclUtil.encodeBase64(ephemeralKeyPair.publicKey), 'base64');
+  const e1 = Buffer.from(naclUtil.encodeBase64(nonce), 'base64');
+  const e2 = Buffer.from(naclUtil.encodeBase64(encryptedMessage), 'base64');
+  const buf = Buffer.concat([e0, e1, e2]);
+
+  return new Uint8Array(buf);
+}
+
+export function decryptStandalone(secretKey: Uint8Array, encData: Uint8Array): Uint8Array | null {
+  const publicKey = encData.subarray(0, 32);
+  const nonce = encData.subarray(32, 32 + nacl.box.nonceLength);
+  const data = encData.subarray(32 + nacl.box.nonceLength);
+
+  // encrypt
+  if (!data || !nonce || !publicKey) {
+    return null;
+  }
+  return nacl.box.open(data, nonce, publicKey, secretKey);
+}
