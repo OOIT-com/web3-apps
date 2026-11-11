@@ -21,6 +21,10 @@ export async function connectWithSecret(
     dispatchSnackbarMessage(errorMessage('Unknown Network!'));
     return;
   }
+
+  //
+  // resolve private key
+  //
   let privateKey = secret;
   if (secret.trim().toLowerCase().startsWith('0x')) {
     dispatchSnackbarMessage(infoMessage('Secret is a Private Key!'));
@@ -36,6 +40,9 @@ export async function connectWithSecret(
   const publicAddress = web3.eth.accounts.wallet[0].address.toLowerCase();
   const publicKey = SigningKey.computePublicKey(privateKey, false);
 
+  //
+  // create decryptFun
+  //
   const privateKeyUint8Array = new Uint8Array(Buffer.from(privateKey.substring(2), 'hex'));
   const decryptFun: DecryptFun = async (message: Uint8Array) => {
     const arr: Uint8Array | null = decryptStandalone(privateKeyUint8Array, message);
