@@ -1,6 +1,6 @@
 // https://betterprogramming.pub/exchanging-encrypted-data-on-blockchain-using-metamask-a2e65a9a896c
 
-import { encrypt } from '@metamask/eth-sig-util';
+// import { encrypt } from '@metamask/eth-sig-util';
 import { Buffer } from 'buffer';
 import * as nacl from 'tweetnacl';
 import * as naclUtil from 'tweetnacl-util';
@@ -8,19 +8,20 @@ import * as naclUtil from 'tweetnacl-util';
 export function encryptBuffer(publicKey: string, data: Buffer): Buffer {
   // Returned object contains 4 properties: version, ephemPublicKey, nonce, ciphertext
   // Each contains data encoded using base64, version is always the same string
-  const enc = encrypt({
-    publicKey,
-    data: data.toString('base64'),
-    version: 'x25519-xsalsa20-poly1305'
-  });
-
-  // We want to store the data in smart contract, therefore we concatenate them
-  // into single Buffer
-  return Buffer.concat([
-    Buffer.from(enc.ephemPublicKey, 'base64'),
-    Buffer.from(enc.nonce, 'base64'),
-    Buffer.from(enc.ciphertext, 'base64')
-  ]);
+  // const enc = encrypt({
+  //   publicKey,
+  //   data: data.toString('base64'),
+  //   version: 'x25519-xsalsa20-poly1305'
+  // });
+  //
+  // // We want to store the data in smart contract, therefore we concatenate them
+  // // into single Buffer
+  // return Buffer.concat([
+  //   Buffer.from(enc.ephemPublicKey, 'base64'),
+  //   Buffer.from(enc.nonce, 'base64'),
+  //   Buffer.from(enc.ciphertext, 'base64')
+  // ]);
+  return Buffer.from('');
 }
 
 export function encryptStandalone(publicKey: Uint8Array, data: Uint8Array): Uint8Array {
