@@ -8,7 +8,7 @@ import {
   ArtworkTimeProof,
   UploadInfo
 } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { Box, Button, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { ButtonPanel } from '../common/ButtonPanel';
 import { IrysAccess, ResponseType } from '../../utils/IrysAccess';
 import { Buffer } from 'buffer';
@@ -22,6 +22,9 @@ import moment from 'moment';
 import { downloadLink } from '../../utils/irys-utils';
 import { formatIso } from '../../utils/moment-utils';
 import { errorMessage, infoMessage, isStatusMessage, StatusMessage, successMessage } from '../../shared/status-message';
+import { getNetworkInfo } from '../../network-info';
+import { resolveFileType } from '../../utils/web-utils';
+import { saveAs } from 'file-saver';
 
 export const CreateArtworkSaveDialog: FC<{
   irysAccess: IrysAccess;
@@ -30,15 +33,21 @@ export const CreateArtworkSaveDialog: FC<{
   metaData: ArtworkMetaData;
   done: NotifyCommandFun;
 }> = ({ irysAccess, artworkTimeProof, data, metaData, done }) => {
-  const { wrap } = useAppContext();
+  const { wrap, web3Session } = useAppContext();
   const [uploadInfo, setUploadInfo] = useState<UploadInfo>();
   const [uploadStatusMessage, setUploadStatusMessage] = useState<StatusMessage>();
   const [registerStatusMessage, setRegisterStatusMessage] = useState<StatusMessage>();
 
   const { filename, artworkName, artworkDescription, artworkAuthor } = metaData;
+
+  const networkInfo = getNetworkInfo(web3Session?.chainId || -1);
+  const isMainnet = networkInfo?.isMainnet;
+
+  const uploadInfoFilename = `upload-info-for-${artworkName}.json`;
+
   return (
     <Dialog open={true} onClose={() => done('cancel')} maxWidth={'md'} fullWidth={true}>
-      <DialogTitle>Save Artwork to Blockchain</DialogTitle>
+      <DialogTitle>Save Artwork to Blockchain (Dialog)</DialogTitle>
       <DialogContent>
         <Stack spacing={1}>
           <CollapsiblePanel key={'meta-data'} collapsible={false} level={'fourth'} title={'Artwork Meta Data'}>
@@ -51,17 +60,22 @@ export const CreateArtworkSaveDialog: FC<{
           </CollapsiblePanel>
 
           {!!uploadInfo && (
-            <Box key={'upload-response'} sx={{ whiteSpace: 'nowrap' }}>
-              {JSON.stringify(uploadInfo, null, ' ')}
-            </Box>
+            <Button
+              key={'upload-response-download'}
+              sx={{ whiteSpace: 'nowrap' }}
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(uploadInfo, null, ' ')], {
+                  type: resolveFileType(uploadInfoFilename)
+                });
+                saveAs(blob, uploadInfoFilename);
+              }}
+            >
+              Download Upload Info (JSON)
+            </Button>
           )}
           {/*{ "artworkName": "black-white.jpg", "artworkDescription": "black and white", "dataHash": "1443aca4a24daa4be08fb2e83cfae25f4f15c0c7520f8f9826b7dc374ba041fd", "filename": "black-white.jpg", "filemime": "image/jpeg", "filedate": "2025-04-12 17:31", "filesize": 367615, "uploadId": "35n6Uf4EQMUDuCWJTGsr9oK6yf5agZaUb1x9Rsy9EAd2", "timestamp": "2025-06-17 17:13" }*/}
 
-          <StatusMessageElement
-            key={'upload-status-message'}
-            statusMessage={uploadStatusMessage}
-            onClose={() => setUploadStatusMessage(undefined)}
-          />
+          <StatusMessageElement key={'upload-status-message'} statusMessage={uploadStatusMessage} />
           {!!uploadInfo && (
             <CollapsiblePanel key={'upload-data'} collapsible={false} level={'fourth'} title={'Upload Response'}>
               <TableComp key={'upload-data-table'}>
@@ -72,16 +86,17 @@ export const CreateArtworkSaveDialog: FC<{
                   label={'Timestamp'}
                   value={moment(uploadInfo.timestamp).format('YYYY-MM-DD HH:mm')}
                 />
-                <TableRowInfo key={'link'} label={'Link'} type={'link'} value={downloadLink(uploadInfo.uploadId)} />
+                <TableRowInfo
+                  key={'link'}
+                  label={'Link'}
+                  type={'link'}
+                  value={downloadLink(uploadInfo.uploadId, isMainnet)}
+                />
               </TableComp>
             </CollapsiblePanel>
           )}
 
-          <StatusMessageElement
-            key={'register-status-message'}
-            statusMessage={registerStatusMessage}
-            onClose={() => setRegisterStatusMessage(undefined)}
-          />
+          <StatusMessageElement key={'register-status-message'} statusMessage={registerStatusMessage} />
           <ButtonPanel key={'buttons'} mode={'left'}>
             {!uploadStatusMessage && (
               <Button

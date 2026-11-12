@@ -1,5 +1,5 @@
 import { UploadInfo } from '../../contracts/artwork-time-proof/ArtworkTimeProof-support';
-import { Button, Paper, Table, TableBody, TableContainer } from '@mui/material';
+import { Button, Paper, Stack, Table, TableBody, TableContainer } from '@mui/material';
 import { TableRowInfo } from '../common/TableRowInfo';
 import { DownloadAndDecryptButton } from './DownloadAndDecryptButton';
 import { saveAs } from 'file-saver';
@@ -8,6 +8,7 @@ import * as React from 'react';
 import { FC } from 'react';
 import { useAppContext } from '../AppContextProvider';
 import { getNetworkInfo } from '../../network-info';
+import { ExternalLink } from '../common/ExternalLink';
 
 export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo }) => {
   const { web3Session } = useAppContext();
@@ -19,13 +20,10 @@ export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo 
   const chainId = web3Session.chainId;
 
   const networkInfo = getNetworkInfo(chainId);
-  const downloadLinks: string[] = [];
-  if (networkInfo.isMainnet) {
-    downloadLinks.push(`https://gateway.irys.xyz/${uploadInfo.uploadId}`);
-    downloadLinks.push(`https://arweave.net/${uploadInfo.uploadId}`);
-  } else {
-    downloadLinks.push(`https://devnet.irys.xyz/${uploadInfo.uploadId}`);
-  }
+
+  const downloadLinkUrl = networkInfo.isMainnet
+    ? `https://gateway.irys.xyz/${uploadInfo.uploadId}`
+    : `https://devnet.irys.xyz/${uploadInfo.uploadId}`;
 
   return (
     <TableContainer key="table" component={Paper}>
@@ -40,14 +38,18 @@ export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo 
             value={uploadInfo.encryptionKeyLocation}
           />
 
-          <TableRowInfo key={'raw-downloads'} label={'Downloads Links'} type={'link'} values={downloadLinks} />
+          <TableRowInfo
+            key={'raw-downloads'}
+            label={'Download Link'}
+            value={<ExternalLink url={downloadLinkUrl} filename={uploadInfo.filename} />}
+          />
 
           {!!uploadInfo.encryptionKeyLocation && (
             <TableRowInfo
               key={'download'}
               label={'Download'}
               value={
-                <div>
+                <Stack direction={'row'} spacing={2}>
                   <DownloadAndDecryptButton uploadInfo={uploadInfo} />{' '}
                   <Button
                     key={'download-button'}
@@ -56,12 +58,12 @@ export const UploadiInfoDisplay: FC<{ uploadInfo: UploadInfo }> = ({ uploadInfo 
                       const filename = uploadInfo.encryptionKeyLocation
                         ? `enc-${uploadInfo.filename}`
                         : uploadInfo.filename;
-                      saveAs(downloadLink(uploadInfo.uploadId), filename);
+                      saveAs(downloadLink(uploadInfo.uploadId, networkInfo.isMainnet), filename);
                     }}
                   >
                     download
                   </Button>
-                </div>
+                </Stack>
               }
             />
           )}

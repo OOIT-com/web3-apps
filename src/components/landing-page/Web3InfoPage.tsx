@@ -73,6 +73,11 @@ export function Web3InfoPage({ open, done }: Readonly<{ open: boolean; done: Not
               <TableBody>
                 <TableRowInfo key={'public-address'} label={'Your Address'} value={publicAddress} />
                 <TableRowInfo
+                  key={'current-USD-price'}
+                  label={`1 ${currencySymbol}`}
+                  value={loading || !web3 ? 'loading' : usdPrice + ' USD'}
+                />
+                <TableRowInfo
                   key={'balance-ether'}
                   label={`Your Balance in: ${currencySymbol}`}
                   value={

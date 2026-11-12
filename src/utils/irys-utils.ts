@@ -2,9 +2,8 @@ import { IrysAccess } from './IrysAccess';
 
 import { errorMessage, infoMessage, isStatusMessage, StatusMessage } from '../shared/status-message';
 
-export const IRYS_GATEWAY = process.env.REACT_APP_IRYS_GATEWAY;
-
-export const downloadLink = (id?: string) => IRYS_GATEWAY + (id ?? '');
+export const downloadLink = (id = '', isMainnet: boolean) =>
+  isMainnet ? `https://gateway.irys.xyz/${id}` : `https://devnet.irys.xyz/${id}`;
 export type IrysData = {
   blockchainBalance: string;
   address: string;

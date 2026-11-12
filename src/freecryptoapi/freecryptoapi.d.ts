@@ -1,5 +1,5 @@
 /**
- * FreeCryptoAPI - TypeScript Type Definitions
+ * Freecryptoapi - TypeScript Type Definitions
  * https://freecryptoapi.com
  */
 
@@ -38,7 +38,7 @@ export class FreeCryptoAPIError extends Error {
   constructor(message: string, statusCode: number);
 }
 
-/** FreeCryptoAPI client for accessing cryptocurrency market data. */
+/** Freecryptoapi client for accessing cryptocurrency market data. */
 export class FreeCryptoAPI {
   /** The API key used for authentication. */
   apiKey: string;
@@ -46,8 +46,8 @@ export class FreeCryptoAPI {
   baseUrl: string;
 
   /**
-   * Create a new FreeCryptoAPI client.
-   * @param apiKey - Your FreeCryptoAPI API key.
+   * Create a new Freecryptoapi client.
+   * @param apiKey - Your Freecryptoapi API key.
    * @throws {FreeCryptoAPIError} If apiKey is missing or not a string.
    */
   constructor(apiKey: string);
